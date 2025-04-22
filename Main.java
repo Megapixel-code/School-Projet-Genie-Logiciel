@@ -10,7 +10,7 @@ class Node {
     private int pos_x;
     private int pos_y;
 
-    public void Node(int x, int y){
+    public void node(int x, int y){
         /*
          * init the node
          * depth is set by default to minus one, same as no value here
@@ -26,9 +26,9 @@ class Node {
         return pos;
     }
 
-    public void get_depth(){
+    public int get_depth(){
         // self explainatory
-        return this.depth
+        return this.depth;
     }
 
     public void set_depth(int depth){
@@ -54,14 +54,14 @@ class Edge {
     private Node node_1;
     private Node node_2;
 
-    public void Edge(Node n_1, Node n_2){
+    public void edge(Node n_1, Node n_2){
         /*
          * init the edge
          * makes sure you arent doing anything wrong 
          * and creates the edge
          */
-        int[] coords_n_1 = n_1.get_coordinates()
-        int[] coords_n_2 = n_2.get_coordinates()
+        int[] coords_n_1 = n_1.get_coordinates();
+        int[] coords_n_2 = n_2.get_coordinates();
         if ((Math.abs(coords_n_1[0] - coords_n_2[0]) <= 1) && 
             (Math.abs(coords_n_1[1] - coords_n_2[1]) <= 1) && 
             (Arrays.compare(coords_n_1, coords_n_2) != 0)){
@@ -79,7 +79,7 @@ class Edge {
 
     public Node[] get_nodes(){
         // returns a tuplet of the two connected nodes
-        Node[] nodes = {this.node_1, this.node_2}
+        Node[] nodes = {this.node_1, this.node_2};
         return nodes;
     }
 }
@@ -101,14 +101,14 @@ class Maze {
 
 
 
-class perfect_maze extends Maze {
+class Perfect_maze extends Maze {
     private Node last_node;
     // do the rest
 }
 
 
 
-class imperfect_maze extends Maze {
+class Imperfect_maze extends Maze {
     // do the rest
 }
 
