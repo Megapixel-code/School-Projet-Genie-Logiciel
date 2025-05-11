@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class Edge {
     /*
      * an edge is a link between two nodes, in the maze
-     * it represent a valid path between two cases
+     * it represents a valid path between two cases
      * no edge between two nodes means there is a wall or the nodes
      * are too far apart from each other
      */
@@ -16,7 +16,7 @@ public class Edge {
     public Edge(Node n_1, Node n_2){
         /*
          * init the edge
-         * makes sure you arent doing anything wrong
+         * makes sure you aren't doing anything wrong
          * and creates the edge
          */
         int[] coords_n_1 = n_1.get_coordinates();
@@ -26,7 +26,7 @@ public class Edge {
                 (Arrays.compare(coords_n_1, coords_n_2) != 0)){
             /*
              * true if the node are next to each other and
-             * the two node have diferent coordinates
+             * the two node have different coordinates
              */
             this.node_1 = n_1;
             this.node_2 = n_2;

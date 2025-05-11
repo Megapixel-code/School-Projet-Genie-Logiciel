@@ -23,17 +23,15 @@ public class Node {
 
         public int[] get_coordinates(){
             // return a tuplet of the two coordinates, pos_x then pos_y
-            int[] pos = {this.pos_x, this.pos_y};
+            int[] pos = {pos_x, pos_y};
             return pos;
         }
 
         public int get_depth(){
-            // self explainatory
-            return this.depth;
+            return depth;
         }
 
         public void set_depth(int depth){
-            // self explainatory
             this.depth = depth;
         }
 
