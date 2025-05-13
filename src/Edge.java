@@ -11,7 +11,7 @@ class Edge {
     private Node node_1;
     private Node node_2;
 
-    public void edge(Node n_1, Node n_2){
+    public Edge(Node n_1, Node n_2){
         /*
          * init the edge
          * makes sure you arent doing anything wrong 

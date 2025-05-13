@@ -8,7 +8,16 @@ class Node {
     private int pos_x;
     private int pos_y;
 
-    public void node(int x, int y){
+    public Node(){
+        /*
+         * init the node
+         * depth is set by default to minus one, same as no value here
+         */
+        this.pos_x = -1;
+        this.pos_y = -1;
+        this.depth = -1;
+    }
+    public Node(int x, int y){
         /*
          * init the node
          * depth is set by default to minus one, same as no value here
