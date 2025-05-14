@@ -12,7 +12,7 @@ abstract class Maze {
     private Node[][] node_array;
     private ArrayList<Edge> edge_list = new ArrayList<Edge>();    
 
-    
+
     public Maze(int x, int y, int seed){
         /*
          * init the maze
@@ -47,7 +47,12 @@ abstract class Maze {
          * returns the node at the given coordinates
          * used for generating the maze
          */
-        return this.node_array[x][y];
+        if ((x >= 0 && x < this.size_x) && (y >= 0 && y < this.size_y)){
+            return this.node_array[x][y];    
+        }
+        else{
+            return null;
+        }
     }
 
     public ArrayList<Edge> get_edge_list(){
