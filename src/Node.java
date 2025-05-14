@@ -8,6 +8,7 @@ class Node {
     private int pos_x;
     private int pos_y;
 
+    
     public Node(){
         /*
          * init the node
@@ -17,6 +18,7 @@ class Node {
         this.pos_y = -1;
         this.depth = -1;
     }
+
     public Node(int x, int y){
         /*
          * init the node

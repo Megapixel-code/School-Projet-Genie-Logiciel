@@ -10,8 +10,9 @@ abstract class Maze {
     private int size_y;
     private int seed;
     private Node[][] node_array;
-    private ArrayList<Edge> edge_list = new ArrayList<Edge>();
-    // do the rest
+    private ArrayList<Edge> edge_list = new ArrayList<Edge>();    
+
+    
     public Maze(int x, int y, int seed){
         /*
          * init the maze
@@ -30,23 +31,17 @@ abstract class Maze {
         }
     }
 
+    public int[] get_size(){
+        // retruns tuple representing the size of maze
+        int[] size = {this.size_x, this.size_y};
+        return size;
+    }
 
-    public int get_size_x(){
-        // self explainatory
-        return this.size_x;
-    }
-    public int get_size_y(){
-        // self explainatory
-        return this.size_y;
-    }
     public int get_seed(){
         // self explainatory
         return this.seed;
     }
-    public Node[][] get_node_array(){
-        // self explainatory
-        return this.node_array;
-    }
+
     public Node get_node(int x, int y){
         /*
          * returns the node at the given coordinates
@@ -54,10 +49,12 @@ abstract class Maze {
          */
         return this.node_array[x][y];
     }
+
     public ArrayList<Edge> get_edge_list(){
         // self explainatory
         return this.edge_list;
     }
+
     public void add_edge(Edge edge){
         /*
          * add an edge to the list of edges
@@ -67,8 +64,8 @@ abstract class Maze {
     }
 
     public void displayTextMaze() {
-        int rows = size_y * 2 + 1;
-        int cols = size_x * 2 + 1;
+        int rows = this.size_y * 2 + 1;
+        int cols = this.size_x * 2 + 1;
         String[][] display = new String[rows][cols];
     
         // Initialise tout en mur
@@ -77,8 +74,8 @@ abstract class Maze {
                 display[i][j] = "///";
     
         // Place les cellules
-        for (int y = 0; y < size_y; y++) {
-            for (int x = 0; x < size_x; x++) {
+        for (int y = 0; y < this.size_y; y++) {
+            for (int x = 0; x < this.size_x; x++) {
                 display[y * 2 + 1][x * 2 + 1] = "   ";
             }
         }

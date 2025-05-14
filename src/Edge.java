@@ -1,4 +1,3 @@
-import java.util.Arrays;
 
 
 class Edge {
@@ -19,9 +18,10 @@ class Edge {
          */
         int[] coords_n_1 = n_1.get_coordinates();
         int[] coords_n_2 = n_2.get_coordinates();
-        if ((Math.abs(coords_n_1[0] - coords_n_2[0]) <= 1) && 
-            (Math.abs(coords_n_1[1] - coords_n_2[1]) <= 1) && 
-            (Arrays.compare(coords_n_1, coords_n_2) != 0)){
+        if ((coords_n_1[0] == coords_n_2[0] && coords_n_1[1] == coords_n_2[1] + 1)||
+            (coords_n_1[0] == coords_n_2[0] && coords_n_1[1] == coords_n_2[1] - 1)||
+            (coords_n_1[1] == coords_n_2[1] && coords_n_1[0] == coords_n_2[0] + 1)||
+            (coords_n_1[1] == coords_n_2[1] && coords_n_1[0] == coords_n_2[0] - 1)){
             /* 
              * true if the node are next to each other and 
              * the two node have diferent coordinates

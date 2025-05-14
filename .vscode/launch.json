@@ -8,7 +8,21 @@
             "type": "java",
             "name": "LabyrinthApp",
             "request": "launch",
-            "vmArgs": "--module-path C:/School-Projet-Genie-Logiciel/javafx-sdk-17.0.15/lib --add-modules javafx.controls",
+            "mainClass": "LabyrinthApp",
+            "projectName": "School-Projet-Genie-Logiciel_22701f9c"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "School-Projet-Genie-Logiciel_22701f9c"
+        },
+        {
+            "type": "java",
+            "name": "LabyrinthApp",
+            "request": "launch",
+            "vmArgs": "--module-path ../javafx-sdk-17.0.15/lib --add-modules javafx.controls",
             "mainClass": "LabyrinthApp",
             "projectName": "School-Projet-Genie-Logiciel_43bf1373"
         },
