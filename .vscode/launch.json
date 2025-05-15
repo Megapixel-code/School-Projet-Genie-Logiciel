@@ -4,10 +4,12 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "java",
             "name": "LabyrinthApp",
             "request": "launch",
+            "vmArgs": "--module-path C:/School-Projet-Genie-Logiciel/javafx-sdk-17.0.15/lib --add-modules javafx.controls",
             "mainClass": "LabyrinthApp",
             "projectName": "School-Projet-Genie-Logiciel_22701f9c"
         },
@@ -22,7 +24,7 @@
             "type": "java",
             "name": "LabyrinthApp",
             "request": "launch",
-            "vmArgs": "--module-path ../javafx-sdk-17.0.15/lib --add-modules javafx.controls",
+            "vmArgs": "--module-path C:/School-Projet-Genie-Logiciel/javafx-sdk-17.0.15/lib --add-modules javafx.controls",
             "mainClass": "LabyrinthApp",
             "projectName": "School-Projet-Genie-Logiciel_43bf1373"
         },
