@@ -83,3 +83,9 @@
     -fx-border-color: #3333ff; 
     -fx-border-width: 5px; 
 }
+
+Line {
+    -fx-stroke: #002aff; 
+    -fx-stroke-width: 4px; 
+    -fx-stroke-line-cap: round;
+}
