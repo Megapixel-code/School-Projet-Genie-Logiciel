@@ -77,7 +77,7 @@ public class LabyrinthApp extends Application {
         buttonBox.getChildren().addAll(generatePerfecLabyrinth, generateImperfecLabyrinth, resolveButton, resolutionMethods);
 
 
-        Scene scene = new Scene(root, 1800, 900);
+        Scene scene = new Scene(root, 1200, 700);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
