@@ -1,2 +1,24 @@
-.vscode
+# === IntelliJ IDEA ===
+.idea/
+*.iml
+
+# === Java ===
 *.class
+*.jar
+*.war
+*.ear
+
+# === Build output ===
+out/
+build/
+
+# === Logs / temp ===
+*.log
+*.tmp
+
+# === OS files ===
+.DS_Store
+Thumbs.db
+
+# === VSCode (si jamais utilisé un jour) ===
+.vscode/
