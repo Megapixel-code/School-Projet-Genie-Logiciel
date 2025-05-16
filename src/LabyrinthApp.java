@@ -7,6 +7,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.Group;
 import javafx.geometry.Pos; 
@@ -44,7 +45,7 @@ public class LabyrinthApp extends Application {
 
         Button validateSizeButton = new Button("Valdate Size");
 
-        final int[] mazeWidth = {50};
+        final int[] mazeWidth = {50};  
         final int[] mazeHeight = {30};
 
         validateSizeButton.setOnAction(e -> {
@@ -63,7 +64,9 @@ public class LabyrinthApp extends Application {
         generatePerfecLabyrinth.setOnAction(e -> {
             generatedLabyrinth = "Perfect Labyrinth"; 
             System.out.println("Generating perfect labyrinth");
-            PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], 5); // Exemple size faudrait rajouter une interface pour choisir la taille | Done !
+            Node startNode = new Node(0, 0);
+            Node endNode = new Node(mazeWidth[0] - 1, mazeHeight[0] - 1);   // Faire un bouton pour choisir le début et la fin du labyrinthe
+            PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], 5, startNode, endNode); // Exemple size faudrait rajouter une interface pour choisir la taille | Done !
             while (!(maze.bfs_next_step())) {
             }
             generateMaze(labyrinthArea, maze);
@@ -157,19 +160,33 @@ public class LabyrinthApp extends Application {
         CELL_SIZE = this.set_cell_size(maze);
         Line top =new Line(0,0,maze.get_size()[0]*CELL_SIZE,0);
         Line left =new Line(0,0,0,maze.get_size()[1]*CELL_SIZE);
+        top.getStyleClass().add("wall");
+        left.getStyleClass().add("wall");
         MazeGroup.getChildren().add(top);
         MazeGroup.getChildren().add(left);
         for(int x=0; x<maze.get_size()[0]; x++){
             for(int y=0; y<maze.get_size()[1]; y++){
-                if(maze.in_edge_list(maze.get_node(x, y), maze.get_node(x+1, y))==1){
-                    Line line = new Line((x+1)*CELL_SIZE, (y+0)*CELL_SIZE, (x+1)*CELL_SIZE, (y+1)*CELL_SIZE);
-                    //line.setStyle("-fx-stroke: red;");
-                    MazeGroup.getChildren().add(line);
+                Line lineVertical = new Line((x+1)*CELL_SIZE, (y+0)*CELL_SIZE, (x+1)*CELL_SIZE, (y+1)*CELL_SIZE);
+                Node node1 = maze.get_node(x, y);
+                Node node2 = maze.get_node(x+1, y);
+                lineVertical.setOnMouseClicked(event -> lineClicked(pane, maze, node1, node2));
+                MazeGroup.getChildren().add(lineVertical);
+                if(maze.in_edge_list(node1, node2)==-1){
+                    lineVertical.getStyleClass().add("wall");
                 }
-                if(maze.in_edge_list(maze.get_node(x, y), maze.get_node(x, y+1))==1){
-                    Line line = new Line((x+0)*CELL_SIZE, (y+1)*CELL_SIZE, (x+1)*CELL_SIZE, (y+1)*CELL_SIZE);
-                    //line.setStyle("-fx-stroke: red;");
-                    MazeGroup.getChildren().add(line);
+                else{
+                    lineVertical.getStyleClass().add("path");
+                }
+                Line lineHorizontal = new Line((x+0)*CELL_SIZE, (y+1)*CELL_SIZE, (x+1)*CELL_SIZE, (y+1)*CELL_SIZE);
+                Node node3 = maze.get_node(x, y);
+                Node node4 = maze.get_node(x, y+1);
+                lineHorizontal.setOnMouseClicked(event -> lineClicked(pane, maze, node3, node4));
+                MazeGroup.getChildren().add(lineHorizontal);
+                if(maze.in_edge_list(node3, node4)==-1){
+                    lineHorizontal.getStyleClass().add("wall");
+                }
+                else{
+                    lineHorizontal.getStyleClass().add("path");
                 }
             }
         }
@@ -179,10 +196,35 @@ public class LabyrinthApp extends Application {
         MazeGroup.layoutXProperty().bind(pane.widthProperty().subtract(mazeWidth).divide(2));
         MazeGroup.layoutYProperty().bind(pane.heightProperty().subtract(mazeHeight).divide(2));
 
+        // Add Start and End Nodes
+        int[] startNodeCoord = maze.get_start_node().get_coordinates();
+        int[] endNodeCoord = maze.get_end_node().get_coordinates();
+        Circle startNodeCircle = new Circle((startNodeCoord[0] + 0.5) * CELL_SIZE, (startNodeCoord[1] + 0.5) * CELL_SIZE, CELL_SIZE / 3);
+        startNodeCircle.setStyle("-fx-fill: green;");
+        Circle endNodeCircle = new Circle((endNodeCoord[0] + 0.5) * CELL_SIZE, (endNodeCoord[1] + 0.5) * CELL_SIZE, CELL_SIZE / 3);
+        endNodeCircle.setStyle("-fx-fill: red;");
+        MazeGroup.getChildren().addAll(startNodeCircle, endNodeCircle);
+
         pane.getChildren().add(MazeGroup);
     } 
 
-
+    public void lineClicked(Pane pane, Maze maze, Node node1, Node node2) {
+        if (node1 != null && node2 != null) {
+            if (maze.in_edge_list(node1, node2) >= 0) {
+                maze.remove_edge(maze.get_edge(node1, node2));
+                System.out.println("Wall added");
+            } 
+            else {
+                Edge edge = new Edge(node1, node2);
+                maze.add_edge(edge);
+                System.out.println("Wall removed");
+            }
+        }
+        else {
+            System.out.println("Invalid coordinates for wall addition.");
+        }
+        generateMaze(pane, maze);
+    }
     // Code Thomas ---------------------
 
     public static void main(String[] args) {

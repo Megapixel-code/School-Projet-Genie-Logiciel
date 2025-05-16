@@ -85,11 +85,26 @@
     -fx-border-radius: 10px; 
 }
 
-Line {
-    -fx-stroke: #002aff; 
+.wall {
+    -fx-opacity: 1;
+    -fx-stroke: #0000ff;
     -fx-stroke-width: 4px; 
     -fx-stroke-line-cap: round;
 }
+
+.path {
+    -fx-opacity: 0;
+    -fx-stroke-width: 4px; 
+}
+
+.wall:hover {
+    -fx-stroke: #ffcc00; 
+}
+.path:hover {
+    -fx-opacity: 1;
+    -fx-stroke: #ffcc00; 
+}
+
 
 /*##################################################################################################*/
 

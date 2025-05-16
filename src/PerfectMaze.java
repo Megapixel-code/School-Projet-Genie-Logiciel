@@ -7,19 +7,13 @@ import java.util.Random;
 class PerfectMaze extends Maze {
     private Node last_node;
 
-    public PerfectMaze(int x, int y, int seed){
+    public PerfectMaze(int x, int y, int seed, Node start_node, Node end_node){
         /* 
          * init the perfect maze
          * same as the maze class but with a different seed
          */
-        super(x, y, seed);
-        this.last_node = super.get_node(0, 0);
-        this.last_node.set_depth(0);
-    }
-
-    public PerfectMaze(int x, int y, int seed, int start_x, int start_y){
-        super(x, y, seed);
-        this.last_node = super.get_node(start_x, start_y);
+        super(x, y, seed, start_node, end_node);
+        this.last_node = super.get_node(start_node.get_coordinates()[0], start_node.get_coordinates()[1]);
         this.last_node.set_depth(0);
     }
 

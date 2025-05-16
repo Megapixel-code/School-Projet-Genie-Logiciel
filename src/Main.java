@@ -1,6 +1,8 @@
 class Main {
     public static void main(String[] args) {
-        PerfectMaze mazetest = new PerfectMaze(5, 5, 0);
+        Node startNode = new Node(0, 0);
+        Node endNode = new Node(4, 4);
+        PerfectMaze mazetest = new PerfectMaze(5, 5, 0, startNode, endNode);
         mazetest.displayTextMaze();
         System.out.println();
         /*
