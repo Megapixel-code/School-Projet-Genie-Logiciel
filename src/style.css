@@ -82,10 +82,35 @@
     -fx-background-color: #000000; 
     -fx-border-color: #3333ff; 
     -fx-border-width: 5px; 
+    -fx-border-radius: 10px; 
 }
 
 Line {
     -fx-stroke: #002aff; 
     -fx-stroke-width: 4px; 
     -fx-stroke-line-cap: round;
+}
+
+/*##################################################################################################*/
+
+
+
+/*##################################################################################################*/
+
+.text-field {
+    -fx-background-color: linear-gradient(#ffcc00, #ff9900);
+    -fx-text-fill: #000000;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-border-color: #ff6600;
+    -fx-border-width: 4px;
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-padding: 10px 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 3, 3);
+}
+
+.text-field:focused {
+    -fx-background-color: linear-gradient(#ffe066, #ffcc00);
+    -fx-border-color: #ff9900;
 }

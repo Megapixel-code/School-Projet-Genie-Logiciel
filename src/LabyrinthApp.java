@@ -4,6 +4,7 @@ import javafx.stage.Stage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
@@ -31,13 +32,38 @@ public class LabyrinthApp extends Application {
         buttonBox.getStyleClass().add("hbox");
         root.setBottom(buttonBox);
        
+        // ############################################### btn taille laby ###############################################
+
+        TextField widthField = new TextField("50");
+        widthField.setPromptText("Largeur");
+        widthField.setMaxWidth(70);
+
+        TextField heightField = new TextField("30");
+        heightField.setPromptText("Hauteur");
+        heightField.setMaxWidth(70);
+
+        Button validateSizeButton = new Button("Valdate Size");
+
+        final int[] mazeWidth = {50};
+        final int[] mazeHeight = {30};
+
+        validateSizeButton.setOnAction(e -> {
+            try {
+                mazeWidth[0] = Integer.parseInt(widthField.getText());
+                mazeHeight[0] = Integer.parseInt(heightField.getText());
+                System.out.println("Nouvelle taille : " + mazeWidth[0] + " x " + mazeHeight[0]);
+            } catch (NumberFormatException ex) {
+                System.out.println("Veuillez entrer des nombres valides.");
+            }
+        });
+
         // ############################################### btn 1 ###############################################
 
         Button generatePerfecLabyrinth = new Button("Generate Perfect Labyrinth");
         generatePerfecLabyrinth.setOnAction(e -> {
             generatedLabyrinth = "Perfect Labyrinth"; 
             System.out.println("Generating perfect labyrinth");
-            PerfectMaze maze = new PerfectMaze(50,30,5); // Exemple size faudrait rajouter une interface pour choisir la taille
+            PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], 5); // Exemple size faudrait rajouter une interface pour choisir la taille | Done !
             while (!(maze.bfs_next_step())) {
             }
             generateMaze(labyrinthArea, maze);
@@ -78,9 +104,27 @@ public class LabyrinthApp extends Application {
             // mettre code pour résoudre le labyrinthe ici
             System.out.println("Selected method: " + selectedMethod);
         });
+
+
+        // ############################################### btn suivant / précédent ###############################################
         
-        
-        buttonBox.getChildren().addAll(generatePerfecLabyrinth, generateImperfecLabyrinth, resolveButton, resolutionMethods);
+        Button previousButton = new Button("⟵ Previous");
+
+        Button nextButton = new Button("Next ⟶");
+
+        previousButton.setOnAction(e -> {
+            System.out.println("Previous button clicked");
+            buttonBox.getChildren().removeAll(previousButton, resolveButton, resolutionMethods);
+            buttonBox.getChildren().addAll(widthField, heightField, validateSizeButton, generatePerfecLabyrinth, generateImperfecLabyrinth, nextButton);
+        });
+
+        nextButton.setOnAction(e -> {
+            System.out.println("Next button clicked");
+            buttonBox.getChildren().removeAll(widthField, heightField, validateSizeButton, generatePerfecLabyrinth, generateImperfecLabyrinth, nextButton);
+            buttonBox.getChildren().addAll(previousButton, resolveButton, resolutionMethods);
+        });
+
+        buttonBox.getChildren().addAll(widthField, heightField, validateSizeButton, generatePerfecLabyrinth, generateImperfecLabyrinth, nextButton);
 
 
         Scene scene = new Scene(root, 1200, 700);
@@ -102,8 +146,9 @@ public class LabyrinthApp extends Application {
         }
     }
 
+    // ca il faut que je puisse l'appeler mais faut pas le mettre ici 
 
-    public void generateMaze(Pane pane, Maze maze) {
+    public void generateMaze(Pane pane, Maze maze) { 
         // Code to generate Maze 
         Group MazeGroup = new Group();
         pane.getChildren().clear();
