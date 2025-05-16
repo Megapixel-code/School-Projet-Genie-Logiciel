@@ -88,13 +88,11 @@
 .wall {
     -fx-opacity: 1;
     -fx-stroke: #0000ff;
-    -fx-stroke-width: 4px; 
     -fx-stroke-line-cap: round;
 }
 
 .path {
     -fx-opacity: 0;
-    -fx-stroke-width: 4px; 
 }
 
 .wall:hover {

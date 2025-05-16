@@ -158,15 +158,22 @@ public class LabyrinthApp extends Application {
         // CELL_SIZE doit être défini en fonction de la taille du labyrinthe
         int CELL_SIZE = 30;
         CELL_SIZE = this.set_cell_size(maze);
+        int LINE_SIZE = 1;
+        if(CELL_SIZE/8 > 0){
+            LINE_SIZE = CELL_SIZE / 5;
+        }
         Line top =new Line(0,0,maze.get_size()[0]*CELL_SIZE,0);
         Line left =new Line(0,0,0,maze.get_size()[1]*CELL_SIZE);
         top.getStyleClass().add("wall");
         left.getStyleClass().add("wall");
+        top.setStrokeWidth(LINE_SIZE);
+        left.setStrokeWidth(LINE_SIZE);
         MazeGroup.getChildren().add(top);
         MazeGroup.getChildren().add(left);
         for(int x=0; x<maze.get_size()[0]; x++){
             for(int y=0; y<maze.get_size()[1]; y++){
                 Line lineVertical = new Line((x+1)*CELL_SIZE, (y+0)*CELL_SIZE, (x+1)*CELL_SIZE, (y+1)*CELL_SIZE);
+                lineVertical.setStrokeWidth(LINE_SIZE);
                 Node node1 = maze.get_node(x, y);
                 Node node2 = maze.get_node(x+1, y);
                 lineVertical.setOnMouseClicked(event -> lineClicked(pane, maze, node1, node2));
@@ -178,6 +185,7 @@ public class LabyrinthApp extends Application {
                     lineVertical.getStyleClass().add("path");
                 }
                 Line lineHorizontal = new Line((x+0)*CELL_SIZE, (y+1)*CELL_SIZE, (x+1)*CELL_SIZE, (y+1)*CELL_SIZE);
+                lineHorizontal.setStrokeWidth(LINE_SIZE);
                 Node node3 = maze.get_node(x, y);
                 Node node4 = maze.get_node(x, y+1);
                 lineHorizontal.setOnMouseClicked(event -> lineClicked(pane, maze, node3, node4));
