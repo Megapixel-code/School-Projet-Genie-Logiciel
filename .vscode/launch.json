@@ -22,7 +22,7 @@
             "type": "java",
             "name": "LabyrinthApp",
             "request": "launch",
-            "vmArgs": "--module-path ../javafx-sdk-17.0.15/lib --add-modules javafx.controls",
+            "vmArgs": "--module-path ../javafx-sdk-17.0.15/lib --add-modules javafx.*",
             "mainClass": "LabyrinthApp",
             "projectName": "School-Projet-Genie-Logiciel_43bf1373"
         },
