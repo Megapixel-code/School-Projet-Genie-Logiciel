@@ -59,6 +59,21 @@ abstract class Maze {
         // self explainatory
         return this.edge_list;
     }
+    public int in_edge_list(Node a, Node b){
+        /*
+         * check if the edge between the two nodes is already in the list of edges
+         * used for generating the maze
+         */
+        for (int i = 0; i < this.edge_list.size(); i++){
+            if (this.edge_list.get(i).get_nodes()[0].equals(a) && this.edge_list.get(i).get_nodes()[1].equals(b)){
+                return 0;
+            }
+            else if (this.edge_list.get(i).get_nodes()[0].equals(b) && this.edge_list.get(i).get_nodes()[1].equals(a)){
+                return 0;
+            }
+        }
+        return 1;
+    }
 
     public void add_edge(Edge edge){
         /*
