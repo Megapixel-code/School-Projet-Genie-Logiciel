@@ -16,6 +16,10 @@ abstract class Maze {
     private Node startNode;
     private Node endNode;
 
+    //adjacence
+    private Map<Node, List<Node>> adjacencyList = new HashMap<>();
+
+
 
     public Maze(int x, int y, int seed){
         /*
@@ -42,6 +46,9 @@ abstract class Maze {
     }
     // donc on doit faire Node start = new Node (x,y); puis creer le laby
 
+    public Map<Node, List<Node>> get_adjacency_list() {
+        return this.adjacencyList;
+    }
 
     public void set_StartNode(int x, int y) {
         this.startNode = get_node(x, y);
@@ -121,12 +128,28 @@ abstract class Maze {
         return 1;
     }
 
-    public void add_edge(Edge edge){
-        /*
-         * add an edge to the list of edges
-         * used for generating the maze
-         */
+    public void add_edge(Edge edge) {
         this.edge_list.add(edge);
+
+        Node a = edge.get_nodes()[0];
+        Node b = edge.get_nodes()[1];
+
+        adjacencyList.putIfAbsent(a, new ArrayList<>());
+        adjacencyList.get(a).add(b);
+
+        adjacencyList.putIfAbsent(b, new ArrayList<>());
+        adjacencyList.get(b).add(a);
+    }
+
+
+    public void clearMarks() {
+        for (int y = 0; y < this.size_y; y++) {
+            for (int x = 0; x < this.size_x; x++) {
+                Node node = this.node_array[y][x]; // à corriger
+                node.setPath(false);
+                node.setMark(null);
+            }
+        }
     }
 
     public void displayTextMaze() { // transforme ta edge liste en visuel
@@ -142,7 +165,14 @@ abstract class Maze {
         // Place les noeuds
         for (int y = 0; y < this.size_y; y++) {
             for (int x = 0; x < this.size_x; x++) {
-                display[y * 2 + 1][x * 2 + 1] = " . ";
+
+                Node sommet = this.node_array[y][x]; // à corriger
+                if (sommet.hasMark()) {
+                    display[y * 2 + 1][x * 2 + 1] = " " + sommet.getMark() + " ";
+                } else {
+                    display[y * 2 + 1][x * 2 + 1] = " . ";
+                }
+
             }
         }
     
@@ -156,7 +186,7 @@ abstract class Maze {
     
             int wall_x = coord_a[0] + coord_b[0] + 1;
             int wall_y = coord_a[1] + coord_b[1] + 1;
-            display[wall_y][wall_x] = "   ";
+                display[wall_y][wall_x] = "   ";
         }
 
         //Affichage start et end

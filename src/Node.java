@@ -5,6 +5,8 @@ class Node {
      * pos_x and pos_y are the 2d coordinates of the node
      */
     private int depth;
+    private boolean path;
+    private String mark_Solver = null;
     private int pos_x;
     private int pos_y;
 
@@ -43,6 +45,27 @@ class Node {
     public void set_depth(int depth){
         // self explainatory
         this.depth = depth;
+    }
+
+    public void setPath(boolean b) {
+        this.path = b;
+    }
+
+    public boolean isPath() {
+        return this.path;
+    }
+
+
+    public void setMark(String mark) {
+        this.mark_Solver = mark;
+    }
+
+    public String getMark() {
+        return this.mark_Solver;
+    }
+
+    public boolean hasMark() {
+        return this.mark_Solver != null;
     }
 
     public Node[] get_neighbours(Node[][] grille) {

@@ -8,8 +8,12 @@ class Main {
         // INSTANT
         mazePerfect.generate();
         mazePerfect.displayTextMaze();
-
         System.out.println("Generation Perfect !\n");
+
+        Solver.bfs(mazePerfect);
+        mazePerfect.displayTextMaze();
+        //mazePerfect.clearMarks();
+        System.out.println("Generation Perfect BFS!\n");
 
         ImperfectMaze mazeImperfect = new ImperfectMaze(10, 5, 5,start,end );
         mazeImperfect.generate();
