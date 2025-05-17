@@ -139,10 +139,10 @@ abstract class Maze {
             for (int j = 0; j < cols; j++)
                 display[i][j] = "///";
     
-        // Place les cellules
+        // Place les noeuds
         for (int y = 0; y < this.size_y; y++) {
             for (int x = 0; x < this.size_x; x++) {
-                display[y * 2 + 1][x * 2 + 1] = "   ";
+                display[y * 2 + 1][x * 2 + 1] = " . ";
             }
         }
     
