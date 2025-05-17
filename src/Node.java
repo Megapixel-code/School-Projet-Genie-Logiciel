@@ -45,6 +45,35 @@ class Node {
         this.depth = depth;
     }
 
+    public Node[] get_neighbours(Node[][] grille) {
+        // on return un tableau de node avec tous les voisins dispo
+        //en parametre on met node_array et on utilise a.get_...(mazetest.node_array);
+
+        int[] coord = this.get_coordinates();
+        int x = coord[0];
+        int y = coord[1];
+
+        Node[] neighbours = new Node[4];
+
+        // Droite
+        if (x + 1 < grille.length)
+            neighbours[0] = grille[x + 1][y];
+
+        // Gauche
+        if (x - 1 >= 0)
+            neighbours[1] = grille[x - 1][y];
+
+        // Bas
+        if (y + 1 < grille[0].length)
+            neighbours[2] = grille[x][y + 1];
+
+        // Haut
+        if (y - 1 >= 0)
+            neighbours[3] = grille[x][y - 1];
+
+        return neighbours;
+    }
+
     /* 
      * no function to set coordinates because once the coordinates 
      * are set we dont want them changing

@@ -1,21 +1,35 @@
 class Main {
     public static void main(String[] args) {
-        PerfectMaze mazetest = new PerfectMaze(10, 5, 0);
-        
-        mazetest.displayTextMaze();
-        System.out.println();
-        
+
+        Node start = new Node(0, 0);
+        Node end = new Node(9, 4);
+        PerfectMaze mazePerfect = new PerfectMaze(10, 5, 5,start,end );
+
+        // INSTANT
+        mazePerfect.generate();
+        mazePerfect.displayTextMaze();
+
+        System.out.println("Generation Perfect !\n");
+
+        ImperfectMaze mazeImperfect = new ImperfectMaze(10, 5, 5,start,end );
+        mazeImperfect.generate();
+        mazeImperfect.displayTextMaze();
+        System.out.println("Generation Imperfect !\n");
+
         /*
-        Edge edge = new Edge(mazetest.get_node(0, 0),mazetest.get_node(1, 0));
-        Edge edge1 = new Edge(mazetest.get_node(1, 0),mazetest.get_node(1, 1));
-        mazetest.add_edge(edge);
-        mazetest.add_edge(edge1);
+        Edge edge = new Edge(mazePerfect.get_node(0, 0),mazePerfect.get_node(1, 0));
+        Edge edge1 = new Edge(mazePerfect.get_node(1, 0),mazePerfect.get_node(1, 1));
+        mazePerfect.add_edge(edge);
+        mazePerfect.add_edge(edge1);
         System.out.println("_______________");
         */
-        
-        while (!(mazetest.bfs_next_step())) {
+
+
+        // STEP BY STEP
+        /*mazePerfect.displayTextMaze();
+        while (!(mazePerfect.bfs_next_step())) {
             
-            mazetest.displayTextMaze();
+            mazePerfect.displayTextMaze();
             System.out.println();
 
             try {
@@ -28,7 +42,6 @@ class Main {
                 return;
             }
         }
-
-        mazetest.displayTextMaze();
+        mazePerfect.displayTextMaze();*/ // affichage quand la gene est finis donc quand on return true
     }
 }

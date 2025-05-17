@@ -1,5 +1,5 @@
 
-import java.util.ArrayList;
+import java.util.*;
 
 abstract class Maze {
     /*
@@ -9,8 +9,12 @@ abstract class Maze {
     private int size_x;
     private int size_y;
     private int seed;
+    private Random rng;
     private Node[][] node_array;
-    private ArrayList<Edge> edge_list = new ArrayList<Edge>();    
+    private ArrayList<Edge> edge_list = new ArrayList<Edge>();
+
+    private Node startNode;
+    private Node endNode;
 
 
     public Maze(int x, int y, int seed){
@@ -22,6 +26,7 @@ abstract class Maze {
         this.size_x = x;
         this.size_y = y;
         this.seed = seed;
+        this.rng = new Random(seed);
         this.node_array = new Node[x][y];
         for (int i = 0; i < x; i++){
             for (int j = 0; j < y; j++){
@@ -30,6 +35,46 @@ abstract class Maze {
             }
         }
     }
+    public Maze(int x, int y, int seed, Node start, Node end) {
+        this(x, y, seed); // appelle le constructeur de base
+        this.startNode = start;
+        this.endNode = end;
+    }
+    // donc on doit faire Node start = new Node (x,y); puis creer le laby
+
+
+    public void set_StartNode(int x, int y) {
+        this.startNode = get_node(x, y);
+    }
+
+    public void set_EndNode(int x, int y) {
+        this.endNode = get_node(x, y);
+    }
+
+    public Node getStartNode() {
+        return this.startNode;
+    }
+
+    public Node getEndNode() {
+        return this.endNode;
+    }
+
+    public Random get_rng(){
+        return this.rng;
+    }
+
+    public int getSize_x(){
+        return this.size_x;
+    }
+
+    public int getSize_y(){
+        return this.size_y;
+    }
+
+    public Node[][] get_node_array() {
+        return this.node_array;
+    }
+
 
     public int[] get_size(){
         // retruns tuple representing the size of maze
@@ -59,6 +104,7 @@ abstract class Maze {
         // self explainatory
         return this.edge_list;
     }
+
     public int in_edge_list(Node a, Node b){
         /*
          * check if the edge between the two nodes is already in the list of edges
@@ -83,10 +129,10 @@ abstract class Maze {
         this.edge_list.add(edge);
     }
 
-    public void displayTextMaze() {
+    public void displayTextMaze() { // transforme ta edge liste en visuel
         int rows = this.size_y * 2 + 1;
         int cols = this.size_x * 2 + 1;
-        String[][] display = new String[rows][cols];
+        String[][] display = new String[rows][cols]; // [y][x]
     
         // Initialise tout en mur
         for (int i = 0; i < rows; i++)
@@ -112,6 +158,22 @@ abstract class Maze {
             int wall_y = coord_a[1] + coord_b[1] + 1;
             display[wall_y][wall_x] = "   ";
         }
+
+        //Affichage start et end
+        int[] start = this.startNode.get_coordinates();
+        int[] end = this.endNode.get_coordinates();
+
+        int start_display_x = start[0] * 2 + 1;
+        int start_display_y = start[1] * 2 + 1;
+
+        int end_display_x = end[0] * 2 + 1;
+        int end_display_y = end[1] * 2 + 1;
+
+        display[start_display_y][start_display_x] = " E ";
+        display[end_display_y][end_display_x] = " S ";
+
+        display[start_display_y][start_display_x-1] = "   ";
+        display[end_display_y][end_display_x+1] = "   ";
     
         // Affiche la matrice
         for (String[] row : display) {

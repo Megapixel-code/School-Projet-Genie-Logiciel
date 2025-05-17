@@ -39,4 +39,12 @@ class Edge {
         Node[] nodes = {this.node_1, this.node_2};
         return nodes;
     }
+
+    public boolean connected(Node a, Node b) { // regarde la liste de egde si on a deja une connexion entre ces deux noeuds
+        if ((node_1 == a && node_2 == b) || (node_1 == b && node_2 == a)) {
+            return true;
+        }
+        return false;
+    }
+
 }

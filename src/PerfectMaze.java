@@ -7,12 +7,12 @@ import java.util.Random;
 class PerfectMaze extends Maze {
     private Node last_node;
 
-    public PerfectMaze(int x, int y, int seed){
+    public PerfectMaze(int x, int y, int seed, Node start, Node end){
         /* 
          * init the perfect maze
          * same as the maze class but with a different seed
          */
-        super(x, y, seed);
+        super(x, y, seed,start,end);
         this.last_node = super.get_node(0, 0);
         this.last_node.set_depth(0);
     }
@@ -32,7 +32,7 @@ class PerfectMaze extends Maze {
         /*
          * returns true if finished,
          * finished if depth equals zero and no unvisited node around
-         */ 
+         */
         int[] current_pos = last_node.get_coordinates();
         int current_depth = last_node.get_depth();
         // array of the four node around, will be null if node doesnt exist
@@ -71,7 +71,7 @@ class PerfectMaze extends Maze {
         else {
             // if there is available nodes around
             // chose a available node around randomly then create edge between the curent node and the random node
-            int random_nb = new Random().nextInt(nb_available_nodes);
+            int random_nb = this.get_rng().nextInt(nb_available_nodes);
             Edge new_edge = new Edge(this.last_node, availables_nodes[random_nb]);
             this.add_edge(new_edge);
             this.last_node = availables_nodes[random_nb];
@@ -79,4 +79,11 @@ class PerfectMaze extends Maze {
         }
         return false;
     }
+
+    //mode complet pour aff direct
+    public void generate() {
+        while (!this.bfs_next_step()) { // seulement quand c'est true tu affiches
+        }
+    }
+
 }
