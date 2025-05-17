@@ -39,10 +39,23 @@ abstract class Maze {
             }
         }
     }
-    public Maze(int x, int y, int seed, Node start, Node end) {
-        this(x, y, seed); // appelle le constructeur de base
-        this.startNode = start;
-        this.endNode = end;
+    public Maze(int x, int y, int seed, int start_x, int start_y, int end_x, int end_y) {
+        this(x, y, seed);
+        if (start_x < 0 || start_x >= this.size_x || start_y < 0 || start_y >= this.size_y) {
+            throw new IllegalArgumentException("Start invalid !");
+        }
+
+        if (end_x < 0 || end_x >= this.size_x || end_y < 0 || end_y >= this.size_y) {
+            throw new IllegalArgumentException("End invalid !");
+        }
+
+
+        if (start_x == end_x && start_y == end_y) {
+            throw new IllegalArgumentException("Start and end = same positions !");
+        }
+
+        this.startNode = this.node_array[start_x][start_y];
+        this.endNode = this.node_array[end_x][end_y];
     }
     // donc on doit faire Node start = new Node (x,y); puis creer le laby
 
@@ -100,7 +113,7 @@ abstract class Maze {
          * used for generating the maze
          */
         if ((x >= 0 && x < this.size_x) && (y >= 0 && y < this.size_y)){
-            return this.node_array[x][y];    
+            return this.node_array[x][y];
         }
         else{
             return null;
@@ -143,9 +156,9 @@ abstract class Maze {
 
 
     public void clearMarks() {
-        for (int y = 0; y < this.size_y; y++) {
-            for (int x = 0; x < this.size_x; x++) {
-                Node node = this.node_array[y][x]; // à corriger
+        for (int x = 0; x < size_x; x++) {
+            for (int y = 0; y < size_y; y++) {
+                Node node = node_array[x][y];
                 node.setPath(false);
                 node.setMark(null);
             }
@@ -156,26 +169,32 @@ abstract class Maze {
         int rows = this.size_y * 2 + 1;
         int cols = this.size_x * 2 + 1;
         String[][] display = new String[rows][cols]; // [y][x]
-    
+
         // Initialise tout en mur
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < cols; j++)
                 display[i][j] = "///";
-    
+
+        //System.out.println("Taille node_array : " + node_array.length + " × " + node_array[0].length);
         // Place les noeuds
         for (int y = 0; y < this.size_y; y++) {
             for (int x = 0; x < this.size_x; x++) {
+                Node sommet = this.node_array[x][y];
+                int disp_y = y * 2 + 1;
+                int disp_x = x * 2 + 1;
 
-                Node sommet = this.node_array[y][x]; // à corriger
-                if (sommet.hasMark()) {
-                    display[y * 2 + 1][x * 2 + 1] = " " + sommet.getMark() + " ";
+                if (sommet.equals(this.startNode)) {
+                    display[disp_y][disp_x] = "\u001B[32m E \u001B[0m";
+                } else if (sommet.equals(this.endNode)) {
+                    display[disp_y][disp_x] = "\u001B[31m S \u001B[0m";
+                } else if (sommet.isPath()) {
+                    display[disp_y][disp_x] = "\u001B[35m " + sommet.getMark() + " \u001B[0m";
                 } else {
-                    display[y * 2 + 1][x * 2 + 1] = " . ";
+                    display[disp_y][disp_x] = " . ";
                 }
-
             }
         }
-    
+
         // Ouvre les murs selon les edges
         for (Edge e : edge_list) {
             Node[] ab = e.get_nodes();
@@ -183,28 +202,11 @@ abstract class Maze {
             Node b = ab[1];
             int[] coord_a = a.get_coordinates();
             int[] coord_b = b.get_coordinates();
-    
             int wall_x = coord_a[0] + coord_b[0] + 1;
             int wall_y = coord_a[1] + coord_b[1] + 1;
                 display[wall_y][wall_x] = "   ";
         }
 
-        //Affichage start et end
-        int[] start = this.startNode.get_coordinates();
-        int[] end = this.endNode.get_coordinates();
-
-        int start_display_x = start[0] * 2 + 1;
-        int start_display_y = start[1] * 2 + 1;
-
-        int end_display_x = end[0] * 2 + 1;
-        int end_display_y = end[1] * 2 + 1;
-
-        display[start_display_y][start_display_x] = " E ";
-        display[end_display_y][end_display_x] = " S ";
-
-        display[start_display_y][start_display_x-1] = "   ";
-        display[end_display_y][end_display_x+1] = "   ";
-    
         // Affiche la matrice
         for (String[] row : display) {
             for (String c : row)

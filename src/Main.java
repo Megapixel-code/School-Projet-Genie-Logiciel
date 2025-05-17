@@ -1,24 +1,45 @@
 class Main {
     public static void main(String[] args) {
 
-        Node start = new Node(0, 0);
-        Node end = new Node(9, 4);
-        PerfectMaze mazePerfect = new PerfectMaze(10, 5, 5,start,end );
-
-        // INSTANT
+        PerfectMaze mazePerfect = new PerfectMaze(20, 8, 3, 0, 0, 9, 4);
         mazePerfect.generate();
         mazePerfect.displayTextMaze();
-        System.out.println("Generation Perfect !\n");
+        System.out.println("\u001B[33mGeneration Perfect !\n\u001B[0m");
 
         Solver.bfs(mazePerfect);
         mazePerfect.displayTextMaze();
-        //mazePerfect.clearMarks();
-        System.out.println("Generation Perfect BFS!\n");
+        System.out.println("\u001B[34mResolution Perfect BFS!\n\u001B[0m");
+        mazePerfect.clearMarks();
 
-        ImperfectMaze mazeImperfect = new ImperfectMaze(10, 5, 5,start,end );
+        Solver.dfs(mazePerfect);
+        mazePerfect.displayTextMaze();
+        System.out.println("\u001B[34mResolution Perfect DFS!\n\u001B[0m");
+        mazePerfect.clearMarks();
+
+
+       ImperfectMaze mazeImperfect = new ImperfectMaze(20, 8, 8, 0, 0, 9, 4);
         mazeImperfect.generate();
         mazeImperfect.displayTextMaze();
-        System.out.println("Generation Imperfect !\n");
+        System.out.println("\u001B[33mGeneration Imperfect !\n\u001B[0m");
+
+
+        boolean res = Solver.bfs(mazeImperfect);
+        if (res){
+            mazeImperfect.displayTextMaze();
+            System.out.println("\u001B[34mResolution Imperfect BFS!\n \u001B[0m");
+            mazeImperfect.clearMarks();
+        } else {
+            System.out.println("\u001B[31mAucun chemin trouvé avec cet algo \u001B[0m");
+        }
+
+        res = Solver.dfs(mazeImperfect);
+        if (res){
+            mazeImperfect.displayTextMaze();
+            System.out.println("\u001B[34mResolution Imperfect DFS!\n \u001B[0m");
+            mazeImperfect.clearMarks();
+        } else {
+            System.out.println("\u001B[31mAucun chemin trouvé avec cet algo\u001B[0m");
+        }
 
         /*
         Edge edge = new Edge(mazePerfect.get_node(0, 0),mazePerfect.get_node(1, 0));
