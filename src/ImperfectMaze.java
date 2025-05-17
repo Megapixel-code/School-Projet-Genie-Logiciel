@@ -34,8 +34,7 @@ public class ImperfectMaze extends PerfectMaze {
 
     private boolean edgeExists(Node a, Node b) {
         for (Edge e : get_edge_list()) {
-            if ((e.get_nodes()[0] == a && e.get_nodes()[1] == b) ||
-                    (e.get_nodes()[0] == b && e.get_nodes()[1] == a)) {
+            if (e.connected(a,b)) {
                 return true;
             }
         }
