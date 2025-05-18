@@ -1,0 +1,116 @@
+/*-------------------------------style_btn-------------------------------*/
+
+.button {
+    -fx-background-color: linear-gradient(#ffcc00, #ff9900);
+    -fx-text-fill: #000000;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-border-color: #ff6600;
+    -fx-border-width: 4px;
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-padding: 10px 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 3, 3);
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(#ffe066, #ffcc00);
+    -fx-border-color: #ff9900;
+}
+
+.button:pressed {
+    -fx-background-color: linear-gradient(#ff9900, #ffcc00);
+    -fx-effect: none;
+    -fx-translate-y: 2px;
+}
+
+/*##################################################################################################*/
+
+/*-------------------------------style_combo_box-------------------------------*/
+
+.combo-box {
+    -fx-background-color: linear-gradient(#ffcc00, #ff9900);
+    -fx-text-fill: #000000;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-border-color: #ff6600;
+    -fx-border-width: 4px;
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-padding: 5px 10px;
+    -fx-cursor: hand;
+}
+
+.combo-box:hover {
+    -fx-background-color: linear-gradient(#ffe066, #ffcc00);
+    -fx-border-color: #ff9900;
+}
+
+.combo-box:focused {
+    -fx-background-color: linear-gradient(#ff9900, #ffcc00);
+    -fx-border-color: #ff6600;
+}
+
+/*##################################################################################################*/
+
+/*-------------------------------style_hbox-------------------------------*/
+
+.hbox {
+    -fx-padding: 15px;
+    -fx-spacing: 15px;
+    -fx-alignment: center;
+    -fx-background-color: linear-gradient(#000000, #1a1a1a);
+    -fx-border-color: #3333ff;
+    -fx-border-width: 5px;
+    -fx-border-radius: 10px;
+}
+
+/*##################################################################################################*/
+
+/*-------------------------------style_root-------------------------------*/
+
+.root {
+    -fx-background-color: #000000;
+}
+
+/*##################################################################################################*/
+
+/*-------------------------------style_labyrinth_area-------------------------------*/
+
+.labyrinth-area {
+    -fx-background-color: #000000;
+    -fx-border-color: #3333ff;
+    -fx-border-width: 5px;
+    -fx-border-radius: 10px;
+}
+
+Line {
+    -fx-stroke: #002aff;
+    -fx-stroke-width: 4px;
+    -fx-stroke-line-cap: round;
+}
+
+/*##################################################################################################*/
+
+
+
+/*##################################################################################################*/
+
+.text-field {
+    -fx-background-color: linear-gradient(#ffcc00, #ff9900);
+    -fx-text-fill: #000000;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-border-color: #ff6600;
+    -fx-border-width: 4px;
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-padding: 10px 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 3, 3);
+}
+
+.text-field:focused {
+    -fx-background-color: linear-gradient(#ffe066, #ffcc00);
+    -fx-border-color: #ff9900;
+}
