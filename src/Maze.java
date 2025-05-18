@@ -1,9 +1,8 @@
-
 import java.util.*;
 
 abstract class Maze {
     /*
-     * a maze is rectangular, has a seed for generating paths 
+     * a maze is rectangular, has a seed for generating paths
      * has a node array, and a list of all connected edges
      */
     private int size_x;
@@ -165,17 +164,16 @@ abstract class Maze {
         }
     }
 
-    public void displayTextMaze() { // transforme ta edge liste en visuel
+    public void displayTextMaze() {
         int rows = this.size_y * 2 + 1;
         int cols = this.size_x * 2 + 1;
-        String[][] display = new String[rows][cols]; // [y][x]
+        String[][] display = new String[rows][cols];
 
         // Initialise tout en mur
         for (int i = 0; i < rows; i++)
             for (int j = 0; j < cols; j++)
                 display[i][j] = "///";
 
-        //System.out.println("Taille node_array : " + node_array.length + " × " + node_array[0].length);
         // Place les noeuds
         for (int y = 0; y < this.size_y; y++) {
             for (int x = 0; x < this.size_x; x++) {
@@ -195,16 +193,18 @@ abstract class Maze {
             }
         }
 
-        // Ouvre les murs selon les edges
+        // Ouvre les murs selon les edges (corrigé)
         for (Edge e : edge_list) {
             Node[] ab = e.get_nodes();
             Node a = ab[0];
             Node b = ab[1];
             int[] coord_a = a.get_coordinates();
             int[] coord_b = b.get_coordinates();
-            int wall_x = coord_a[0] + coord_b[0] + 1;
-            int wall_y = coord_a[1] + coord_b[1] + 1;
-                display[wall_y][wall_x] = "   ";
+
+            int wall_x = Math.min(coord_a[0], coord_b[0]) * 2 + 1 + (coord_a[0] == coord_b[0] ? 0 : 1);
+            int wall_y = Math.min(coord_a[1], coord_b[1]) * 2 + 1 + (coord_a[1] == coord_b[1] ? 0 : 1);
+
+            display[wall_y][wall_x] = "   ";
         }
 
         // Affiche la matrice

@@ -1,6 +1,7 @@
+import java.util.Objects;
 
 class Node {
-    /* 
+    /*
      * depth will show the solving path.
      * pos_x and pos_y are the 2d coordinates of the node
      */
@@ -10,7 +11,7 @@ class Node {
     private int pos_x;
     private int pos_y;
 
-    
+
     public Node(){
         /*
          * init the node
@@ -97,11 +98,18 @@ class Node {
         return neighbours;
     }
 
-    /* 
-     * no function to set coordinates because once the coordinates 
+    /*
+     * Calcule la distance de Manhattan entre deux noeuds.
+     * d = |x1 - x2| + |y1 - y2|
+     * On va utiliser la distance de Manhattan pour la methode de resolution A*
+     */
+    public static int manhattanDistance(Node a, Node b) {
+        int[] aCoord = a.get_coordinates();
+        int[] bCoord = b.get_coordinates();
+        return Math.abs(aCoord[0] - bCoord[0]) + Math.abs(aCoord[1] - bCoord[1]);
+    }
+    /*
+     * no function to set coordinates because once the coordinates
      * are set we dont want them changing
      */
 }
-
-
-

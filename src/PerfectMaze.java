@@ -1,35 +1,19 @@
-
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
-
-
 
 class PerfectMaze extends Maze {
     private Node last_node;
 
-   /* public PerfectMaze(int x, int y, int seed, Node start, Node end){
-        /* 
-         * init the perfect maze
-         * same as the maze class but with a different seed
-         *
-        super(x, y, seed,start,end);
-        this.last_node = super.get_node(0, 0);
-        this.last_node.set_depth(0);
-    }
-
-    public PerfectMaze(int x, int y, int seed, int start_x, int start_y){
-        super(x, y, seed);
-        this.last_node = super.get_node(start_x, start_y);
-        this.last_node.set_depth(0);
-    }*/
-   public PerfectMaze(int x, int y, int seed, int start_x, int start_y, int end_x, int end_y) {
+    public PerfectMaze(int x, int y, int seed, int start_x, int start_y, int end_x, int end_y) {
         super(x, y, seed, start_x, start_y, end_x, end_y);
         this.last_node = super.get_node(start_x, start_y);
         this.last_node.set_depth(0);
     }
 
 
-public Node get_last_node(){
+    public Node get_last_node(){
         // self explainatory
         return this.last_node;
     }
@@ -87,8 +71,80 @@ public Node get_last_node(){
     }
 
     //mode complet pour aff direct
-    public void generate() {
+    public void generateBFS() {
         while (!this.bfs_next_step()) { // seulement quand c'est true tu affiches
+        }
+    }
+
+    public void generateKruskal() {
+        /*
+         * la methode c'est de mettre une profondeur unique a chaque node
+         * apres tant qu'il existe deux valeur de profondeur différentes on fait :
+         *      on prend un node on regarde un des voisins si ils ont une valeur diff on crée un edge entre eux et on uniformise la valeur des nodes de l'ilot
+         * et voila !
+         */
+        Node[][] grid = get_node_array();
+        int sizeX = getSize_x();
+        int sizeY = getSize_y();
+        Random rng = get_rng();
+
+        // chaque Node reçoit une profondeur unique
+        int ind = 0;
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                Node node = grid[x][y];
+                node.set_depth(ind++); // chaque node a une profondeur unique
+            }
+        }
+
+        // Répéter tant que plusieurs profondeurs différentes existent
+        boolean mazeComplete = false;
+        while (!mazeComplete) {
+            // Tirer un noeud aléatoire
+            int x = rng.nextInt(sizeX);
+            int y = rng.nextInt(sizeY);
+            Node current = grid[x][y];
+            int currentDepth = current.get_depth();
+
+            // Récupérer voisins adjacents
+            Node[] neighbors = current.get_neighbours(grid);
+            List<Node> neighborList = new ArrayList<>();
+            for (Node n : neighbors) {
+                if (n != null && n.get_depth() != currentDepth) {
+                    neighborList.add(n);
+                }
+            }
+
+            // Si on a des voisins de profondeur différente
+            if (!neighborList.isEmpty()) {
+                Node neighbor = neighborList.get(rng.nextInt(neighborList.size()));
+                int neighborDepth = neighbor.get_depth();
+
+                // Connecter les deux noeuds
+                add_edge(new Edge(current, neighbor));
+
+                // Uniformiser tous les noeuds de l'ancien îlot avec la nouvelle profondeur
+                for (int i = 0; i < sizeX; i++) {
+                    for (int j = 0; j < sizeY; j++) {
+                        if (grid[i][j].get_depth() == neighborDepth) {
+                            grid[i][j].set_depth(currentDepth);
+                        }
+                    }
+                }
+            }
+
+            // Vérifier si tous les noeuds ont la même profondeur
+            int firstDepth = grid[0][0].get_depth();
+            mazeComplete = true;
+            for (int i = 0; i < sizeX; i++) {
+                for (int j = 0; j < sizeY; j++) {
+                    if (grid[i][j].get_depth() != firstDepth) {
+                        mazeComplete = false;
+                        break;
+                    }
+                }
+                if (!mazeComplete) break;
+            }
         }
     }
 

@@ -1,22 +1,22 @@
 import java.util.*;
 
-public class ImperfectMaze extends PerfectMaze {
+public class ImperfectMazeKruskal extends PerfectMaze {
 
-    public ImperfectMaze(int x, int y, int seed, int start_x, int start_y, int end_x, int end_y) {
+    public ImperfectMazeKruskal(int x, int y, int seed, int start_x, int start_y, int end_x, int end_y) {
         super(x, y, seed, start_x, start_y, end_x, end_y);
-        this.generateBFS();
 
-        // Calcule nombre total de cases
+        // Génération parfaite avec Kruskal
+        this.generateKruskal();
+
         int maxWalls = getSize_x() * getSize_y();
 
-        // Définir une plage avec un minimum et un maximum différent
         int minModif = Math.max(1, maxWalls / 30);
-        int maxModif = minModif + Math.max(1, maxWalls / 30); // ici maxModif > minModif
+        int maxModif = minModif + Math.max(1, maxWalls / 30);
 
         Random rng = get_rng();
 
-        int toRemove = minModif + rng.nextInt(maxModif - minModif + 1);
-        int toAdd = minModif + rng.nextInt(maxModif - minModif + 1);
+        int toRemove = minModif + rng.nextInt(maxModif - minModif + 1); // murs à casser = ajouter des cycles
+        int toAdd = minModif + rng.nextInt(maxModif - minModif + 1);    // murs à rajouter
 
         System.out.println("\u001B[33mSuppression aléatoire de " + toRemove + " murs.\u001B[0m");
         removeRandomWalls(toRemove);
@@ -25,6 +25,7 @@ public class ImperfectMaze extends PerfectMaze {
         addRandomWalls(toAdd);
     }
 
+    // Supprime des murs (ajoute des arêtes) uniquement entre voisins non connectés
     public void removeRandomWalls(int max) {
         int removed = 0;
         Random rng = get_rng();
@@ -38,26 +39,29 @@ public class ImperfectMaze extends PerfectMaze {
 
             Node[] neighbors = node.get_neighbours(get_node_array());
             List<Node> neighborList = new ArrayList<>();
-            for (Node n : neighbors) {
-                if (n != null) neighborList.add(n);
-            }
-            Collections.shuffle(neighborList, rng);
 
-            boolean addedEdge = false;
-            for (Node neighbor : neighborList) {
-                if (!edgeExists(node, neighbor)) {
-                    addEdgeBetween(node, neighbor);
-                    removed++;
-                    addedEdge = true;
-                    break;
+            // On ne garde que les voisins adjacents sans arête (mur existant)
+            for (Node n : neighbors) {
+                if (n != null && !edgeExists(node, n)) {
+                    neighborList.add(n);
                 }
             }
-            if (!addedEdge) {
-                // continue
+
+            if (neighborList.isEmpty()) {
+                continue; // pas de mur à casser ici
+            }
+
+            Collections.shuffle(neighborList, rng);
+
+            for (Node neighbor : neighborList) {
+                addEdgeBetween(node, neighbor); // casse un mur
+                removed++;
+                break;
             }
         }
     }
 
+    // Ajoute des murs (supprime des arêtes) uniquement entre voisins connectés
     public void addRandomWalls(int max) {
         int added = 0;
         Random rng = get_rng();
@@ -71,26 +75,29 @@ public class ImperfectMaze extends PerfectMaze {
 
             Node[] neighbors = node.get_neighbours(get_node_array());
             List<Node> neighborList = new ArrayList<>();
-            for (Node n : neighbors) {
-                if (n != null) neighborList.add(n);
-            }
-            Collections.shuffle(neighborList, rng);
 
-            boolean removedEdge = false;
-            for (Node neighbor : neighborList) {
-                if (edgeExists(node, neighbor)) {
-                    removeEdgeBetween(node, neighbor);
-                    added++;
-                    removedEdge = true;
-                    break;
+            // On ne garde que les voisins adjacents avec arête (passage)
+            for (Node n : neighbors) {
+                if (n != null && edgeExists(node, n)) {
+                    neighborList.add(n);
                 }
             }
-            if (!removedEdge) {
-                // continue
+
+            if (neighborList.isEmpty()) {
+                continue; // pas de mur à ajouter ici
+            }
+
+            Collections.shuffle(neighborList, rng);
+
+            for (Node neighbor : neighborList) {
+                removeEdgeBetween(node, neighbor); // pose un mur
+                added++;
+                break;
             }
         }
     }
 
+    // Supprime une arête (mur)
     public void removeEdgeBetween(Node a, Node b) {
         get_edge_list().removeIf(e -> e.connected(a, b));
 
@@ -102,6 +109,7 @@ public class ImperfectMaze extends PerfectMaze {
         }
     }
 
+    // Ajoute une arête (casser un mur)
     public void addEdgeBetween(Node a, Node b) {
         int dx = Math.abs(a.get_coordinates()[0] - b.get_coordinates()[0]);
         int dy = Math.abs(a.get_coordinates()[1] - b.get_coordinates()[1]);
@@ -110,12 +118,12 @@ public class ImperfectMaze extends PerfectMaze {
             return;
         }
         if (edgeExists(a, b)) {
-            System.out.println("Erreur : Arête déjà existante, impossible d'ajouter un mur.");
-            return;
+            return; // arête déjà existante
         }
         add_edge(new Edge(a, b));
     }
 
+    // Vérifie si une arête existe entre deux noeuds
     private boolean edgeExists(Node a, Node b) {
         for (Edge e : get_edge_list()) {
             if (e.connected(a, b)) {
