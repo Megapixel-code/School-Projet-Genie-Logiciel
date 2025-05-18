@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 class PerfectMaze extends Maze {
     private Node last_node;
@@ -70,7 +67,7 @@ class PerfectMaze extends Maze {
         return false;
     }
 
-    //mode complet pour aff direct
+    //mode complet pour bfs
     public void generateBFS() {
         while (!this.bfs_next_step()) { // seulement quand c'est true tu affiches
         }

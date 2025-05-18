@@ -65,9 +65,6 @@ class Node {
         return this.mark_Solver;
     }
 
-    public boolean hasMark() {
-        return this.mark_Solver != null;
-    }
 
     public Node[] get_neighbours(Node[][] grille) {
         // on return un tableau de node avec tous les voisins dispo
@@ -108,6 +105,7 @@ class Node {
         int[] bCoord = b.get_coordinates();
         return Math.abs(aCoord[0] - bCoord[0]) + Math.abs(aCoord[1] - bCoord[1]);
     }
+
     /*
      * no function to set coordinates because once the coordinates
      * are set we dont want them changing

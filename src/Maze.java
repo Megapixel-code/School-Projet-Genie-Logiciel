@@ -9,15 +9,14 @@ abstract class Maze {
     private int size_y;
     private int seed;
     private Random rng;
+
     private Node[][] node_array;
     private ArrayList<Edge> edge_list = new ArrayList<Edge>();
 
     private Node startNode;
     private Node endNode;
 
-    //adjacence
     private Map<Node, List<Node>> adjacencyList = new HashMap<>();
-
 
 
     public Maze(int x, int y, int seed){
@@ -38,6 +37,7 @@ abstract class Maze {
             }
         }
     }
+
     public Maze(int x, int y, int seed, int start_x, int start_y, int end_x, int end_y) {
         this(x, y, seed);
         if (start_x < 0 || start_x >= this.size_x || start_y < 0 || start_y >= this.size_y) {
@@ -56,7 +56,7 @@ abstract class Maze {
         this.startNode = this.node_array[start_x][start_y];
         this.endNode = this.node_array[end_x][end_y];
     }
-    // donc on doit faire Node start = new Node (x,y); puis creer le laby
+
 
     public Map<Node, List<Node>> get_adjacency_list() {
         return this.adjacencyList;
@@ -93,7 +93,6 @@ abstract class Maze {
     public Node[][] get_node_array() {
         return this.node_array;
     }
-
 
     public int[] get_size(){
         // retruns tuple representing the size of maze
@@ -182,9 +181,9 @@ abstract class Maze {
                 int disp_x = x * 2 + 1;
 
                 if (sommet.equals(this.startNode)) {
-                    display[disp_y][disp_x] = "\u001B[32m E \u001B[0m";
+                    display[disp_y][disp_x] = "\u001B[32m S \u001B[0m";
                 } else if (sommet.equals(this.endNode)) {
-                    display[disp_y][disp_x] = "\u001B[31m S \u001B[0m";
+                    display[disp_y][disp_x] = "\u001B[31m E \u001B[0m";
                 } else if (sommet.isPath()) {
                     display[disp_y][disp_x] = "\u001B[35m " + sommet.getMark() + " \u001B[0m";
                 } else {
@@ -212,6 +211,102 @@ abstract class Maze {
             for (String c : row)
                 System.out.print(c);
             System.out.println();
+        }
+        clearMarks();
+    }
+
+    // pour génération du labyrinthe imparfait ET modification locale du laby
+    public boolean edgeExists(Node a, Node b) {
+        for (Edge e : get_edge_list()) {
+            if (e.connected(a, b)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeEdgeBetween(Node a, Node b) {
+        get_edge_list().removeIf(e -> e.connected(a, b));
+
+        if (get_adjacency_list().containsKey(a)) {
+            get_adjacency_list().get(a).remove(b);
+        }
+        if (get_adjacency_list().containsKey(b)) {
+            get_adjacency_list().get(b).remove(a);
+        }
+    }
+
+    public void addEdgeBetween(Node a, Node b) {
+        int dx = Math.abs(a.get_coordinates()[0] - b.get_coordinates()[0]);
+        int dy = Math.abs(a.get_coordinates()[1] - b.get_coordinates()[1]);
+        if (dx + dy != 1) {
+            System.out.println("Erreur : Les noeuds ne sont pas adjacents, impossible d'ajouter un mur.");
+            return;
+        }
+        if (edgeExists(a, b)) {
+            System.out.println("Erreur : Arête déjà existante, impossible d'ajouter un mur.");
+            return;
+        }
+        add_edge(new Edge(a, b));
+        //pour resoudre pb kruskal :
+        edge_list.add(new Edge(a, b)); // ajouter au graphe
+        adjacencyList.get(a).add(b); // mettre à jour la connectivité
+        adjacencyList.get(b).add(a);
+    }
+
+    public void removeRandomWalls(int max) {
+        int removed = 0;
+        Random rng = get_rng();
+        int sizeX = getSize_x();
+        int sizeY = getSize_y();
+
+        while (removed < max) {
+            int x = rng.nextInt(sizeX);
+            int y = rng.nextInt(sizeY);
+            Node node = get_node(x, y);
+
+            Node[] neighbors = node.get_neighbours(get_node_array());
+            List<Node> neighborList = new ArrayList<>();
+            for (Node n : neighbors) {
+                if (n != null) neighborList.add(n);
+            }
+            Collections.shuffle(neighborList, rng);
+
+            for (Node neighbor : neighborList) {
+                if (!edgeExists(node, neighbor)) {
+                    addEdgeBetween(node, neighbor);
+                    removed++;
+                    break;
+                }
+            }
+        }
+    }
+
+    public void addRandomWalls(int max) {
+        int added = 0;
+        Random rng = get_rng();
+        int sizeX = getSize_x();
+        int sizeY = getSize_y();
+
+        while (added < max) {
+            int x = rng.nextInt(sizeX);
+            int y = rng.nextInt(sizeY);
+            Node node = get_node(x, y);
+
+            Node[] neighbors = node.get_neighbours(get_node_array());
+            List<Node> neighborList = new ArrayList<>();
+            for (Node n : neighbors) {
+                if (n != null) neighborList.add(n);
+            }
+            Collections.shuffle(neighborList, rng);
+
+            for (Node neighbor : neighborList) {
+                if (edgeExists(node, neighbor)) {
+                    removeEdgeBetween(node, neighbor);
+                    added++;
+                    break;
+                }
+            }
         }
     }
 }

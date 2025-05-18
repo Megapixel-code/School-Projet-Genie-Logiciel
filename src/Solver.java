@@ -213,4 +213,135 @@ public class Solver {
         // Aucun chemin trouvé
         return false;
     }
+
+    //WALL FOLLOWER :
+    //Right
+    public static boolean wallFollowerRight(Maze maze) {
+        Node start = maze.getStartNode();
+        Node end = maze.getEndNode();
+
+        // Directions : Haut(0), Droite(1), Bas(2), Gauche(3)
+        int[][] direction = {
+                {-1, 0},
+                {0, 1},
+                {1, 0},
+                {0, -1}
+        };
+
+        Node current = start;
+        int dir = 1; // // on commence en regardant vers la droite
+
+        Map<Node, Node> parent = new HashMap<>();
+        Set<Node> visited = new HashSet<>();
+        visited.add(current);
+
+        current.setPath(true);
+        current.setMark("R");
+
+        int maxSteps = maze.get_node_array().length * maze.get_node_array()[0].length * 10; // limite de sécurité pour éviter boucle infini
+        int steps = 0;
+
+        while (!current.equals(end) && steps < maxSteps) {
+            steps++;
+
+            boolean moved = false;
+
+            // On teste en priorité : droite, avant, gauche, arrière
+            for (int i = 0; i < 4; i++) {
+                int tryDirection = (dir + 1 + 4 - i) % 4; // +1 car 1 = droite
+                int nx = current.get_coordinates()[0] + direction[tryDirection][0];
+                int ny = current.get_coordinates()[1] + direction[tryDirection][1];
+
+                if (nx >= 0 && ny >= 0 && nx < maze.get_node_array().length && ny < maze.get_node_array()[0].length) {
+                    Node neighbor = maze.get_node_array()[nx][ny];
+                    if (maze.get_adjacency_list().getOrDefault(current, new ArrayList<>()).contains(neighbor)) {
+                        if (!visited.contains(neighbor)) {
+                            parent.put(neighbor, current);
+                        }
+                        current = neighbor;
+                        visited.add(current);
+                        dir = tryDirection;
+
+                        // marquage immédiat
+                        current.setPath(true);
+                        current.setMark("R");
+
+                        moved = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!moved) {
+                return false; // bloqué
+            }
+        }
+
+        return current.equals(end);
+    }
+
+
+    //Left
+    public static boolean wallFollowerLeft(Maze maze) {
+        Node start = maze.getStartNode();
+        Node end = maze.getEndNode();
+
+        // Directions : Haut(0), Droite(1), Bas(2), Gauche(3)
+        int[][] direction = {
+                {-1, 0},
+                {0, 1},
+                {1, 0},
+                {0, -1}
+        };
+
+        Node current = start;
+        int dir = 3; // direction initiale : droite
+
+        Map<Node, Node> parent = new HashMap<>();
+        Set<Node> visited = new HashSet<>();
+        visited.add(current);
+
+        current.setPath(true);
+        current.setMark("L");
+
+        int maxSteps = maze.get_node_array().length * maze.get_node_array()[0].length * 10; // limite de sécurité pour éviter boucle infini
+        int steps = 0;
+
+        while (!current.equals(end) && steps < maxSteps) {
+            steps++;
+
+            boolean moved = false;
+
+            // Stratégie mur à gauche : gauche, avant, droite, arrière
+            for (int i = 0; i < 4; i++) {
+                int tryDir = (dir + 3 + i) % 4; // + 3 car 3 = gauche
+                int nx = current.get_coordinates()[0] + direction[tryDir][0];
+                int ny = current.get_coordinates()[1] + direction[tryDir][1];
+
+                if (nx >= 0 && ny >= 0 && nx < maze.get_node_array().length && ny < maze.get_node_array()[0].length) {
+                    Node neighbor = maze.get_node_array()[nx][ny];
+                    if (maze.get_adjacency_list().getOrDefault(current, new ArrayList<>()).contains(neighbor)) {
+                        if (!visited.contains(neighbor)) {
+                            parent.put(neighbor, current);
+                        }
+                        current = neighbor;
+                        visited.add(current);
+                        dir = tryDir;
+
+                        current.setPath(true);
+                        current.setMark("L");
+
+                        moved = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!moved) {
+                return false; // bloqué
+            }
+        }
+
+        return current.equals(end);
+    }
 }
