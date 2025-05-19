@@ -1,3 +1,6 @@
+
+
+
 class Edge {
     /*
      * an edge is a link between two nodes, in the maze
@@ -17,9 +20,9 @@ class Edge {
         int[] coords_n_1 = n_1.get_coordinates();
         int[] coords_n_2 = n_2.get_coordinates();
         if ((coords_n_1[0] == coords_n_2[0] && coords_n_1[1] == coords_n_2[1] + 1)||
-                (coords_n_1[0] == coords_n_2[0] && coords_n_1[1] == coords_n_2[1] - 1)||
-                (coords_n_1[1] == coords_n_2[1] && coords_n_1[0] == coords_n_2[0] + 1)||
-                (coords_n_1[1] == coords_n_2[1] && coords_n_1[0] == coords_n_2[0] - 1)){
+            (coords_n_1[0] == coords_n_2[0] && coords_n_1[1] == coords_n_2[1] - 1)||
+            (coords_n_1[1] == coords_n_2[1] && coords_n_1[0] == coords_n_2[0] + 1)||
+            (coords_n_1[1] == coords_n_2[1] && coords_n_1[0] == coords_n_2[0] - 1)){
             /*
              * true if the node are next to each other and
              * the two node have diferent coordinates
@@ -28,7 +31,7 @@ class Edge {
             this.node_2 = n_2;
         }
         else {
-            System.out.println("ERROR, YOU TRIED TO LINK INCOMPATIBLE NODES, SEE EDGE CLASS");
+            throw new IllegalArgumentException("ERROR, YOU TRIED TO LINK INCOMPATIBLE NODES, SEE EDGE CLASS");
         }
     }
 
@@ -46,3 +49,4 @@ class Edge {
     }
 
 }
+

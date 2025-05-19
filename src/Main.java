@@ -1,6 +1,5 @@
 class Main {
     public static void main(String[] args) {
-
        //Initialisation parfait
         PerfectMaze mazePerfect = new PerfectMaze(20, 8, 600, 15, 2, 10, 5);
         mazePerfect.generateBFS();

@@ -1,14 +1,14 @@
 import java.util.*;
 
+
 class PerfectMaze extends Maze {
     private Node last_node;
 
-    public PerfectMaze(int x, int y, int seed, int start_x, int start_y, int end_x, int end_y) {
-        super(x, y, seed, start_x, start_y, end_x, end_y);
-        this.last_node = super.get_node(start_x, start_y);
+    public PerfectMaze(int x, int y, int seed, int[] start, int[] end) {
+        super(x, y, seed, start[0], start[1], end[0], end[1]);
+        this.last_node = super.get_node(start[0], start[1]);
         this.last_node.set_depth(0);
     }
-
 
     public Node get_last_node(){
         // self explainatory
@@ -34,7 +34,8 @@ class PerfectMaze extends Maze {
         int nb_available_nodes = 0;
         for (int k = 0; k < 4; k++){
             if ((nodes_around[k] != null) && (nodes_around[k].get_depth() == -1)){
-                nodes_around[nb_available_nodes++] = nodes_around[k];
+                nodes_around[nb_available_nodes] = nodes_around[k];
+                nb_available_nodes++;
             }
         }
         Node[] availables_nodes = Arrays.copyOf(nodes_around, nb_available_nodes);
@@ -58,7 +59,7 @@ class PerfectMaze extends Maze {
         else {
             // if there is available nodes around
             // chose a available node around randomly then create edge between the curent node and the random node
-            int random_nb = this.get_rng().nextInt(nb_available_nodes);
+            int random_nb = this.rng.nextInt(nb_available_nodes);
             Edge new_edge = new Edge(this.last_node, availables_nodes[random_nb]);
             this.add_edge(new_edge);
             this.last_node = availables_nodes[random_nb];
@@ -66,7 +67,6 @@ class PerfectMaze extends Maze {
         }
         return false;
     }
-
     //mode complet pour bfs
     public void generateBFS() {
         while (!this.bfs_next_step()) { // seulement quand c'est true tu affiches

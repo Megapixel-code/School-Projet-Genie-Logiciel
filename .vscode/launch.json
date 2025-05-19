@@ -1,0 +1,40 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "LabyrinthApp",
+            "request": "launch",
+            "vmArgs": "--module-path ../School-Projet-Genie-Logiciel/javafx-sdk-17.0.15/lib --add-modules javafx.controls",
+            "mainClass": "LabyrinthApp",
+            "projectName": "School-Projet-Genie-Logiciel-1_50480857"
+        },
+        {
+            "type": "java",
+            "name": "LabyrinthApp",
+            "request": "launch",
+            "vmArgs": "--module-path ../School-Projet-Genie-Logiciel/javafx-sdk-17.0.15/lib --add-modules javafx.controls",
+            "mainClass": "LabyrinthApp",
+            "projectName": "School-Projet-Genie-Logiciel_43bf1373"
+        },
+        {
+            "type": "java",
+            "name": "LabyrinthApp",
+            "request": "launch",
+
+            "vmArgs": "--module-path ../javafx-sdk-17.0.15/lib --add-modules javafx.*",
+
+            "mainClass": "LabyrinthApp",
+            "projectName": "School-Projet-Genie-Logiciel_5e6933d3"
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        }
+    ]
+}

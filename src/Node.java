@@ -11,7 +11,6 @@ class Node {
     private int pos_x;
     private int pos_y;
 
-
     public Node(){
         /*
          * init the node
@@ -68,7 +67,7 @@ class Node {
 
     public Node[] get_neighbours(Node[][] grille) {
         // on return un tableau de node avec tous les voisins dispo
-        //en parametre on met node_array et on utilise a.get_...(mazetest.node_array);
+        // en parametre on met node_array et on utilise a.get_...(mazetest.node_array);
 
         int[] coord = this.get_coordinates();
         int x = coord[0];

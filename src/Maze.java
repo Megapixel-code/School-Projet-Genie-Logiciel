@@ -38,23 +38,23 @@ abstract class Maze {
         }
     }
 
-    public Maze(int x, int y, int seed, int start_x, int start_y, int end_x, int end_y) {
+    public Maze(int x, int y, int seed, int[] start, int[] end) {
         this(x, y, seed);
-        if (start_x < 0 || start_x >= this.size_x || start_y < 0 || start_y >= this.size_y) {
+        if (start[0] < 0 || start[0] >= this.size_x || start[1] < 0 || start[1] >= this.size_y) {
             throw new IllegalArgumentException("Start invalid !");
         }
 
-        if (end_x < 0 || end_x >= this.size_x || end_y < 0 || end_y >= this.size_y) {
+        if (end[0] < 0 || end[0] >= this.size_x || end[1] < 0 || end[1] >= this.size_y) {
             throw new IllegalArgumentException("End invalid !");
         }
 
 
-        if (start_x == end_x && start_y == end_y) {
+        if (start[0] == end[0] && start[1] == end[1]) {
             throw new IllegalArgumentException("Start and end = same positions !");
         }
 
-        this.startNode = this.node_array[start_x][start_y];
-        this.endNode = this.node_array[end_x][end_y];
+        this.startNode = this.node_array[start[0]][start[1]];
+        this.endNode = this.node_array[end[0]][end[1]];
     }
 
 
@@ -76,10 +76,6 @@ abstract class Maze {
 
     public Node getEndNode() {
         return this.endNode;
-    }
-
-    public Random get_rng(){
-        return this.rng;
     }
 
     public int getSize_x(){
@@ -105,6 +101,22 @@ abstract class Maze {
         return this.seed;
     }
 
+    public Node get_start_node(){
+        /*
+         * returns the start node of the maze
+         * used for generating the maze
+         */
+        return this.start_node;
+    }
+
+    public Node get_end_node(){
+        /*
+         * returns the end node of the maze
+         * used for generating the maze
+         */
+        return this.end_node;
+    }
+  
     public Node get_node(int x, int y){
         /*
          * returns the node at the given coordinates
@@ -130,13 +142,13 @@ abstract class Maze {
          */
         for (int i = 0; i < this.edge_list.size(); i++){
             if (this.edge_list.get(i).get_nodes()[0].equals(a) && this.edge_list.get(i).get_nodes()[1].equals(b)){
-                return 0;
+                return i;
             }
             else if (this.edge_list.get(i).get_nodes()[0].equals(b) && this.edge_list.get(i).get_nodes()[1].equals(a)){
-                return 0;
+                return i;
             }
         }
-        return 1;
+        return -1;
     }
 
     public void add_edge(Edge edge) {
@@ -161,6 +173,36 @@ abstract class Maze {
                 node.setMark(null);
             }
         }
+
+    public Edge get_edge(Node a, Node b){
+        /*
+         * returns the edge at the given index
+         * used for generating the maze
+         */
+        int i = in_edge_list(a, b);
+        if (i == -1){
+            return null;
+        }
+        else if (i >= this.edge_list.size()){
+            return null;
+        }
+        return this.edge_list.get(i);
+    }
+
+    public void add_edge(Edge edge){
+        /*
+         * add an edge to the list of edges
+         * used for generating the maze
+         */
+        this.edge_list.add(edge);
+    }
+
+    public void remove_edge(Edge edge){
+        /*
+         * remove an edge from the list of edges
+         * used for generating the maze
+         */
+        this.edge_list.remove(edge);
     }
 
     public void displayTextMaze() {
@@ -193,6 +235,7 @@ abstract class Maze {
         }
 
         // Ouvre les murs selon les edges (corrigé)
+
         for (Edge e : edge_list) {
             Node[] ab = e.get_nodes();
             Node a = ab[0];
@@ -205,7 +248,6 @@ abstract class Maze {
 
             display[wall_y][wall_x] = "   ";
         }
-
         // Affiche la matrice
         for (String[] row : display) {
             for (String c : row)
