@@ -13,6 +13,9 @@ import javafx.scene.Group;
 import javafx.geometry.Pos; 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+
+import java.util.Random;
+
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
@@ -69,12 +72,13 @@ public class LabyrinthApp extends Application {
         Button generatePerfecLabyrinth = new Button("Generate Perfect Labyrinth");
         generatePerfecLabyrinth.setOnAction(e -> {
             generatedLabyrinth = "Perfect Labyrinth"; 
-            System.out.println("Generating perfect labyrinth");
-            Node startNode = new Node(0, 0);
-            Node endNode = new Node(mazeWidth[0] - 1, mazeHeight[0] - 1);   // Faire un bouton pour choisir le début et la fin du labyrinthe
-            PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], 5, startNode, endNode);
-            //GenerateStepByStep(labyrinthArea, maze);
-            GenerateComplete(labyrinthArea, maze);
+            System.out.println("Generating perfect labyrinth"); 
+            int[] end = {mazeWidth[0]-1, mazeHeight[0]-1};
+            int[] start = {0, 0};
+            Random random = new Random();
+            PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], random.nextInt(), start, end);
+            GenerateStepByStep(labyrinthArea, maze);
+            //GenerateComplete(labyrinthArea, maze);
         });
 
         // ############################################### btn 2 ###############################################
@@ -144,7 +148,7 @@ public class LabyrinthApp extends Application {
     // Code Thomas ---------------------
 
     public void GenerateStepByStep(Pane labyrinthArea, PerfectMaze maze) {
-        PauseTransition pause = new PauseTransition(Duration.seconds(0.25));
+        PauseTransition pause = new PauseTransition(Duration.seconds(0.05));
         pause.setOnFinished(event -> {
             boolean end = maze.bfs_next_step(); 
             generateMaze(labyrinthArea, maze); 

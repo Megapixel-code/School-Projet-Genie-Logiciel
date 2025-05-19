@@ -36,6 +36,8 @@ abstract class Maze {
                 this.node_array[i][j] = node;
             }
         }
+        this.startNode = this.node_array[0][0];
+        this.endNode = this.node_array[x-1][y-1];
     }
 
     public Maze(int x, int y, int seed, int[] start, int[] end) {
