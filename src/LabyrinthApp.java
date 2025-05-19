@@ -45,7 +45,8 @@ public class LabyrinthApp extends Application {
 
         Button validateSizeButton = new Button("Valdate Size");
 
-        final int[] mazeWidth = {50};  
+        final int[] mazeWidth = {50};
+
         final int[] mazeHeight = {30};
 
         validateSizeButton.setOnAction(e -> {
