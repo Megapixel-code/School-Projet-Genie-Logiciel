@@ -2,12 +2,12 @@ import java.util.*;
 
 public class ImperfectMaze extends PerfectMaze {
 
-    public ImperfectMaze(int x, int y, int seed, int start_x, int start_y, int end_x, int end_y) {
-        super(x, y, seed, start_x, start_y, end_x, end_y);
+    public ImperfectMaze(int x, int y, int seed, int[] start, int[] end) {
+        super(x, y, seed, start, end);
         this.generateBFS();
 
         // Calcule nombre total de cases
-        int maxWalls = this.size_x * this.size_y;
+        int maxWalls = get_size()[0] * get_size()[1];
 
         // Définir une plage
         int minModif = Math.max(1, maxWalls / 30);

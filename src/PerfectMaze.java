@@ -5,7 +5,7 @@ class PerfectMaze extends Maze {
     private Node last_node;
 
     public PerfectMaze(int x, int y, int seed, int[] start, int[] end) {
-        super(x, y, seed, start[0], start[1], end[0], end[1]);
+        super(x, y, seed, start, end);
         this.last_node = super.get_node(start[0], start[1]);
         this.last_node.set_depth(0);
     }
@@ -59,7 +59,7 @@ class PerfectMaze extends Maze {
         else {
             // if there is available nodes around
             // chose a available node around randomly then create edge between the curent node and the random node
-            int random_nb = this.rng.nextInt(nb_available_nodes);
+            int random_nb = this.get_rng().nextInt(nb_available_nodes);
             Edge new_edge = new Edge(this.last_node, availables_nodes[random_nb]);
             this.add_edge(new_edge);
             this.last_node = availables_nodes[random_nb];
@@ -81,8 +81,8 @@ class PerfectMaze extends Maze {
          * et voila !
          */
         Node[][] grid = get_node_array();
-        int sizeX = getSize_x();
-        int sizeY = getSize_y();
+        int sizeX = get_size()[0];
+        int sizeY = get_size()[1];
         Random rng = get_rng();
 
         // chaque Node reçoit une profondeur unique
