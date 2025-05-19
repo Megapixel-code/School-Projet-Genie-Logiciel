@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Random;
 
 abstract class Maze {
     /*
@@ -8,12 +9,14 @@ abstract class Maze {
      */
     private int size_x;
     private int size_y;
-    private int seed;
+    private int seed = new Random().nextInt(1000000);
     private Node[][] node_array;
     private ArrayList<Edge> edge_list = new ArrayList<Edge>();    
+    private Node start_node = new Node();
+    private Node end_node = new Node();
 
 
-    public Maze(int x, int y, int seed){
+    public Maze(int x, int y, int seed, Node start_node, Node end_node){
         /*
          * init the maze
          * size_x and size_y are the dimensions of the maze
@@ -29,6 +32,8 @@ abstract class Maze {
                 this.node_array[i][j] = node;
             }
         }
+        this.start_node = start_node;
+        this.end_node = end_node;
     }
 
     public int[] get_size(){
@@ -40,6 +45,22 @@ abstract class Maze {
     public int get_seed(){
         // self explainatory
         return this.seed;
+    }
+
+    public Node get_start_node(){
+        /*
+         * returns the start node of the maze
+         * used for generating the maze
+         */
+        return this.start_node;
+    }
+
+    public Node get_end_node(){
+        /*
+         * returns the end node of the maze
+         * used for generating the maze
+         */
+        return this.end_node;
     }
 
     public Node get_node(int x, int y){
@@ -66,13 +87,28 @@ abstract class Maze {
          */
         for (int i = 0; i < this.edge_list.size(); i++){
             if (this.edge_list.get(i).get_nodes()[0].equals(a) && this.edge_list.get(i).get_nodes()[1].equals(b)){
-                return 0;
+                return i;
             }
             else if (this.edge_list.get(i).get_nodes()[0].equals(b) && this.edge_list.get(i).get_nodes()[1].equals(a)){
-                return 0;
+                return i;
             }
         }
-        return 1;
+        return -1;
+    }
+
+    public Edge get_edge(Node a, Node b){
+        /*
+         * returns the edge at the given index
+         * used for generating the maze
+         */
+        int i = in_edge_list(a, b);
+        if (i == -1){
+            return null;
+        }
+        else if (i >= this.edge_list.size()){
+            return null;
+        }
+        return this.edge_list.get(i);
     }
 
     public void add_edge(Edge edge){
@@ -81,6 +117,14 @@ abstract class Maze {
          * used for generating the maze
          */
         this.edge_list.add(edge);
+    }
+
+    public void remove_edge(Edge edge){
+        /*
+         * remove an edge from the list of edges
+         * used for generating the maze
+         */
+        this.edge_list.remove(edge);
     }
 
     public void displayTextMaze() {

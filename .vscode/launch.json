@@ -4,7 +4,14 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
+        {
+            "type": "java",
+            "name": "LabyrinthApp",
+            "request": "launch",
+            "vmArgs": "--module-path ../School-Projet-Genie-Logiciel/javafx-sdk-17.0.15/lib --add-modules javafx.controls",
+            "mainClass": "LabyrinthApp",
+            "projectName": "School-Projet-Genie-Logiciel-1_50480857"
+        },
         {
             "type": "java",
             "name": "LabyrinthApp",
