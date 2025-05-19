@@ -13,7 +13,8 @@ import javafx.scene.Group;
 import javafx.geometry.Pos; 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.ListChangeListener.Change;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 
 public class LabyrinthApp extends Application { 
@@ -47,7 +48,7 @@ public class LabyrinthApp extends Application {
         heightField.setPromptText("Hauteur");
         heightField.setMaxWidth(70);
 
-        Button validateSizeButton = new Button("Valdate Size");
+        Button validateSizeButton = new Button("Validate Size");
 
         final int[] mazeWidth = {15};  
         final int[] mazeHeight = {15};
@@ -70,10 +71,9 @@ public class LabyrinthApp extends Application {
             System.out.println("Generating perfect labyrinth");
             Node startNode = new Node(0, 0);
             Node endNode = new Node(mazeWidth[0] - 1, mazeHeight[0] - 1);   // Faire un bouton pour choisir le début et la fin du labyrinthe
-            PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], 5, startNode, endNode); // Exemple size faudrait rajouter une interface pour choisir la taille | Done !
-            while (!(maze.bfs_next_step())) {
-            }
-            generateMaze(labyrinthArea, maze);
+            PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], 5, startNode, endNode);
+            //GenerateStepByStep(labyrinthArea, maze);
+            GenerateComplete(labyrinthArea, maze);
         });
 
         // ############################################### btn 2 ###############################################
@@ -141,6 +141,24 @@ public class LabyrinthApp extends Application {
     }
 
     // Code Thomas ---------------------
+
+    public void GenerateStepByStep(Pane labyrinthArea, PerfectMaze maze) {
+        PauseTransition pause = new PauseTransition(Duration.seconds(0.25));
+        pause.setOnFinished(event -> {
+            boolean end = maze.bfs_next_step(); 
+            generateMaze(labyrinthArea, maze); 
+    
+            if (!end) {
+                GenerateStepByStep(labyrinthArea, maze); 
+            }
+        });
+        pause.play(); 
+    }
+
+    public void GenerateComplete(Pane labyrinthArea, PerfectMaze maze) {
+        while (!(maze.bfs_next_step())) {}
+        generateMaze(labyrinthArea, maze); 
+    }
 
     public int set_cell_size(Maze maze){
         int X = 1100 / maze.get_size()[0];
