@@ -53,6 +53,7 @@ public class LabyrinthApp extends Application {
         final int[] mazeWidth = {15};  
         final int[] mazeHeight = {15};
 
+
         validateSizeButton.setOnAction(e -> {
             try {
                 mazeWidth[0] = Integer.parseInt(widthField.getText());
