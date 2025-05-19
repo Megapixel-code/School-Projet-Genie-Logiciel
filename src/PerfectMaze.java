@@ -36,7 +36,8 @@ class PerfectMaze extends Maze {
         nodes_around[2] = super.get_node(current_pos[0], current_pos[1]+1);
         nodes_around[3] = super.get_node(current_pos[0], current_pos[1]-1);
 
-        // put available node in a array, available nodes exists and are not yet visited (depth == -1)
+        // put available node in a array
+        // available nodes exists and are not yet visited (depth == -1)
         int nb_available_nodes = 0;
         for (int k = 0; k < 4; k++){
             if ((nodes_around[k] != null) && (nodes_around[k].get_depth() == -1)){
@@ -47,10 +48,11 @@ class PerfectMaze extends Maze {
 
         if (nb_available_nodes == 0){
             if (current_depth == 0){
-                return true;
                 // program finished
+                return true;
             }
             else {
+                // go back one node, the node with a current_depth-1
                 for (Node n : nodes_around) {
                     if (n != null){
                         if (n.get_depth() == current_depth-1){
@@ -58,10 +60,10 @@ class PerfectMaze extends Maze {
                         }
                     }
                 }
-                // go back one node
             }
         }
         else {
+            // if there is available nodes around
             // chose a available node around randomly then create edge between the curent node and the random node
             int random_nb = new Random().nextInt(nb_available_nodes);
             Edge new_edge = new Edge(this.last_node, availables_nodes[random_nb]);
