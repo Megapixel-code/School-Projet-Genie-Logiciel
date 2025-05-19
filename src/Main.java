@@ -1,9 +1,7 @@
 class Main {
     public static void main(String[] args) {
-        //Initialisation parfait
-        int[] start_coord = {15, 2};
-        int[] end_coord = {10, 5};
-        PerfectMaze mazePerfect = new PerfectMaze(20, 8, 600, start_coord, end_coord);
+       //Initialisation parfait
+        PerfectMaze mazePerfect = new PerfectMaze(20, 8, 600, 15, 2, 10, 5);
         mazePerfect.generateBFS();
         System.out.print("\u001B[33mGeneration Perfect !\n\u001B[0m");
         mazePerfect.displayTextMaze();
@@ -73,7 +71,7 @@ class Main {
 
         // Initialisation Imparfait
         System.out.print("\u001B[33mGeneration Imperfect !\n\u001B[0m");
-        ImperfectMaze mazeImperfect = new ImperfectMaze(20, 8, 600, start_coord, end_coord);
+        ImperfectMaze mazeImperfect = new ImperfectMaze(20, 8, 600, 15, 2, 10, 5);
         mazeImperfect.displayTextMaze();
         System.out.println("\n");
 

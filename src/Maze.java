@@ -62,10 +62,6 @@ abstract class Maze {
         return this.adjacencyList;
     }
 
-    public Random get_rng(){
-        return this.rng;
-    }
-
     public void set_StartNode(int x, int y) {
         this.startNode = get_node(x, y);
     }
@@ -80,6 +76,14 @@ abstract class Maze {
 
     public Node getEndNode() {
         return this.endNode;
+    }
+
+    public int getSize_x(){
+        return this.size_x;
+    }
+
+    public int getSize_y(){
+        return this.size_y;
     }
 
     public Node[][] get_node_array() {
@@ -102,7 +106,7 @@ abstract class Maze {
          * returns the start node of the maze
          * used for generating the maze
          */
-        return this.startNode;
+        return this.start_node;
     }
 
     public Node get_end_node(){
@@ -110,7 +114,7 @@ abstract class Maze {
          * returns the end node of the maze
          * used for generating the maze
          */
-        return this.endNode;
+        return this.end_node;
     }
   
     public Node get_node(int x, int y){
@@ -169,7 +173,6 @@ abstract class Maze {
                 node.setMark(null);
             }
         }
-    }
 
     public Edge get_edge(Node a, Node b){
         /*
@@ -184,6 +187,14 @@ abstract class Maze {
             return null;
         }
         return this.edge_list.get(i);
+    }
+
+    public void add_edge(Edge edge){
+        /*
+         * add an edge to the list of edges
+         * used for generating the maze
+         */
+        this.edge_list.add(edge);
     }
 
     public void remove_edge(Edge edge){
@@ -288,8 +299,8 @@ abstract class Maze {
     public void removeRandomWalls(int max) {
         int removed = 0;
         Random rng = get_rng();
-        int sizeX = get_size()[0];
-        int sizeY = get_size()[1];
+        int sizeX = getSize_x();
+        int sizeY = getSize_y();
 
         while (removed < max) {
             int x = rng.nextInt(sizeX);
@@ -316,8 +327,8 @@ abstract class Maze {
     public void addRandomWalls(int max) {
         int added = 0;
         Random rng = get_rng();
-        int sizeX = get_size()[0];
-        int sizeY = get_size()[1];
+        int sizeX = getSize_x();
+        int sizeY = getSize_y();
 
         while (added < max) {
             int x = rng.nextInt(sizeX);
