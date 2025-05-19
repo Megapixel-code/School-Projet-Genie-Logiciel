@@ -326,4 +326,30 @@ abstract class Maze {
             }
         }
     }
+    
+    public void save_maze(String[] save_name){
+        /*
+         * saves the maze in the following manner :
+         * first line : sizex sizey
+         * second line : number of edges
+         * rest : pos edge one, pos edge two
+         */
+        int[] size = this.get_size();
+        int nb_edge = this.edge_list.size();
+        List<String> buffer = new ArrayList<String>();
+        buffer.add(size[0]+" "+size[1]+"\n");
+        buffer.add(nb_edge+"\n");
+        for (Edge e : this.edge_list) {
+            Node[] tuple_node = e.get_nodes();
+            for (int i = 0; i < 2; i++){
+                int[] coords = tuple_node[i].get_coordinates();
+                for (int j = 0; j < 2; j++){
+                    buffer.add(coords[j] + " ");
+                }
+                buffer.add("\n");
+            }
+        }
+
+        //yes
+    }
 }
