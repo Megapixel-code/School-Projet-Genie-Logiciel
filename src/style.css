@@ -103,6 +103,35 @@
     -fx-stroke: #ffcc00; 
 }
 
+.node {
+    -fx-opacity: 0;
+}
+
+.node:hover {
+    -fx-opacity: 1;
+    -fx-fill: #ffffff; 
+}
+.start{
+    -fx-opacity: 1;
+    -fx-fill: #00ff00;
+}
+.start:hover {
+    -fx-opacity: 1;
+    -fx-fill: #ffffff; 
+}
+.end{
+    -fx-opacity: 1;
+    -fx-fill: #ff0000;
+}
+.end:hover {
+    -fx-opacity: 1;
+    -fx-fill: #ffffff; 
+}
+.inChange{
+    -fx-opacity: 1;
+    -fx-fill: #6f6f6f;
+}
+
 /*##################################################################################################*/
 
 
