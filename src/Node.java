@@ -1,5 +1,3 @@
-import java.util.Objects;
-
 class Node {
     /*
      * depth will show the solving path.
@@ -8,8 +6,8 @@ class Node {
     private int depth;
     private boolean path;
     private String mark_Solver = null;
-    private int pos_x;
-    private int pos_y;
+    private final int pos_x;
+    private final int pos_y;
 
     public Node(){
         /*
