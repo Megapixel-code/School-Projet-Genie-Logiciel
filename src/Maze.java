@@ -96,22 +96,6 @@ abstract class Maze {
         // self explainatory
         return this.seed;
     }
-
-    public Node get_start_node(){
-        /*
-         * returns the start node of the maze
-         * used for generating the maze
-         */
-        return this.startNode;
-    }
-
-    public Node get_end_node(){
-        /*
-         * returns the end node of the maze
-         * used for generating the maze
-         */
-        return this.endNode;
-    }
   
     public Node get_node(int x, int y){
         /*
