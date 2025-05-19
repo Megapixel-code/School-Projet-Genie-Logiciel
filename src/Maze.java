@@ -55,12 +55,28 @@ abstract class Maze {
         return this.start_node;
     }
 
+    public void set_start_node(Node new_start_node){
+        /*
+         * sets the start node of the maze
+         * used for generating the maze
+         */
+        this.start_node = new_start_node;
+    }
+
     public Node get_end_node(){
         /*
          * returns the end node of the maze
          * used for generating the maze
          */
         return this.end_node;
+    }
+
+    public void set_end_node(Node new_end_node){
+        /*
+         * sets the end node of the maze
+         * used for generating the maze
+         */
+        this.end_node = new_end_node;
     }
 
     public Node get_node(int x, int y){

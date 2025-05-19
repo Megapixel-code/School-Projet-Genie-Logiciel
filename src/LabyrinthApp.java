@@ -11,6 +11,10 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.Group;
 import javafx.geometry.Pos; 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.ListChangeListener.Change;
+
 
 public class LabyrinthApp extends Application { 
     private String selectedMethod = null;
@@ -35,18 +39,18 @@ public class LabyrinthApp extends Application {
        
         // ############################################### btn taille laby ###############################################
 
-        TextField widthField = new TextField("50");
+        TextField widthField = new TextField("15");
         widthField.setPromptText("Largeur");
         widthField.setMaxWidth(70);
 
-        TextField heightField = new TextField("30");
+        TextField heightField = new TextField("15");
         heightField.setPromptText("Hauteur");
         heightField.setMaxWidth(70);
 
         Button validateSizeButton = new Button("Valdate Size");
 
-        final int[] mazeWidth = {50};  
-        final int[] mazeHeight = {30};
+        final int[] mazeWidth = {15};  
+        final int[] mazeHeight = {15};
 
         validateSizeButton.setOnAction(e -> {
             try {
@@ -170,8 +174,27 @@ public class LabyrinthApp extends Application {
         left.setStrokeWidth(LINE_SIZE);
         MazeGroup.getChildren().add(top);
         MazeGroup.getChildren().add(left);
+        BooleanProperty ChangeStartNode = new SimpleBooleanProperty(false);
+        BooleanProperty ChangeEndNode = new SimpleBooleanProperty(false);
         for(int x=0; x<maze.get_size()[0]; x++){
             for(int y=0; y<maze.get_size()[1]; y++){
+                // Draw Start and End Nodes
+                Circle NodeCircle = new Circle((x + 0.5) * CELL_SIZE, (y + 0.5) * CELL_SIZE, CELL_SIZE / 3);
+                MazeGroup.getChildren().add(NodeCircle);
+                Node changeNode = maze.get_node(x, y);
+                if(maze.get_start_node().get_coordinates()[0] == x && maze.get_start_node().get_coordinates()[1] == y){
+                    NodeCircle.getStyleClass().add("start");
+                    NodeCircle.setOnMouseClicked(event -> ChangeStartNode.set(StartNodeClicked(maze, ChangeEndNode, NodeCircle)));
+                }
+                else if(maze.get_end_node().get_coordinates()[0] == x && maze.get_end_node().get_coordinates()[1] == y){
+                    NodeCircle.getStyleClass().add("end");
+                    NodeCircle.setOnMouseClicked(event -> ChangeEndNode.set(EndNodeClicked(maze, ChangeStartNode, NodeCircle)));
+                }
+                else{
+                    NodeCircle.getStyleClass().add("node");
+                    NodeCircle.setOnMouseClicked(event -> NodeClicked(pane, maze, ChangeStartNode, ChangeEndNode, changeNode));
+                }   
+                // Draw vertical lines
                 Line lineVertical = new Line((x+1)*CELL_SIZE, (y+0)*CELL_SIZE, (x+1)*CELL_SIZE, (y+1)*CELL_SIZE);
                 lineVertical.setStrokeWidth(LINE_SIZE);
                 Node node1 = maze.get_node(x, y);
@@ -184,6 +207,7 @@ public class LabyrinthApp extends Application {
                 else{
                     lineVertical.getStyleClass().add("path");
                 }
+                // Draw horizontal lines
                 Line lineHorizontal = new Line((x+0)*CELL_SIZE, (y+1)*CELL_SIZE, (x+1)*CELL_SIZE, (y+1)*CELL_SIZE);
                 lineHorizontal.setStrokeWidth(LINE_SIZE);
                 Node node3 = maze.get_node(x, y);
@@ -203,16 +227,6 @@ public class LabyrinthApp extends Application {
 
         MazeGroup.layoutXProperty().bind(pane.widthProperty().subtract(mazeWidth).divide(2));
         MazeGroup.layoutYProperty().bind(pane.heightProperty().subtract(mazeHeight).divide(2));
-
-        // Add Start and End Nodes
-        int[] startNodeCoord = maze.get_start_node().get_coordinates();
-        int[] endNodeCoord = maze.get_end_node().get_coordinates();
-        Circle startNodeCircle = new Circle((startNodeCoord[0] + 0.5) * CELL_SIZE, (startNodeCoord[1] + 0.5) * CELL_SIZE, CELL_SIZE / 3);
-        startNodeCircle.setStyle("-fx-fill: green;");
-        Circle endNodeCircle = new Circle((endNodeCoord[0] + 0.5) * CELL_SIZE, (endNodeCoord[1] + 0.5) * CELL_SIZE, CELL_SIZE / 3);
-        endNodeCircle.setStyle("-fx-fill: red;");
-        MazeGroup.getChildren().addAll(startNodeCircle, endNodeCircle);
-
         pane.getChildren().add(MazeGroup);
     } 
 
@@ -232,6 +246,42 @@ public class LabyrinthApp extends Application {
             System.out.println("Invalid coordinates for wall addition.");
         }
         generateMaze(pane, maze);
+    }
+
+    public Boolean StartNodeClicked(Maze maze, BooleanProperty ChangeEndNode,Circle c) {
+        if (ChangeEndNode.getValue()) {
+            System.out.println("End node already selected.");
+            return false;
+        }
+        c.getStyleClass().remove("start");
+        c.getStyleClass().add("inChange");
+        System.out.println("Start node ready to change.");
+        return true;
+    }
+    public Boolean EndNodeClicked(Maze maze, BooleanProperty ChangeStartNode,Circle c) {
+        if (ChangeStartNode.getValue()) {
+            System.out.println("Start node already selected.");
+            return false;
+        }
+        c.getStyleClass().remove("end");
+        c.getStyleClass().add("inChange");
+        System.out.println("End node ready to change.");
+        return true;
+    }
+    public void NodeClicked(Pane pane, Maze maze, BooleanProperty ChangeStartNode,BooleanProperty ChangeEndNode,Node node) {
+        if (ChangeStartNode.getValue()) {
+            maze.set_start_node(node);
+            System.out.println("Start node changed to: " + node.get_coordinates()[0] + ", " + node.get_coordinates()[1]);
+            generateMaze(pane, maze);
+        }
+        if (ChangeEndNode.getValue()) {
+            maze.set_end_node(node);
+            System.out.println("End node changed to: " + node.get_coordinates()[0] + ", " + node.get_coordinates()[1]);
+            generateMaze(pane, maze);
+        }
+        else {
+            System.out.println("To change the path, select the Start or the End before");
+        }
     }
     // Code Thomas ---------------------
 
