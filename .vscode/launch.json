@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MainInteract",
+            "request": "launch",
+            "mainClass": "MainInteract",
+            "projectName": "School-Projet-Genie-Logiciel_43bf1373"
+        },
+        {
+            "type": "java",
             "name": "LabyrinthApp",
             "request": "launch",
             "vmArgs": "--module-path ../School-Projet-Genie-Logiciel/javafx-sdk-17.0.15/lib --add-modules javafx.controls",

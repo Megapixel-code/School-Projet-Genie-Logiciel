@@ -84,6 +84,12 @@ public class LabyrinthApp extends Application {
                 CurrentMaze = maze;
             } else if (selectedGLMethod == "Imperfect maze") {
                 // Code to generate imperfect maze
+                int[] end = {mazeWidth[0]-1, mazeHeight[0]-1};
+                int[] start = {0, 0};
+                Random random = new Random();
+                ImperfectMaze maze = new ImperfectMaze(mazeWidth[0], mazeHeight[0], random.nextInt(), start, end);
+                generateMaze(labyrinthArea, maze);
+                CurrentMaze = maze;
                 generatedLabyrinth = "Imperfect Labyrinth";
             } else if (selectedGLMethod == "Step-by-step perfect maze"){
                 generatedLabyrinth = "Perfect Labyrinth";
@@ -92,7 +98,6 @@ public class LabyrinthApp extends Application {
                 int[] start = {0, 0};
                 Random random = new Random();
                 PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], random.nextInt(), start, end);
-
                 GenerateStepByStep(labyrinthArea, maze);
                 CurrentMaze = maze;
             } else {
@@ -124,6 +129,13 @@ public class LabyrinthApp extends Application {
                 if(selectedMethod.equals("DFS")) {
                     System.out.println("Resolving using DFS");
                     // Code to resolve labyrinth using DFS
+                    if(Solver.dfs(CurrentMaze)){
+                        System.out.println("Path found");
+                    }
+                    else{
+                        System.out.println("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
                 } else if (selectedMethod.equals("BFS")) {
                     System.out.println("Resolving using BFS");
                     // Code to resolve labyrinth using BFS
@@ -137,10 +149,53 @@ public class LabyrinthApp extends Application {
                 } else if (selectedMethod.equals("Dijkstra")) {
                     System.out.println("Resolving using Dijkstra");
                     // Code to resolve labyrinth using Dijkstra
+                    if(Solver.dijkstra(CurrentMaze)){
+                        System.out.println("Path found");
+                    }
+                    else{
+                        System.out.println("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
                 } else if (selectedMethod.equals("A*")) {
                     System.out.println("Resolving using A*");
                     // Code to resolve labyrinth using A*
-                }
+                    if(Solver.aStar(CurrentMaze)){
+                        System.out.println("Path found");
+                    }
+                    else{
+                        System.out.println("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                } else if (selectedMethod.equals("WallFollowerLeft")) {
+                    System.out.println("Resolving using Wall Follower Left");
+                    // Code to resolve labyrinth using A*
+                    if(Solver.aStar(CurrentMaze)){
+                        System.out.println("Path found");
+                    }
+                    else{
+                        System.out.println("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                } else if (selectedMethod.equals("WallFollowerRight")) {
+                    System.out.println("Resolving using Wall Follower Right");
+                    // Code to resolve labyrinth using A*
+                    if(Solver.aStar(CurrentMaze)){
+                        System.out.println("Path found");
+                    }
+                    else{
+                        System.out.println("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                } else if (selectedMethod.equals("A*")) {
+                    System.out.println("Resolving using A*");
+                    // Code to resolve labyrinth using A*
+                    if(Solver.aStar(CurrentMaze)){
+                        System.out.println("Path found");
+                    }
+                    else{
+                        System.out.println("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
             } else if (generatedLabyrinth != null) {
                 System.out.println("Please select a resolution method first.");
             } else if (selectedMethod != null) {
@@ -148,12 +203,12 @@ public class LabyrinthApp extends Application {
             } else {
                 System.out.println("Please select a resolution method and generate a labyrinth first.");
             }
-        });
+        }});
 
         // ############################################### btn 3 ###############################################
 
         ComboBox<String> resolutionMethods = new ComboBox<>();
-        resolutionMethods.getItems().addAll("DFS", "BFS", "Dijkstra", "A*");
+        resolutionMethods.getItems().addAll("DFS", "BFS", "Dijkstra", "A*", "WallFollowerLeft", "WallFollowerRight");
         resolutionMethods.setPromptText("Select Resolution Method");
         resolutionMethods.setOnAction(e -> {
             selectedMethod = resolutionMethods.getValue();
@@ -422,10 +477,10 @@ public class LabyrinthApp extends Application {
             return;
         }
         int[][] directions = {
-            {1, 0},  // droite
-            {0, 1},  // bas
-            {-1, 0}, // gauche
-            {0, -1}  // haut
+            {1, 0},  
+            {0, 1},  
+            {-1, 0}, 
+            {0, -1}  
         };
         int[] coordinates = CurrentNode.get_coordinates();
         for (int[] d : directions) {
