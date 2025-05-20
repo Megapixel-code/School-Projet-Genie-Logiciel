@@ -28,7 +28,7 @@ class Edge {
             this.node_2 = n_2;
         }
         else {
-            System.out.println("ERROR, YOU TRIED TO LINK INCOMPATIBLE NODES, SEE EDGE CLASS");
+            throw new IllegalArgumentException("ERROR, YOU TRIED TO LINK INCOMPATIBLE NODES, SEE EDGE CLASS");
         }
     }
 

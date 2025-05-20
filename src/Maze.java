@@ -36,30 +36,36 @@ abstract class Maze {
                 this.node_array[i][j] = node;
             }
         }
+        this.startNode = this.node_array[0][0];
+        this.endNode = this.node_array[x-1][y-1];
     }
 
-    public Maze(int x, int y, int seed, int start_x, int start_y, int end_x, int end_y) {
+    public Maze(int x, int y, int seed, int[] start, int[] end) {
         this(x, y, seed);
-        if (start_x < 0 || start_x >= this.size_x || start_y < 0 || start_y >= this.size_y) {
+        if (start[0] < 0 || start[0] >= this.size_x || start[1] < 0 || start[1] >= this.size_y) {
             throw new IllegalArgumentException("Start invalid !");
         }
 
-        if (end_x < 0 || end_x >= this.size_x || end_y < 0 || end_y >= this.size_y) {
+        if (end[0] < 0 || end[0] >= this.size_x || end[1] < 0 || end[1] >= this.size_y) {
             throw new IllegalArgumentException("End invalid !");
         }
 
 
-        if (start_x == end_x && start_y == end_y) {
+        if (start[0] == end[0] && start[1] == end[1]) {
             throw new IllegalArgumentException("Start and end = same positions !");
         }
 
-        this.startNode = this.node_array[start_x][start_y];
-        this.endNode = this.node_array[end_x][end_y];
+        this.startNode = this.node_array[start[0]][start[1]];
+        this.endNode = this.node_array[end[0]][end[1]];
     }
 
 
     public Map<Node, List<Node>> get_adjacency_list() {
         return this.adjacencyList;
+    }
+
+    public Random get_rng(){
+        return this.rng;
     }
 
     public void set_StartNode(int x, int y) {
@@ -76,18 +82,6 @@ abstract class Maze {
 
     public Node getEndNode() {
         return this.endNode;
-    }
-
-    public Random get_rng(){
-        return this.rng;
-    }
-
-    public int getSize_x(){
-        return this.size_x;
-    }
-
-    public int getSize_y(){
-        return this.size_y;
     }
 
     public Node[][] get_node_array() {
@@ -130,13 +124,13 @@ abstract class Maze {
          */
         for (int i = 0; i < this.edge_list.size(); i++){
             if (this.edge_list.get(i).get_nodes()[0].equals(a) && this.edge_list.get(i).get_nodes()[1].equals(b)){
-                return 0;
+                return i;
             }
             else if (this.edge_list.get(i).get_nodes()[0].equals(b) && this.edge_list.get(i).get_nodes()[1].equals(a)){
-                return 0;
+                return i;
             }
         }
-        return 1;
+        return -1;
     }
 
     public void add_edge(Edge edge) {
@@ -163,6 +157,29 @@ abstract class Maze {
         }
     }
 
+    public Edge get_edge(Node a, Node b){
+        /*
+         * returns the edge at the given index
+         * used for generating the maze
+         */
+        int i = in_edge_list(a, b);
+        if (i == -1){
+            return null;
+        }
+        else if (i >= this.edge_list.size()){
+            return null;
+        }
+        return this.edge_list.get(i);
+    }
+
+    public void remove_edge(Edge edge){
+        /*
+         * remove an edge from the list of edges
+         * used for generating the maze
+         */
+        this.edge_list.remove(edge);
+    }
+
     public void displayTextMaze() {
         int rows = this.size_y * 2 + 1;
         int cols = this.size_x * 2 + 1;
@@ -186,9 +203,12 @@ abstract class Maze {
                     display[disp_y][disp_x] = "\u001B[31m E \u001B[0m";
                 } else if (sommet.isPath()) {
                     display[disp_y][disp_x] = "\u001B[35m " + sommet.getMark() + " \u001B[0m";
-                } else {
-                    display[disp_y][disp_x] = " . ";
+                } else if ("V".equals(sommet.getMark())){
+                        display[disp_y][disp_x] = "\u001B[37m " + sommet.getMark() + " \u001B[0m";
+                }else {
+                        display[disp_y][disp_x] = " . ";
                 }
+
             }
         }
 
@@ -205,7 +225,6 @@ abstract class Maze {
 
             display[wall_y][wall_x] = "   ";
         }
-
         // Affiche la matrice
         for (String[] row : display) {
             for (String c : row)
@@ -257,8 +276,8 @@ abstract class Maze {
     public void removeRandomWalls(int max) {
         int removed = 0;
         Random rng = get_rng();
-        int sizeX = getSize_x();
-        int sizeY = getSize_y();
+        int sizeX = get_size()[0];
+        int sizeY = get_size()[1];
 
         while (removed < max) {
             int x = rng.nextInt(sizeX);
@@ -285,8 +304,8 @@ abstract class Maze {
     public void addRandomWalls(int max) {
         int added = 0;
         Random rng = get_rng();
-        int sizeX = getSize_x();
-        int sizeY = getSize_y();
+        int sizeX = get_size()[0];
+        int sizeY = get_size()[1];
 
         while (added < max) {
             int x = rng.nextInt(sizeX);
