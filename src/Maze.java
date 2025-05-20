@@ -98,7 +98,7 @@ abstract class Maze {
         // self explainatory
         return this.seed;
     }
-  
+
     public Node get_node(int x, int y){
         /*
          * returns the node at the given coordinates
@@ -203,14 +203,16 @@ abstract class Maze {
                     display[disp_y][disp_x] = "\u001B[31m E \u001B[0m";
                 } else if (sommet.isPath()) {
                     display[disp_y][disp_x] = "\u001B[35m " + sommet.getMark() + " \u001B[0m";
-                } else {
-                    display[disp_y][disp_x] = " . ";
+                } else if ("V".equals(sommet.getMark())){
+                        display[disp_y][disp_x] = "\u001B[37m " + sommet.getMark() + " \u001B[0m";
+                }else {
+                        display[disp_y][disp_x] = " . ";
                 }
+
             }
         }
 
         // Ouvre les murs selon les edges (corrigé)
-
         for (Edge e : edge_list) {
             Node[] ab = e.get_nodes();
             Node a = ab[0];

@@ -1,6 +1,5 @@
 import java.util.*;
 
-
 class PerfectMaze extends Maze {
     private Node last_node;
 

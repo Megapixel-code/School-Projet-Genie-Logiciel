@@ -10,7 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.Group;
-import javafx.geometry.Pos; 
+import javafx.geometry.Pos;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
@@ -20,14 +20,14 @@ import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
 
-public class LabyrinthApp extends Application { 
+public class LabyrinthApp extends Application {
     private String selectedMethod = null;
     private String selectedGLMethod = null;
     private String generatedLabyrinth = null;
 
     @Override
     public void start(Stage primaryStage) {
-        
+
         primaryStage.setTitle("Labyrinth");
 
         BorderPane root = new BorderPane();
@@ -41,7 +41,7 @@ public class LabyrinthApp extends Application {
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.getStyleClass().add("hbox");
         root.setBottom(buttonBox);
-       
+
         // ############################################### btn taille laby ###############################################
 
         TextField widthField = new TextField("15");
@@ -54,7 +54,7 @@ public class LabyrinthApp extends Application {
 
         Button validateSizeButton = new Button("Validate Size");
 
-        final int[] mazeWidth = {15};  
+        final int[] mazeWidth = {15};
         final int[] mazeHeight = {15};
 
 
@@ -75,8 +75,8 @@ public class LabyrinthApp extends Application {
             if (selectedGLMethod == null) {
                 System.out.println("Please select a generation method first.");
             } else if (selectedGLMethod == "perfect maze") {
-                generatedLabyrinth = "Perfect Labyrinth"; 
-                System.out.println("Generating perfect labyrinth"); 
+                generatedLabyrinth = "Perfect Labyrinth";
+                System.out.println("Generating perfect labyrinth");
                 int[] end = {mazeWidth[0]-1, mazeHeight[0]-1};
                 int[] start = {0, 0};
                 Random random = new Random();
@@ -86,8 +86,8 @@ public class LabyrinthApp extends Application {
                 // Code to generate imperfect maze
                 generatedLabyrinth = "Imperfect Labyrinth";
             } else if (selectedGLMethod == "Step-by-step perfect maze"){
-                generatedLabyrinth = "Perfect Labyrinth"; 
-                System.out.println("Generating perfect labyrinth step by step"); 
+                generatedLabyrinth = "Perfect Labyrinth";
+                System.out.println("Generating perfect labyrinth step by step");
                 int[] end = {mazeWidth[0]-1, mazeHeight[0]-1};
                 int[] start = {0, 0};
                 Random random = new Random();
@@ -117,7 +117,7 @@ public class LabyrinthApp extends Application {
         resolveButton.setOnAction(e -> {
             if (selectedMethod != null && generatedLabyrinth != null) {
                 System.out.println("Labyrinth resolution using " + selectedMethod + " method...");
-                // mettre résoudre le labyrinthe ici !! il faut 
+                // mettre résoudre le labyrinthe ici !! il faut
                 //que le labyrinthe soit généré avant + faire attention à la méthgode de resolution
             } else if (generatedLabyrinth != null) {
                 System.out.println("Please select a resolution method first.");
@@ -219,19 +219,19 @@ public class LabyrinthApp extends Application {
     public void GenerateStepByStep(Pane labyrinthArea, PerfectMaze maze) {
         PauseTransition pause = new PauseTransition(Duration.seconds(0.05));
         pause.setOnFinished(event -> {
-            boolean end = maze.bfs_next_step(); 
-            generateMaze(labyrinthArea, maze); 
-    
+            boolean end = maze.bfs_next_step();
+            generateMaze(labyrinthArea, maze);
+
             if (!end) {
-                GenerateStepByStep(labyrinthArea, maze); 
+                GenerateStepByStep(labyrinthArea, maze);
             }
         });
-        pause.play(); 
+        pause.play();
     }
 
     public void GenerateComplete(Pane labyrinthArea, PerfectMaze maze) {
         while (!(maze.bfs_next_step())) {}
-        generateMaze(labyrinthArea, maze); 
+        generateMaze(labyrinthArea, maze);
     }
 
     public int set_cell_size(Maze maze){
@@ -245,10 +245,10 @@ public class LabyrinthApp extends Application {
         }
     }
 
-    // ca il faut que je puisse l'appeler mais faut pas le mettre ici 
+    // ca il faut que je puisse l'appeler mais faut pas le mettre ici
 
-    public void generateMaze(Pane pane, Maze maze) { 
-        // Code to generate Maze 
+    public void generateMaze(Pane pane, Maze maze) {
+        // Code to generate Maze
         Group MazeGroup = new Group();
         pane.getChildren().clear();
         // CELL_SIZE doit être défini en fonction de la taille du labyrinthe
@@ -285,7 +285,7 @@ public class LabyrinthApp extends Application {
                 else{
                     NodeCircle.getStyleClass().add("node");
                     NodeCircle.setOnMouseClicked(event -> NodeClicked(pane, maze, ChangeStartNode, ChangeEndNode, changeNode));
-                }   
+                }
                 // Draw vertical lines
                 Line lineVertical = new Line((x+1)*CELL_SIZE, (y+0)*CELL_SIZE, (x+1)*CELL_SIZE, (y+1)*CELL_SIZE);
                 lineVertical.setStrokeWidth(LINE_SIZE);
@@ -320,14 +320,14 @@ public class LabyrinthApp extends Application {
         MazeGroup.layoutXProperty().bind(pane.widthProperty().subtract(mazeWidth).divide(2));
         MazeGroup.layoutYProperty().bind(pane.heightProperty().subtract(mazeHeight).divide(2));
         pane.getChildren().add(MazeGroup);
-    } 
+    }
 
     public void lineClicked(Pane pane, Maze maze, Node node1, Node node2) {
         if (node1 != null && node2 != null) {
             if (maze.in_edge_list(node1, node2) >= 0) {
                 maze.remove_edge(maze.get_edge(node1, node2));
                 System.out.println("Wall added");
-            } 
+            }
             else {
                 Edge edge = new Edge(node1, node2);
                 maze.add_edge(edge);
@@ -378,6 +378,6 @@ public class LabyrinthApp extends Application {
     // Code Thomas ---------------------
 
     public static void main(String[] args) {
-        launch(args); 
+        launch(args);
     }
 }
