@@ -1,9 +1,9 @@
 class Main {
     public static void main(String[] args) {
         //Initialisation parfait
-        int[] start_coord = {15, 2};
-        int[] end_coord = {10, 5};
-        PerfectMaze mazePerfect = new PerfectMaze(20, 8, 600, start_coord, end_coord);
+        int[] start_coord = {4, 3};
+        int[] end_coord = {3, 0};
+        PerfectMaze mazePerfect = new PerfectMaze(5, 5, 600, start_coord, end_coord);
         mazePerfect.generateBFS();
         System.out.print("\u001B[33mGeneration Perfect !\n\u001B[0m");
         mazePerfect.displayTextMaze();
@@ -186,10 +186,17 @@ class Main {
             }
         }
         mazePerfect.displayTextMaze();*/ // affichage quand la gene est finis donc quand on return true
-        mazePerfect.displayTextMaze();
-        mazePerfect.save_maze("test");
-        
-        mazePerfect.addRandomWalls(50);
-        mazePerfect.displayTextMaze();
+        mazeImperfect.displayTextMaze();
+        mazeImperfect.save_maze("testimperfect");
+
+        mazeImperfect.restore_maze("testimperfect");
+        System.out.println("after the save : ");
+        mazeImperfect.displayTextMaze();
+
+        String[] test = mazeImperfect.get_backup_names();
+        for (String e : test){
+            System.out.println(e);
+        }
+        mazeImperfect.delete_backup(test[0]);
     }
 }
