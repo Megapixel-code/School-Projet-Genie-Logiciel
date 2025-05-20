@@ -24,14 +24,13 @@ public class LabyrinthApp extends Application {
     private String selectedMethod = null;
     private String selectedGLMethod = null;
     private String generatedLabyrinth = null;
-
+    private Maze CurrentMaze = null;
     @Override
     public void start(Stage primaryStage) {
 
         primaryStage.setTitle("Labyrinth");
 
         BorderPane root = new BorderPane();
-
         Pane labyrinthArea = new Pane();
         labyrinthArea.getStyleClass().add("labyrinth-area");
         root.setCenter(labyrinthArea);
@@ -82,6 +81,7 @@ public class LabyrinthApp extends Application {
                 Random random = new Random();
                 PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], random.nextInt(), start, end);
                 GenerateComplete(labyrinthArea, maze);
+                CurrentMaze = maze;
             } else if (selectedGLMethod == "Imperfect maze") {
                 // Code to generate imperfect maze
                 generatedLabyrinth = "Imperfect Labyrinth";
@@ -92,7 +92,9 @@ public class LabyrinthApp extends Application {
                 int[] start = {0, 0};
                 Random random = new Random();
                 PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], random.nextInt(), start, end);
+
                 GenerateStepByStep(labyrinthArea, maze);
+                CurrentMaze = maze;
             } else {
                 // Code to generate imperfect maze step by step
                 generatedLabyrinth = "Imperfect Labyrinth";
@@ -119,6 +121,26 @@ public class LabyrinthApp extends Application {
                 System.out.println("Labyrinth resolution using " + selectedMethod + " method...");
                 // mettre résoudre le labyrinthe ici !! il faut
                 //que le labyrinthe soit généré avant + faire attention à la méthgode de resolution
+                if(selectedMethod.equals("DFS")) {
+                    System.out.println("Resolving using DFS");
+                    // Code to resolve labyrinth using DFS
+                } else if (selectedMethod.equals("BFS")) {
+                    System.out.println("Resolving using BFS");
+                    // Code to resolve labyrinth using BFS
+                    if(Solver.bfs(CurrentMaze)){
+                        System.out.println("Path found");
+                    }
+                    else{
+                        System.out.println("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                } else if (selectedMethod.equals("Dijkstra")) {
+                    System.out.println("Resolving using Dijkstra");
+                    // Code to resolve labyrinth using Dijkstra
+                } else if (selectedMethod.equals("A*")) {
+                    System.out.println("Resolving using A*");
+                    // Code to resolve labyrinth using A*
+                }
             } else if (generatedLabyrinth != null) {
                 System.out.println("Please select a resolution method first.");
             } else if (selectedMethod != null) {
@@ -375,6 +397,72 @@ public class LabyrinthApp extends Application {
             System.out.println("To change the path, select the Start or the End before");
         }
     }
+
+    public void generateWay(Pane pane, Maze maze) {
+        pane.getChildren().clear();
+        Group WayGroup = new Group();
+        int CELL_SIZE = set_cell_size(maze);
+        boolean[][] visited = new boolean[maze.get_size()[0]][maze.get_size()[1]];
+        for (int i = 0; i < visited.length; i++) {
+            for (int j = 0; j < visited[i].length; j++) {
+                visited[i][j] = false;
+            }
+        }
+        visited[maze.getStartNode().get_coordinates()[0]][maze.getStartNode().get_coordinates()[1]] = true;
+        drawWay(pane, maze,maze.getStartNode(),CELL_SIZE, WayGroup, visited);
+        WayGroup.layoutXProperty().bind(pane.widthProperty().subtract(maze.get_size()[0] * CELL_SIZE).divide(2));
+        WayGroup.layoutYProperty().bind(pane.heightProperty().subtract(maze.get_size()[1] * CELL_SIZE).divide(2));
+        generateMaze(pane, maze);
+        pane.getChildren().add(WayGroup);
+        System.out.println("Way generated");
+    }
+
+    public void drawWay(Pane pane, Maze maze, Node CurrentNode,int CELL_SIZE, Group WayGroup, boolean[][] visited) {
+        if(CurrentNode == null){
+            return;
+        }
+        int[][] directions = {
+            {1, 0},  // droite
+            {0, 1},  // bas
+            {-1, 0}, // gauche
+            {0, -1}  // haut
+        };
+        int[] coordinates = CurrentNode.get_coordinates();
+        for (int[] d : directions) {
+            int nx = coordinates[0] + d[0];
+            int ny = coordinates[1] + d[1];
+        
+            if (maze.get_node(nx, ny) != null &&
+                maze.in_edge_list(CurrentNode, maze.get_node(nx, ny))>=0 &&
+                !visited[nx][ny] &&
+                maze.get_node(nx, ny).getMark() != null) {
+                Circle WayCircle = new Circle((coordinates[0] + d[0] + 0.5) * CELL_SIZE,
+                                              (coordinates[1] + d[1] + 0.5) * CELL_SIZE,
+                                              CELL_SIZE / 7);
+                Circle MiddleWayCircle = new Circle((coordinates[0] + 0.5 + d[0] * 0.5) * CELL_SIZE,
+                                                    (coordinates[1] + 0.5 + d[1] * 0.5) * CELL_SIZE,
+                                                    CELL_SIZE / 7);
+                WayGroup.getChildren().add(WayCircle);
+                WayGroup.getChildren().add(MiddleWayCircle);
+        
+                if(maze.get_node(nx, ny) == maze.getEndNode()){
+                    WayGroup.getChildren().remove(WayCircle);
+                    MiddleWayCircle.getStyleClass().add("way");
+                }
+                else if (maze.get_node(nx, ny).isPath()) {
+                    WayCircle.getStyleClass().add("way");
+                    MiddleWayCircle.getStyleClass().add("way");
+                } 
+                else {
+                    WayCircle.getStyleClass().add("visited");
+                    MiddleWayCircle.getStyleClass().add("visited");
+                }
+                visited[nx][ny] = true;
+                drawWay(pane, maze, maze.get_node(nx, ny), CELL_SIZE, WayGroup, visited);
+            }
+        }
+    }
+
     // Code Thomas ---------------------
 
     public static void main(String[] args) {

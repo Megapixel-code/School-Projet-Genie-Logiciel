@@ -343,7 +343,6 @@ abstract class Maze {
          */
 
         int[] size = this.get_size();
-        int nb_edge = this.edge_list.size();
 
         List<String> buffer = new ArrayList<String>();
         String pre_buffer = "";
