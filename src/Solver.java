@@ -12,6 +12,7 @@ public class Solver {
 
         queue.add(start);
         visited.add(start);
+        start.setMark("V");
 
         while (!queue.isEmpty()) {
             Node current = queue.poll();
@@ -34,6 +35,7 @@ public class Solver {
                     visited.add(neighbor);
                     parent.put(neighbor, current);
                     queue.add(neighbor);
+                    neighbor.setMark("V");
                 }
             }
         }
@@ -50,6 +52,7 @@ public class Solver {
 
         stack.push(start);
         visited.add(start);
+        start.setMark("V");
 
         while (!stack.isEmpty()) {
             Node current = stack.pop();
@@ -72,6 +75,7 @@ public class Solver {
                     visited.add(neighbor);
                     parent.put(neighbor, current);
                     stack.push(neighbor);
+                    neighbor.setMark("V");
                 }
             }
         }
@@ -115,6 +119,7 @@ public class Solver {
 
         gScore.put(start, 0);
         openSet.add(start);
+        start.setMark("V");
 
         while (!openSet.isEmpty()) {
             Node current = openSet.poll();
@@ -147,6 +152,7 @@ public class Solver {
                     // Si le voisin n'est pas dans openSet, on l'ajoute
                     if (!openSet.contains(neighbor)) {
                         openSet.add(neighbor);
+                        neighbor.setMark("V");
                     }
                 }
             }
@@ -178,6 +184,7 @@ public class Solver {
         dist.put(start, 0);
 
         queue.add(start);
+        start.setMark("V");
 
         while (!queue.isEmpty()) {
             Node current = queue.poll();
@@ -216,7 +223,7 @@ public class Solver {
 
     //WALL FOLLOWER :
     //Right
-    public static boolean wallFollowerRight(Maze maze) {
+    public static boolean wallFollowerLeft(Maze maze) {
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
 
@@ -236,7 +243,7 @@ public class Solver {
         visited.add(current);
 
         current.setPath(true);
-        current.setMark("R");
+        current.setMark("L");
 
         int maxSteps = maze.get_node_array().length * maze.get_node_array()[0].length * 10; // limite de sécurité pour éviter boucle infini
         int steps = 0;
@@ -264,7 +271,7 @@ public class Solver {
 
                         // marquage immédiat
                         current.setPath(true);
-                        current.setMark("R");
+                        current.setMark("L");
 
                         moved = true;
                         break;
@@ -282,7 +289,7 @@ public class Solver {
 
 
     //Left
-    public static boolean wallFollowerLeft(Maze maze) {
+    public static boolean wallFollowerRight(Maze maze) {
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
 
@@ -302,7 +309,7 @@ public class Solver {
         visited.add(current);
 
         current.setPath(true);
-        current.setMark("L");
+        current.setMark("R");
 
         int maxSteps = maze.get_node_array().length * maze.get_node_array()[0].length * 10; // limite de sécurité pour éviter boucle infini
         int steps = 0;
@@ -329,7 +336,7 @@ public class Solver {
                         dir = tryDir;
 
                         current.setPath(true);
-                        current.setMark("L");
+                        current.setMark("R");
 
                         moved = true;
                         break;
