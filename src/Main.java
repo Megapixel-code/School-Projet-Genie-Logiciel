@@ -186,5 +186,10 @@ class Main {
             }
         }
         mazePerfect.displayTextMaze();*/ // affichage quand la gene est finis donc quand on return true
+        mazePerfect.displayTextMaze();
+        mazePerfect.save_maze("test");
+        
+        mazePerfect.addRandomWalls(50);
+        mazePerfect.displayTextMaze();
     }
 }

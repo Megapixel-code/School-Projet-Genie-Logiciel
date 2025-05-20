@@ -1,3 +1,6 @@
+import java.io.FileWriter;
+import java.io.File; 
+import java.io.IOException;
 import java.util.*;
 
 abstract class Maze {
@@ -327,7 +330,7 @@ abstract class Maze {
         }
     }
     
-    public void save_maze(String[] save_name){
+    public void save_maze(String save_name){
         /*
          * saves the maze in the following manner :
          * first line : sizex sizey
@@ -336,20 +339,59 @@ abstract class Maze {
          */
         int[] size = this.get_size();
         int nb_edge = this.edge_list.size();
+
         List<String> buffer = new ArrayList<String>();
+        String pre_buffer;
+
+        // add the first two lines to the buffer
         buffer.add(size[0]+" "+size[1]+"\n");
         buffer.add(nb_edge+"\n");
+
+        // add the rest to the buffer
         for (Edge e : this.edge_list) {
             Node[] tuple_node = e.get_nodes();
             for (int i = 0; i < 2; i++){
                 int[] coords = tuple_node[i].get_coordinates();
-                for (int j = 0; j < 2; j++){
-                    buffer.add(coords[j] + " ");
+                if (i == 0){
+                    pre_buffer = coords[0] + " " + coords[1] + " ";
                 }
-                buffer.add("\n");
+                else {
+                    pre_buffer = coords[0] + " " + coords[1] + "\n";
+                }
+                buffer.add(pre_buffer);
             }
         }
 
-        //yes
+        //creating the file if the file doesnt exist
+        try {
+            File file = new File("backup/"+save_name);
+            file.getParentFile().mkdirs();
+            if (file.createNewFile()) {
+                System.out.println("File created: " + file.getName());
+            } else {
+                System.out.println("File already exists, the data will be overwritten");
+            }
+        } catch (IOException e) {
+            System.out.println("Error while creating the file");
+            e.printStackTrace();
+        }
+        
+
+        //writing the content of the buffer inside the file
+        try {
+            FileWriter my_file = new FileWriter("backup/"+save_name);
+            // empties the buffer in the file
+            for (String s : buffer){
+                my_file.write(s);
+            }
+            my_file.close();
+        } catch (IOException e) {
+            System.out.println("error while saving the file");
+            e.printStackTrace();
+        }
+    }
+
+    public void restore_maze(String save_name){
+        
     }
 }
