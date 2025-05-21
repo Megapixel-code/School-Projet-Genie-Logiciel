@@ -235,7 +235,6 @@ abstract class Maze {
                 System.out.print(c);
             System.out.println();
         }
-        clearMarks();
     }
 
     // pour génération du labyrinthe imparfait ET modification locale du laby
