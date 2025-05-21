@@ -23,16 +23,7 @@ abstract class Maze {
     private Map<Node, List<Node>> adjacencyList = new HashMap<>();
 
     public Maze(){
-        this.size_x = 0;
-        this.size_y = 0;
-        this.seed = 0;
-        this.node_array = new Node[0][0];
-        for (int i = 0; i < 0; i++){
-            for (int j = 0; j < 0; j++){
-                Node node = new Node(i,j);
-                this.node_array[i][j] = node;
-            }
-        }
+        this(2, 2, 0); 
     }
 
     public Maze(int x, int y, int seed){
