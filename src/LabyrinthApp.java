@@ -3,8 +3,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
@@ -14,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
+import java.util.Optional;
 import java.util.Random;
 
 import javafx.animation.PauseTransition;
@@ -51,13 +54,17 @@ public class LabyrinthApp extends Application {
         heightField.setPromptText("Hauteur");
         heightField.setMaxWidth(70);
 
-        Button validateSizeButton = new Button("Validate Size");
+        Button validateButton = new Button("Validate Size");
 
         final int[] mazeWidth = {15};
         final int[] mazeHeight = {15};
+        final int[] mazeSeed = {0};
 
+        TextField seedField = new TextField();
+        seedField.setPromptText("Seed");
+        seedField.setMaxWidth(150);
 
-        validateSizeButton.setOnAction(e -> {
+        validateButton.setOnAction(e -> {
             try {
                 mazeWidth[0] = Integer.parseInt(widthField.getText());
                 mazeHeight[0] = Integer.parseInt(heightField.getText());
@@ -65,6 +72,19 @@ public class LabyrinthApp extends Application {
             } catch (NumberFormatException ex) {
                 System.out.println("Veuillez entrer des nombres valides.");
             }
+            String seedText = seedField.getText();
+            if (seedText == null || seedText.trim().isEmpty()) {
+                mazeSeed[0] = new Random().nextInt(); 
+                System.out.println("Aucune seed fournie. Utilisation d'une seed aléatoire : " + mazeSeed[0]);
+            } else {
+                try {
+                    mazeSeed[0] = Integer.parseInt(seedText);
+                    System.out.println("Labyrinth loaded with seed: " + mazeSeed[0]);
+                } catch (NumberFormatException ex) {
+                    System.out.println("Veuillez entrer une seed valide (nombre entier).");
+                }
+            }
+            
         });
 
         // ############################################### btn generate Labyrinth ###############################################
@@ -78,16 +98,14 @@ public class LabyrinthApp extends Application {
                 System.out.println("Generating perfect labyrinth");
                 int[] end = {mazeWidth[0]-1, mazeHeight[0]-1};
                 int[] start = {0, 0};
-                Random random = new Random();
-                PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], random.nextInt(), start, end);
+                PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], mazeSeed[0], start, end);
                 GenerateComplete(labyrinthArea, maze);
                 CurrentMaze = maze;
             } else if (selectedGLMethod == "Imperfect maze") {
                 // Code to generate imperfect maze
                 int[] end = {mazeWidth[0]-1, mazeHeight[0]-1};
                 int[] start = {0, 0};
-                Random random = new Random();
-                ImperfectMaze maze = new ImperfectMaze(mazeWidth[0], mazeHeight[0], random.nextInt(), start, end);
+                ImperfectMaze maze = new ImperfectMaze(mazeWidth[0], mazeHeight[0], mazeSeed[0], start, end);
                 generateMaze(labyrinthArea, maze);
                 CurrentMaze = maze;
                 generatedLabyrinth = "Imperfect Labyrinth";
@@ -96,8 +114,7 @@ public class LabyrinthApp extends Application {
                 System.out.println("Generating perfect labyrinth step by step");
                 int[] end = {mazeWidth[0]-1, mazeHeight[0]-1};
                 int[] start = {0, 0};
-                Random random = new Random();
-                PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], random.nextInt(), start, end);
+                PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], mazeSeed[0], start, end);
                 GenerateStepByStep(labyrinthArea, maze);
                 CurrentMaze = maze;
             } else {
@@ -222,63 +239,54 @@ public class LabyrinthApp extends Application {
         saveLaby.setOnAction(e -> {
             System.out.println("Labyrinth saved");
             // Code to save the labyrinth
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Nom du labyrinthe");
+            dialog.setHeaderText("Veuillez entrer un nom pour votre labyrinthe :");
+            dialog.setContentText("Nom :");
+
+            Optional<String> result = dialog.showAndWait();
+            CurrentMaze.save_maze(result.get());
         });
 
-        // ############################################### btn charger ###############################################
-        TextField seedField = new TextField();
-        seedField.setPromptText("Seed du labyrinthe");
-        seedField.setMaxWidth(120);
+        // ############################################### btn charger #################################################
 
-        Button validateSeedButton = new Button("Valider");
-        validateSeedButton.setOnAction(e -> {
-            String seedText = seedField.getText();
-            try {
-                int seed = Integer.parseInt(seedText);
-                System.out.println("Labyrinth loaded with seed: " + seed);
-                // Code pour charger le labyrinthe avec la seed ici
-                // Par exemple :
-                // PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], seed, start, end);
-                // generateMaze(labyrinthArea, maze);
-            } catch (NumberFormatException ex) {
-                System.out.println("Veuillez entrer une seed valide (nombre entier).");
+        Button loadLaby = new Button("Load Labyrinth");
+        loadLaby.setOnAction(e -> {
+            System.out.println("Labyrinth loaded");
+            // Code to load the labyrinth
+            String[] mazeList = Maze.get_backup_names();
+            ChoiceDialog<String> dialog = new ChoiceDialog<>(mazeList[0], mazeList);
+            dialog.setTitle("Choix du labyrinthe");
+            dialog.setHeaderText("Sélectionnez un labyrinthe :");
+            dialog.setContentText("Labyrinthe :");
+            Optional<String> result = dialog.showAndWait();
+            if(CurrentMaze == null){
+                CurrentMaze = new PerfectMaze();
             }
+            CurrentMaze.restore_maze(result.get());
+            generateMaze(labyrinthArea, CurrentMaze);
         });
 
         // ############################################### btn suivant / précédent ###############################################
 
         Button previousButton = new Button("⟵ Previous");
 
-        Button generatePageButton = new Button("Generate Labyrinth ⟶");
-
-        Button loadPageButton = new Button("⟵ Load Labyrinth");
-
         Button nextButton = new Button("Next ⟶");
 
-        loadPageButton.setOnAction(e -> {
-            System.out.println("Load labyrinth button clicked");
-            buttonBox.getChildren().removeAll(loadPageButton, widthField, heightField, validateSizeButton, generationMethods, generateLabyrinth, nextButton);
-            buttonBox.getChildren().addAll(seedField, validateSeedButton, generatePageButton);
-        });
-
-        generatePageButton.setOnAction(e -> {
-            System.out.println("Generate labyrinth button clicked");
-            buttonBox.getChildren().removeAll(seedField, validateSeedButton, generatePageButton);
-            buttonBox.getChildren().addAll(loadPageButton, widthField, heightField, validateSizeButton, generationMethods, generateLabyrinth, nextButton);
-        });
-
+        
         previousButton.setOnAction(e -> {
             System.out.println("Previous button clicked");
-            buttonBox.getChildren().removeAll(previousButton, resolveButton, resolutionMethods, saveLaby);
-            buttonBox.getChildren().addAll(loadPageButton, widthField, heightField, validateSizeButton, generateLabyrinth, generationMethods, nextButton);
+            buttonBox.getChildren().removeAll(previousButton, resolveButton, resolutionMethods, loadLaby, saveLaby);
+            buttonBox.getChildren().addAll(seedField, widthField, heightField, validateButton, generateLabyrinth, generationMethods, nextButton);
         });
 
         nextButton.setOnAction(e -> {
             System.out.println("Next button clicked");
-            buttonBox.getChildren().removeAll(loadPageButton, widthField, heightField, validateSizeButton, generateLabyrinth, generationMethods, nextButton);
-            buttonBox.getChildren().addAll(previousButton, resolveButton, resolutionMethods, saveLaby);
+            buttonBox.getChildren().removeAll(seedField, widthField, heightField, validateButton, generateLabyrinth, generationMethods, nextButton);
+            buttonBox.getChildren().addAll(previousButton, resolveButton, resolutionMethods, loadLaby, saveLaby);
         });
 
-        buttonBox.getChildren().addAll(loadPageButton, widthField, heightField, validateSizeButton, generateLabyrinth, generationMethods, nextButton);
+        buttonBox.getChildren().addAll(seedField, widthField, heightField, validateButton, generateLabyrinth, generationMethods, nextButton);
 
 
         Scene scene = new Scene(root, 1300, 720);
