@@ -15,6 +15,7 @@ public class SolverSbS {
     private Node end_node;
     
     private Stack<Node> stack = new Stack<>();
+    private LinkedList<Node> fifo = new LinkedList<>();
 
 
     public SolverSbS(Maze m){
@@ -29,10 +30,18 @@ public class SolverSbS {
         this.end_node = m.getEndNode();
         
         switch (type) {
-            // Note : /!\ mettre a jour get_types, next_step, set_correct_node_mark /!\
+            // TODO : /!\ mettre a jour get_types, next_step, set_correct_node_mark /!\
             case "dfs" -> {
                 this.solver_type = 0;
                 this.stack.push(this.start_node);
+            }
+            case "bfs" -> {
+                this.solver_type = 1;
+                this.fifo.add(this.start_node);
+            }
+            case "astar" -> {
+                this.solver_type = 2;
+                this.fifo.add(this.start_node);
             }
             default -> throw new IllegalArgumentException("Invalid type for sbs solver : you entered type = \"" + type + "\"");
         }
@@ -45,7 +54,7 @@ public class SolverSbS {
         /*
          * returns the types of solve available, is used for the display
          */
-        String[] types = {"dfs"};
+        String[] types = {"dfs", "bfs", "astar"};
         return types;
     }
 
@@ -56,6 +65,12 @@ public class SolverSbS {
         switch (this.solver_type) {
             case 0 -> {
                 return dfs_next_step();
+            }
+            case 1 -> {
+                return bfs_next_step();
+            }
+            case 2 -> {
+                return a_star_next_step();
             }
             default -> throw new AssertionError();
         }
@@ -157,6 +172,8 @@ public class SolverSbS {
     private void set_correct_node_mark(Node n){
         switch (this.solver_type) {
             case 0 -> n.setMark("D");
+            case 1 -> n.setMark("B");
+            case 2 -> n.setMark("A");
             default -> throw new AssertionError();
         }
     }
@@ -203,6 +220,17 @@ public class SolverSbS {
         }
     }
 
+    private int distance_between_nodes(Node n1, Node n2){
+        /*
+         * used for a* step by step
+         * returns the manatan distance between two nodes
+         */
+        int[] coords1 = n1.get_coordinates();
+        int[] coords2 = n2.get_coordinates();
+        return Math.abs(coords1[0] - coords2[0]) +
+               Math.abs(coords1[1] - coords2[1]);
+    }
+
     private boolean dfs_next_step(){
         /*
          * dfs next step
@@ -218,20 +246,111 @@ public class SolverSbS {
             this.last_node = stack.pop();
         }
 
+        // sets the current node to visited
+        this.last_node.setMark("V");
+
         // if last_node is end_node, the program is finished
         if (this.last_node == this.end_node){
             return true;
         }
 
-        // set the current node to visited and adds the nodes around to the stack
-        // with the correct depth
-        this.last_node.setMark("V");
+        // adds the nodes around to the stack with the correct depth
         int current_depth = last_node.get_depth();
         Node[] nodes_around = this.get_unvisited_nodes_arround(this.last_node);
         if (nodes_around != null){
             for (Node n : nodes_around){
                 n.set_depth(current_depth + 1);
                 stack.push(n);
+            }
+        }
+        return false;
+    }
+
+    private boolean bfs_next_step(){
+        /*
+         * bfs next step
+         */
+
+        // gets the last unvisited node in fifo
+        this.last_node = fifo.removeFirst();
+        while (this.last_node.is_visited()){
+            // if the stack is empty, program is finished
+            if (stack.isEmpty()){
+                return true;
+            }
+            this.last_node = fifo.removeFirst();
+        }
+
+        // sets the current node to visited
+        this.last_node.setMark("V");
+
+        // if last_node is end_node, the program is finished
+        if (this.last_node == this.end_node){
+            return true;
+        }
+
+        // adds the nodes around to the stack with the correct depth
+        int current_depth = last_node.get_depth();
+        Node[] nodes_around = this.get_unvisited_nodes_arround(this.last_node);
+        if (nodes_around != null){
+            for (Node n : nodes_around){
+                n.set_depth(current_depth + 1);
+                fifo.add(n);
+            }
+        }
+        return false;
+    }
+
+    private boolean a_star_next_step(){
+        /*
+         * a star next step
+         */
+
+        // removes all visited nodes in list
+        int fifo_size = fifo.size();
+        for (int i = 1; i <= fifo_size; i++){
+            if (fifo.get(fifo_size - i).is_visited()){
+                fifo.remove(fifo_size - i);
+            }
+        }
+
+        // if the size is 0, no solutions have been found, the program ends
+        fifo_size = fifo.size();
+        if (fifo_size == 0){
+            return true;
+        }
+
+        // gets the best node
+        Node best_node = fifo.get(0);
+        int best_score = this.distance_between_nodes(best_node, end_node);
+        int score = best_score;
+        int position_best = 0;
+        for (int i = 0; i < fifo_size; i++){
+            score = this.distance_between_nodes(fifo.get(i), end_node);
+            if (score < best_score){
+                position_best = i;
+                best_node = fifo.get(i);
+                best_score = score;
+            }
+        }
+        this.last_node = best_node;
+        fifo.remove(position_best);
+
+        // sets the current node to visited
+        this.last_node.setMark("V");
+
+        // if last_node is end_node, the program is finished
+        if (this.last_node == this.end_node){
+            return true;
+        }
+
+        // adds the nodes around to the stack with the correct depth
+        int current_depth = last_node.get_depth();
+        Node[] nodes_around = this.get_unvisited_nodes_arround(this.last_node);
+        if (nodes_around != null){
+            for (Node n : nodes_around){
+                n.set_depth(current_depth + 1);
+                fifo.add(n);
             }
         }
         return false;

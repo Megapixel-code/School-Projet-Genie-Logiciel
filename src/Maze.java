@@ -331,8 +331,8 @@ abstract class Maze {
             }
         }
     }
-  
-      public void save_maze(String save_name){
+    
+    public void save_maze(String save_name){
         /*
          * saves the maze in the following manner :
          * first line : sizex sizey
