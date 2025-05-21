@@ -14,13 +14,24 @@ class Main {
 
         while (!(solver.next_step())) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             mazePerfect.displayTextMaze();
         }
+
+        while (!(solver.find_path_step())) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            mazePerfect.displayTextMaze();
+        }
+
         mazePerfect.displayTextMaze();
     }
 }
