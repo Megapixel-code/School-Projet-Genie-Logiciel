@@ -146,37 +146,51 @@ public class LabyrinthApp extends Application {
                 if(selectedMethod.equals("DFS")) {
                     System.out.println("Resolving using DFS");
                     // Code to resolve labyrinth using DFS
-                    if(Solver.dfs(CurrentMaze)){
-                        System.out.println("Path found");
-                    }
-                    else{
-                        System.out.println("No path found");
-                    }
-                    generateWay(labyrinthArea, CurrentMaze);
+                    SolverSbS solver = new SolverSbS(CurrentMaze, "dfs");
+                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, 0, () -> {
+                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, 0);
+                    });
+                    
                 } else if (selectedMethod.equals("BFS")) {
                     System.out.println("Resolving using BFS");
                     // Code to resolve labyrinth using BFS
-                    if(Solver.bfs(CurrentMaze)){
-                        System.out.println("Path found");
-                    }
-                    else{
-                        System.out.println("No path found");
-                    }
-                    generateWay(labyrinthArea, CurrentMaze);
+                    SolverSbS solver = new SolverSbS(CurrentMaze, "bfs");
+                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, 0, () -> {
+                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, 0);
+                    });
+                } else if (selectedMethod.equals("A*")) {
+                    System.out.println("Resolving using A*");
+                    // Code to resolve labyrinth using A*
+                    SolverSbS solver = new SolverSbS(CurrentMaze, "astar");
+                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea,0, () -> {
+                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea,0);
+                    });
+                } else if(selectedMethod.equals("DFS SbS")) {
+                    System.out.println("Resolving using DFS");
+                    // Code to resolve labyrinth using DFS
+                    SolverSbS solver = new SolverSbS(CurrentMaze, "dfs");
+                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, 0.025, () -> {
+                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, 0.025);
+                    });
+                    
+                } else if (selectedMethod.equals("BFS SbS")) {
+                    System.out.println("Resolving using BFS");
+                    // Code to resolve labyrinth using BFS
+                    SolverSbS solver = new SolverSbS(CurrentMaze, "bfs");
+                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, 0.025, () -> {
+                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, 0.025);
+                    });
+                } else if (selectedMethod.equals("A* SbS")) {
+                    System.out.println("Resolving using A*");
+                    // Code to resolve labyrinth using A*
+                    SolverSbS solver = new SolverSbS(CurrentMaze, "astar");
+                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea,0.025, () -> {
+                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea,0.025);
+                    });
                 } else if (selectedMethod.equals("Dijkstra")) {
                     System.out.println("Resolving using Dijkstra");
                     // Code to resolve labyrinth using Dijkstra
                     if(Solver.dijkstra(CurrentMaze)){
-                        System.out.println("Path found");
-                    }
-                    else{
-                        System.out.println("No path found");
-                    }
-                    generateWay(labyrinthArea, CurrentMaze);
-                } else if (selectedMethod.equals("A*")) {
-                    System.out.println("Resolving using A*");
-                    // Code to resolve labyrinth using A*
-                    if(Solver.aStar(CurrentMaze)){
                         System.out.println("Path found");
                     }
                     else{
@@ -225,7 +239,7 @@ public class LabyrinthApp extends Application {
         // ############################################### btn 3 ###############################################
 
         ComboBox<String> resolutionMethods = new ComboBox<>();
-        resolutionMethods.getItems().addAll("DFS", "BFS", "Dijkstra", "A*", "WallFollowerLeft", "WallFollowerRight");
+        resolutionMethods.getItems().addAll("DFS", "BFS", "A*", "DFS SbS", "BFS SbS", "A* SbS", "Dijkstra", "WallFollowerLeft", "WallFollowerRight");
         resolutionMethods.setPromptText("Select Resolution Method");
         resolutionMethods.setOnAction(e -> {
             selectedMethod = resolutionMethods.getValue();
@@ -328,6 +342,33 @@ public class LabyrinthApp extends Application {
         else{
             return Y;
         }
+    }
+
+    public void GenerateStepByStepWayFirstStep(Maze maze, SolverSbS solver, Pane labyrinthArea, double speed, Runnable onFinish) {
+        PauseTransition pause = new PauseTransition(Duration.seconds(speed));
+        pause.setOnFinished(event -> {
+            boolean end = solver.next_step();
+            generateWay(labyrinthArea, CurrentMaze);
+            if (!end) {
+                GenerateStepByStepWayFirstStep(maze, solver, labyrinthArea, speed, onFinish);
+            }
+            else {
+                onFinish.run();
+            }
+        });
+        pause.play();
+    }
+
+    public void GenerateStepByStepWayLastStep(Maze maze, SolverSbS solver, Pane labyrinthArea, double speed) {
+        PauseTransition pause = new PauseTransition(Duration.seconds(speed));
+        pause.setOnFinished(event -> {
+            boolean end = solver.find_path_step();
+            generateWay(labyrinthArea, CurrentMaze);
+            if (!end) {
+                GenerateStepByStepWayLastStep(maze, solver, labyrinthArea, speed);
+            }
+        });
+        pause.play();
     }
 
     // ca il faut que je puisse l'appeler mais faut pas le mettre ici
@@ -465,14 +506,7 @@ public class LabyrinthApp extends Application {
         pane.getChildren().clear();
         Group WayGroup = new Group();
         int CELL_SIZE = set_cell_size(maze);
-        boolean[][] visited = new boolean[maze.get_size()[0]][maze.get_size()[1]];
-        for (int i = 0; i < visited.length; i++) {
-            for (int j = 0; j < visited[i].length; j++) {
-                visited[i][j] = false;
-            }
-        }
-        visited[maze.getStartNode().get_coordinates()[0]][maze.getStartNode().get_coordinates()[1]] = true;
-        drawWay(pane, maze,maze.getStartNode(),CELL_SIZE, WayGroup, visited);
+        drawWay(pane, maze,CELL_SIZE, WayGroup);
         WayGroup.layoutXProperty().bind(pane.widthProperty().subtract(maze.get_size()[0] * CELL_SIZE).divide(2));
         WayGroup.layoutYProperty().bind(pane.heightProperty().subtract(maze.get_size()[1] * CELL_SIZE).divide(2));
         generateMaze(pane, maze);
@@ -480,48 +514,60 @@ public class LabyrinthApp extends Application {
         System.out.println("Way generated");
     }
 
-    public void drawWay(Pane pane, Maze maze, Node CurrentNode,int CELL_SIZE, Group WayGroup, boolean[][] visited) {
-        if(CurrentNode == null){
-            return;
+    public void drawWay(Pane pane, Maze maze,int CELL_SIZE, Group WayGroup) {
+        int CIRCLE_SIZE = 1;
+        if (CELL_SIZE/7 > 0){
+            CIRCLE_SIZE = CELL_SIZE / 7;
         }
-        int[][] directions = {
-            {1, 0},  
-            {0, 1},  
-            {-1, 0}, 
-            {0, -1}  
-        };
-        int[] coordinates = CurrentNode.get_coordinates();
-        for (int[] d : directions) {
-            int nx = coordinates[0] + d[0];
-            int ny = coordinates[1] + d[1];
-        
-            if (maze.get_node(nx, ny) != null &&
-                maze.in_edge_list(CurrentNode, maze.get_node(nx, ny))>=0 &&
-                !visited[nx][ny] &&
-                maze.get_node(nx, ny).getMark() != null) {
-                Circle WayCircle = new Circle((coordinates[0] + d[0] + 0.5) * CELL_SIZE,
-                                              (coordinates[1] + d[1] + 0.5) * CELL_SIZE,
-                                              CELL_SIZE / 7);
-                Circle MiddleWayCircle = new Circle((coordinates[0] + 0.5 + d[0] * 0.5) * CELL_SIZE,
-                                                    (coordinates[1] + 0.5 + d[1] * 0.5) * CELL_SIZE,
-                                                    CELL_SIZE / 7);
-                WayGroup.getChildren().add(WayCircle);
-                WayGroup.getChildren().add(MiddleWayCircle);
-        
-                if(maze.get_node(nx, ny) == maze.getEndNode()){
-                    WayGroup.getChildren().remove(WayCircle);
-                    MiddleWayCircle.getStyleClass().add("way");
+        for(int i = 0; i < maze.get_size()[0]; i++){
+            for(int j = 0; j < maze.get_size()[1]; j++){
+
+                int[] coordinates = maze.get_node(i,j).get_coordinates();
+                if (maze.get_node(coordinates[0],coordinates[1]).getMark() != null) {
+                    Circle WayCircle = new Circle((coordinates[0] + 0.5) * CELL_SIZE,
+                                                  (coordinates[1] + 0.5) * CELL_SIZE,
+                                                   CIRCLE_SIZE);
+                    WayGroup.getChildren().add(WayCircle);
+                    if(maze.get_node(coordinates[0],coordinates[1]) == maze.getEndNode()){
+                        WayGroup.getChildren().remove(WayCircle);
+                    }
+                    if(maze.get_node(coordinates[0],coordinates[1]) == maze.getStartNode()){
+                        WayGroup.getChildren().remove(WayCircle);
+                    }
+                    else if (maze.get_node(coordinates[0],coordinates[1]).isPath()) {
+                        WayCircle.getStyleClass().add("way");
+                    } 
+                    else {
+                        WayCircle.getStyleClass().add("visited");
+                    }
                 }
-                else if (maze.get_node(nx, ny).isPath()) {
-                    WayCircle.getStyleClass().add("way");
-                    MiddleWayCircle.getStyleClass().add("way");
-                } 
-                else {
-                    WayCircle.getStyleClass().add("visited");
-                    MiddleWayCircle.getStyleClass().add("visited");
+                int[][] directions = {
+                    {1, 0},  
+                    {0, 1},  
+                    {-1, 0}, 
+                    {0, -1}  
+                };
+                for (int[] d : directions) {
+                    int nx = coordinates[0] + d[0];
+                    int ny = coordinates[1] + d[1];
+                
+                    if (maze.get_node(nx, ny) != null &&
+                        maze.in_edge_list(maze.get_node(coordinates[0],coordinates[1]), maze.get_node(nx, ny))>=0 &&
+                        maze.get_node(nx, ny).getMark() != null &&
+                        maze.get_node(coordinates[0],coordinates[1]).getMark() != null) {
+                        
+                        Circle MiddleWayCircle = new Circle((coordinates[0] + 0.5 + d[0] * 0.5) * CELL_SIZE,
+                                                            (coordinates[1] + 0.5 + d[1] * 0.5) * CELL_SIZE,
+                                                            CIRCLE_SIZE);
+                        WayGroup.getChildren().add(MiddleWayCircle);
+                        if (maze.get_node(nx, ny).isPath() && maze.get_node(coordinates[0],coordinates[1]).isPath()) {
+                            MiddleWayCircle.getStyleClass().add("way");
+                        } 
+                        else {
+                            MiddleWayCircle.getStyleClass().add("visited");
+                        }
+                    }
                 }
-                visited[nx][ny] = true;
-                drawWay(pane, maze, maze.get_node(nx, ny), CELL_SIZE, WayGroup, visited);
             }
         }
     }
