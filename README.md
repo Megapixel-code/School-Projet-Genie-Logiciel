@@ -96,17 +96,17 @@ Requires Java 17 and a compatible JavaFX SDK:
 
 ## Project Structure
 
-/src
-- ├── MainInteract.java
-- ├── LabyrinthApp.java
-- ├── Maze.java
-- ├── PerfectMaze.java
-- ├── ImperfectMaze.java
-- ├── ImperfectMazeKruskal.java
-- ├── Solver.java
-- ├── SolverSbS.java
-- ├── Node.java
-- ├── Edge.java
+/src  
+├── MainInteract.java  
+├── LabyrinthApp.java  
+├── Maze.java  
+├── PerfectMaze.java  
+├── ImperfectMaze.java  
+├── ImperfectMazeKruskal.java  
+├── Solver.java  
+├── SolverSbS.java  
+├── Node.java  
+├── Edge.java  
 
 
 ---
