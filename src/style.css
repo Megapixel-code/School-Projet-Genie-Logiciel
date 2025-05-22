@@ -130,6 +130,15 @@
     -fx-opacity: 1;
     -fx-fill: #6f6f6f;
 }
+.way{
+    -fx-opacity: 1;
+    -fx-fill: #ffffff;
+}
+.visited{
+    -fx-opacity: 1;
+    -fx-fill: #7a7a7a;
+}
+
 
 /*##################################################################################################*/
 
@@ -140,6 +149,7 @@
 .text-field {
     -fx-background-color: linear-gradient(#ffcc00, #ff9900);
     -fx-text-fill: #000000;
+    -fx-prompt-text-fill: #000000;
     -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-border-color: #ff6600;

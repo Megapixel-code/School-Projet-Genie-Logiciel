@@ -1,3 +1,7 @@
+import java.io.FileWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 abstract class Maze {
@@ -18,6 +22,9 @@ abstract class Maze {
 
     private Map<Node, List<Node>> adjacencyList = new HashMap<>();
 
+    public Maze(){
+        this(2, 2, 0);
+    }
 
     public Maze(int x, int y, int seed){
         /*
@@ -204,9 +211,9 @@ abstract class Maze {
                 } else if (sommet.isPath()) {
                     display[disp_y][disp_x] = "\u001B[35m " + sommet.getMark() + " \u001B[0m";
                 } else if ("V".equals(sommet.getMark())){
-                        display[disp_y][disp_x] = "\u001B[37m " + sommet.getMark() + " \u001B[0m";
+                    display[disp_y][disp_x] = "\u001B[37m " + sommet.getMark() + " \u001B[0m";
                 }else {
-                        display[disp_y][disp_x] = " . ";
+                    display[disp_y][disp_x] = " . ";
                 }
 
             }
@@ -231,7 +238,6 @@ abstract class Maze {
                 System.out.print(c);
             System.out.println();
         }
-        clearMarks();
     }
 
     // pour génération du labyrinthe imparfait ET modification locale du laby
@@ -326,6 +332,189 @@ abstract class Maze {
                     break;
                 }
             }
+        }
+    }
+
+    public void save_maze(String save_name){
+        /*
+         * saves the maze in the following manner :
+         * first line : sizex sizey
+         * second line : seed
+         * third line : start coord, end coords
+         * rest : pos edge one, pos edge two
+         */
+
+        int[] size = this.get_size();
+
+        List<String> buffer = new ArrayList<String>();
+        String pre_buffer = "";
+
+        // -- add the first four lines to the buffer --
+        // add the size
+        buffer.add(size[0]+" "+size[1]+"\n");
+        // add the seed
+        buffer.add(this.seed + "\n");
+        // add the start and end node
+        Node[] n_array_temp = {this.startNode, this.endNode};
+        for (Node n : n_array_temp){
+            int[] coord = n.get_coordinates();
+            pre_buffer += coord[0] + " " + coord[1] + " ";
+        }
+        pre_buffer += "\n";
+        buffer.add(pre_buffer);
+
+        // add the rest to the buffer
+        for (Edge e : this.edge_list) {
+            Node[] tuple_node = e.get_nodes();
+            for (int i = 0; i < 2; i++){
+                int[] coords = tuple_node[i].get_coordinates();
+                if (i == 0){
+                    pre_buffer = coords[0] + " " + coords[1] + " ";
+                }
+                else {
+                    pre_buffer = coords[0] + " " + coords[1] + "\n";
+                }
+                buffer.add(pre_buffer);
+            }
+        }
+
+        //creating the file if the file doesnt exist
+        try {
+            File file = new File("backup/"+save_name);
+            file.getParentFile().mkdirs();
+            if (file.createNewFile()) {
+                System.out.println("File created: " + file.getName());
+            } else {
+                System.out.println("File already exists, the data will be overwritten");
+            }
+        } catch (IOException e) {
+            System.out.println("Error while creating the file");
+            e.printStackTrace();
+        }
+
+        //writing the content of the buffer inside the file
+        try {
+            FileWriter my_file = new FileWriter("backup/" + save_name);
+            // empties the buffer in the file
+            for (String s : buffer){
+                my_file.write(s);
+            }
+            my_file.close();
+        } catch (IOException e) {
+            System.out.println("error while saving the file");
+            e.printStackTrace();
+        }
+    }
+
+    public void restore_maze(String save_name){
+        try {
+            File my_file = new File("backup/" + save_name);
+            Scanner my_scanner = new Scanner(my_file);
+
+            // -- gets the first line of the data file and init the size and node_array
+            // parses through the first line
+            String data = my_scanner.nextLine();
+            String[] s = data.split(" ");
+            int[] out = new int[s.length];
+            for (int i = 0; i < s.length; i++){
+                out[i] = Integer.parseInt(s[i]);
+            }
+            if (s.length != 2){
+                throw new IllegalArgumentException("invalid save file");
+            }
+            // then saves the size and node_array in the maze object
+            this.size_x = out[0];
+            this.size_y = out[1];
+            this.node_array = new Node[size_x][size_y];
+            for (int i = 0; i < this.size_x; i++){
+                for (int j = 0; j < this.size_y; j++){
+                    Node node = new Node(i,j);
+                    this.node_array[i][j] = node;
+                }
+            }
+
+            // -- gets the second line of the data file and set the seed and the rng
+            data = my_scanner.nextLine();
+            this.seed = Integer.parseInt(data);
+            this.rng = new Random(this.seed);
+
+            // -- gets the third line and set the startnode and endnode
+            data = my_scanner.nextLine();
+            s = data.split(" ");
+            out = new int[s.length];
+            for (int i = 0; i < s.length; i++){
+                out[i] = Integer.parseInt(s[i]);
+            }
+            if (s.length != 4){
+                throw new IllegalArgumentException("invalid save file");
+            }
+            this.startNode = get_node(out[0], out[1]);
+            this.endNode = get_node(out[2], out[3]);
+
+            // -- get the edges and saves them in the maze object
+            Node n_1;
+            Node n_2;
+            Edge e;
+            // reset the edge_list
+            this.edge_list = new ArrayList<Edge>();
+            // loop through all of the data
+            while (my_scanner.hasNextLine()){
+                // parses the line to get the two nodes positions
+                data = my_scanner.nextLine();
+                s = data.split(" ");
+                out = new int[s.length];
+                for (int i = 0; i < s.length; i++){
+                    out[i] = Integer.parseInt(s[i]);
+                }
+                if (s.length != 4){
+                    throw new IllegalArgumentException("invalid save file");
+                }
+                // saves the edge
+                n_1 = get_node(out[0], out[1]);
+                n_2 = get_node(out[2], out[3]);
+                e = new Edge(n_1, n_2);
+                edge_list.add(e);
+            }
+        } catch (FileNotFoundException e){
+            System.out.println("Error occured while restoring the maze :");
+            e.printStackTrace();
+        }
+    }
+
+    static public String[] get_backup_names(){
+        /*
+         * will return a array of all the files name in the backup folder
+         * is used to chose the save we want to restore
+         */
+        File folder = new File("backup");
+        File[] list_of_files = folder.listFiles();
+        int iterator = 0;
+        if (list_of_files != null){
+            String[] buffer = new String[list_of_files.length];
+            for (File f : list_of_files){
+                if (f.isFile()){
+                    buffer[iterator] = f.getName();
+                    iterator++;
+                }
+            }
+            String[] result = Arrays.copyOf(buffer, iterator);
+            return result;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void delete_backup(String save_name){
+        /*
+         * delete the file with the save_name in the backup folder
+         */
+        File my_file = new File("backup/" + save_name);
+        if (my_file.delete()){
+            System.out.println("file deleted sucessfully");
+        }
+        else {
+            System.out.println("problem trying to delete the file");
         }
     }
 }

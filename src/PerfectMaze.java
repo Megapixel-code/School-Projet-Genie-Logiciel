@@ -3,6 +3,11 @@ import java.util.*;
 class PerfectMaze extends Maze {
     private Node last_node;
 
+    public PerfectMaze() {
+        super();
+        this.last_node = null;
+    }
+
     public PerfectMaze(int x, int y, int seed, int[] start, int[] end) {
         super(x, y, seed, start, end);
         this.last_node = super.get_node(start[0], start[1]);

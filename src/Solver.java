@@ -36,6 +36,7 @@ public class Solver {
                     parent.put(neighbor, current);
                     queue.add(neighbor);
                     neighbor.setMark("V");
+                    //maze.displayTextMaze();
                 }
             }
         }
@@ -76,6 +77,7 @@ public class Solver {
                     parent.put(neighbor, current);
                     stack.push(neighbor);
                     neighbor.setMark("V");
+                    //maze.displayTextMaze();
                 }
             }
         }
@@ -153,6 +155,7 @@ public class Solver {
                     if (!openSet.contains(neighbor)) {
                         openSet.add(neighbor);
                         neighbor.setMark("V");
+                        maze.displayTextMaze();
                     }
                 }
             }
@@ -213,6 +216,9 @@ public class Solver {
                         queue.remove(neighbor);
                     }
                     queue.add(neighbor);
+
+                    neighbor.setMark("V");
+                    //maze.displayTextMaze();
                 }
             }
         }
@@ -272,6 +278,7 @@ public class Solver {
                         // marquage immédiat
                         current.setPath(true);
                         current.setMark("L");
+                        //maze.displayTextMaze();
 
                         moved = true;
                         break;
@@ -337,6 +344,7 @@ public class Solver {
 
                         current.setPath(true);
                         current.setMark("R");
+                        //maze.displayTextMaze();
 
                         moved = true;
                         break;

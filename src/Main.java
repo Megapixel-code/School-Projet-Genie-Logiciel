@@ -10,29 +10,28 @@ class Main {
         mazePerfect.displayTextMaze();
         System.out.println("\n");
 
-
-        //Resolution BFS
-        Solver.bfs(mazePerfect);
+     /*   //Resolution BFS
+       Solver.bfs(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect BFS!\n\u001B[0m");
         mazePerfect.displayTextMaze();
         System.out.println("\n");
 
 
-        //Resolution DFS
-        Solver.dfs(mazePerfect);
+       //Resolution DFS
+      Solver.dfs(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect DFS!\n\u001B[0m");
         mazePerfect.displayTextMaze();
         System.out.println("\n");
 
 
-        //Resolution A*
+        */ //Resolution A*
         Solver.aStar(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect aStar!\n\u001B[0m");
         mazePerfect.displayTextMaze();
         System.out.println("\n");
 
 
-        //Resolution DIJKSTRA
+     /* //Resolution DIJKSTRA
         Solver.dijkstra(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect Dijkstra!\n\u001B[0m");
         mazePerfect.displayTextMaze();System.out.println("\n");
@@ -73,8 +72,8 @@ class Main {
          */
 
         // Initialisation Imparfait
-        System.out.print("\u001B[33mGeneration Imperfect !\n\u001B[0m");
-        ImperfectMazeKruskal mazeImperfect = new ImperfectMazeKruskal(20, 8, 600, start, end);
+       /* System.out.print("\u001B[33mGeneration Imperfect !\n\u001B[0m");
+        ImperfectMaze mazeImperfect = new ImperfectMaze(20, 8, 600, start, end);
         mazeImperfect.displayTextMaze();
         System.out.println("\n");
 

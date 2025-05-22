@@ -53,9 +53,16 @@ class Node {
         return this.path;
     }
 
+    public boolean is_visited(){
+        return (this.mark_Solver != null);
+    }
 
     public void setMark(String mark) {
         this.mark_Solver = mark;
+    }
+
+    public void resetMark(){
+        this.mark_Solver = null;
     }
 
     public String getMark() {
