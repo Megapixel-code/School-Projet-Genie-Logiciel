@@ -4,14 +4,14 @@ class Main {
        //Initialisation parfait
         int[] start = {0, 0};
         int[] end = {19, 7};
-        PerfectMaze mazePerfect = new PerfectMaze(20, 8, 15, start, end);
-        mazePerfect.generateKruskal();
+        ImperfectMaze maze = new ImperfectMaze(20, 8, 2, start, end);
+        maze.restore_maze("crashbfs");
         System.out.print("\u001B[33mGeneration Perfect !\n\u001B[0m");
-        mazePerfect.displayTextMaze();
+        maze.displayTextMaze();
         System.out.println("\n");
 
         // SOLVER SBS DFS 
-        SolverSbS solver = new SolverSbS(mazePerfect, "dfs");
+        SolverSbS solver = new SolverSbS(maze, "dfs");
 
         while (!(solver.next_step())) {
             try {
@@ -20,7 +20,7 @@ class Main {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            mazePerfect.displayTextMaze();
+            maze.displayTextMaze();
         }
 
         while (!(solver.find_path_step())) {
@@ -30,11 +30,11 @@ class Main {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            mazePerfect.displayTextMaze();
+            maze.displayTextMaze();
         }
 
         // SOLVER SBS bfs
-        solver = new SolverSbS(mazePerfect, "bfs");
+        solver = new SolverSbS(maze, "bfs");
 
         while (!(solver.next_step())) {
             try {
@@ -43,7 +43,7 @@ class Main {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            mazePerfect.displayTextMaze();
+            maze.displayTextMaze();
         }
 
         while (!(solver.find_path_step())) {
@@ -53,35 +53,35 @@ class Main {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            mazePerfect.displayTextMaze();
+            maze.displayTextMaze();
         }
 
         // SOLVER SBS A*
-        solver = new SolverSbS(mazePerfect, "astar");
+        solver = new SolverSbS(maze, "astar");
 
         while (!(solver.next_step())) {
             try {
-                Thread.sleep(200);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            mazePerfect.displayTextMaze();
+            maze.displayTextMaze();
         }
 
         while (!(solver.find_path_step())) {
             try {
-                Thread.sleep(200);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            mazePerfect.displayTextMaze();
+            maze.displayTextMaze();
         }
 
         /* 
-        mazePerfect.save_maze("test124");
-        mazePerfect.displayTextMaze();
+        maze.save_maze("test124");
+        maze.displayTextMaze();
         int[] pos = {0, 0};
         int[] pos2 = {0, 1};
         Maze new_maze = new PerfectMaze(2, 2, 1, pos, pos2);

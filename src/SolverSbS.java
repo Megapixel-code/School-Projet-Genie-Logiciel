@@ -236,6 +236,11 @@ public class SolverSbS {
          * dfs next step
          */
 
+        // if the stack is empty, the program is finished 
+        if (stack.isEmpty()){
+            return true;
+        }
+
         // gets the last unvisited node in stack
         this.last_node = stack.pop();
         while (this.last_node.is_visited()){
@@ -270,12 +275,17 @@ public class SolverSbS {
         /*
          * bfs next step
          */
+        
+        // if the list is empty, program is finished
+        if (fifo.isEmpty()){
+            return true;
+        }
 
         // gets the last unvisited node in fifo
         this.last_node = fifo.removeFirst();
         while (this.last_node.is_visited()){
-            // if the stack is empty, program is finished
-            if (stack.isEmpty()){
+            // if the list is empty, program is finished
+            if (fifo.isEmpty()){
                 return true;
             }
             this.last_node = fifo.removeFirst();
@@ -354,5 +364,9 @@ public class SolverSbS {
             }
         }
         return false;
+    }
+
+    private boolean dijkstra_next_step(){
+        
     }
 }
