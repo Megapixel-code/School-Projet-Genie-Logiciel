@@ -3,9 +3,9 @@ class Main {
 
        //Initialisation parfait
         int[] start = {0, 0};
-        int[] end = {19, 7};
-        PerfectMaze mazePerfect = new PerfectMaze(20, 8, 600, start, end);
-        mazePerfect.generateKruskal();
+        int[] end = {14, 14};
+        PerfectMaze mazePerfect = new PerfectMaze(15, 15, -930569183, start, end);
+        mazePerfect.generateBFS();
         System.out.print("\u001B[33mGeneration Perfect !\n\u001B[0m");
         mazePerfect.displayTextMaze();
         System.out.println("\n");
@@ -24,19 +24,19 @@ class Main {
         System.out.println("\n");
 
 
-        */ //Resolution A*
+         //Resolution A*
         Solver.aStar(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect aStar!\n\u001B[0m");
         mazePerfect.displayTextMaze();
         System.out.println("\n");
 
 
-     /* //Resolution DIJKSTRA
+      //Resolution DIJKSTRA
         Solver.dijkstra(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect Dijkstra!\n\u001B[0m");
         mazePerfect.displayTextMaze();System.out.println("\n");
 
-
+*/
         //Resolution WALL FOLLOWER RIGHT
         Solver.wallFollowerRight(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect Wall Follower Right !\n\u001B[0m");
@@ -44,13 +44,12 @@ class Main {
         System.out.println("\n");
 
 
-        //Resolution WALL FOLLOWER Left
+       //Resolution WALL FOLLOWER Left
         Solver.wallFollowerLeft(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect Wall Follower Left !\n\u001B[0m");
         mazePerfect.displayTextMaze();System.out.println("\n");
 
-
-        // Ajout manuel de mur
+   /*  // Ajout manuel de mur
         Node a = mazePerfect.get_node(1, 1);
         Node b = mazePerfect.get_node(2, 1);
 

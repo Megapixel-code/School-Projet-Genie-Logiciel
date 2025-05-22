@@ -76,6 +76,24 @@ public class MainInteract {
                 endY = scanner.nextInt();
             } while (endY < 0 || endY >= sizeY);
 
+            while (startX == endX && startY == endY) {
+                System.out.println("Start and End cannot be the same! Please enter different end coordinates.");
+
+                System.out.print("End X? ");
+                while (!scanner.hasNextInt()) {
+                    System.out.print("Invalid input. End X? ");
+                    scanner.next();
+                }
+                endX = scanner.nextInt();
+
+                System.out.print("End Y? ");
+                while (!scanner.hasNextInt()) {
+                    System.out.print("Invalid input. End Y? ");
+                    scanner.next();
+                }
+                endY = scanner.nextInt();
+            }
+
             scanner.nextLine(); // securité car apres on fais un nextline
 
             // kruskal ou bfs
