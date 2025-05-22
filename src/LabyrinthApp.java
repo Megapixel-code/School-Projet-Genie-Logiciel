@@ -5,6 +5,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
@@ -24,25 +25,57 @@ import javafx.util.Duration;
 
 
 public class LabyrinthApp extends Application {
+    private TextArea terminalArea;
     private String selectedMethod = null;
     private String selectedGLMethod = null;
     private String generatedLabyrinth = null;
     private Maze CurrentMaze = null;
+
+    // ############################################### terminal in javaFX ###############################################
+
+    private void printToTerminal(String message) {
+        terminalArea.appendText(message + "\n");
+    }
+
+
     @Override
     public void start(Stage primaryStage) {
 
         primaryStage.setTitle("Labyrinth");
 
         BorderPane root = new BorderPane();
+
+
+        // Pane pour le labyrinthe
         Pane labyrinthArea = new Pane();
         labyrinthArea.getStyleClass().add("labyrinth-area");
-        root.setCenter(labyrinthArea);
+
+        // Terminal JavaFX
+        terminalArea = new TextArea();
+        terminalArea.setEditable(false);
+        terminalArea.setWrapText(true);
+        terminalArea.setPrefWidth(300); // largeur fixe pour le terminal
+        terminalArea.getStyleClass().add("terminal-area");
+
+        // HBox pour split l'affichage
+        HBox centerBox = new HBox();
+        centerBox.getChildren().addAll(labyrinthArea, terminalArea);
+
+        // Proportions : 3/4 pour le laby, 1/4 pour le terminal
+        labyrinthArea.prefWidthProperty().bind(centerBox.widthProperty().multiply(0.75));
+        labyrinthArea.prefHeightProperty().bind(centerBox.heightProperty());
+        terminalArea.prefWidthProperty().bind(centerBox.widthProperty().multiply(0.25));
+        terminalArea.prefHeightProperty().bind(centerBox.heightProperty());
+
+        root.setCenter(centerBox);
 
         HBox buttonBox = new HBox();
         buttonBox.setSpacing(10);
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.getStyleClass().add("hbox");
         root.setBottom(buttonBox);
+
+
 
         // ############################################### btn taille laby ###############################################
 
@@ -68,20 +101,20 @@ public class LabyrinthApp extends Application {
             try {
                 mazeWidth[0] = Integer.parseInt(widthField.getText());
                 mazeHeight[0] = Integer.parseInt(heightField.getText());
-                System.out.println("Nouvelle taille : " + mazeWidth[0] + " x " + mazeHeight[0]);
+                printToTerminal("Nouvelle taille : " + mazeWidth[0] + " x " + mazeHeight[0]);
             } catch (NumberFormatException ex) {
-                System.out.println("Veuillez entrer des nombres valides.");
+                printToTerminal("Veuillez entrer des nombres valides.");
             }
             String seedText = seedField.getText();
             if (seedText == null || seedText.trim().isEmpty()) {
                 mazeSeed[0] = new Random().nextInt(); 
-                System.out.println("Aucune seed fournie. Utilisation d'une seed aléatoire : " + mazeSeed[0]);
+                printToTerminal("Aucune seed fournie. Utilisation d'une seed aléatoire : " + mazeSeed[0]);
             } else {
                 try {
                     mazeSeed[0] = Integer.parseInt(seedText);
-                    System.out.println("Labyrinth loaded with seed: " + mazeSeed[0]);
+                    printToTerminal("Labyrinth loaded with seed: " + mazeSeed[0]);
                 } catch (NumberFormatException ex) {
-                    System.out.println("Veuillez entrer une seed valide (nombre entier).");
+                    printToTerminal("Veuillez entrer une seed valide (nombre entier).");
                 }
             }
             
@@ -92,10 +125,10 @@ public class LabyrinthApp extends Application {
         Button generateLabyrinth = new Button("Generate Labyrinth");
         generateLabyrinth.setOnAction(e -> {
             if (selectedGLMethod == null) {
-                System.out.println("Please select a generation method first.");
+                printToTerminal("Please select a generation method first.");
             } else if (selectedGLMethod == "perfect maze") {
                 generatedLabyrinth = "Perfect Labyrinth";
-                System.out.println("Generating perfect labyrinth");
+                printToTerminal("Generating perfect labyrinth");
                 int[] end = {mazeWidth[0]-1, mazeHeight[0]-1};
                 int[] start = {0, 0};
                 PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], mazeSeed[0], start, end);
@@ -111,7 +144,7 @@ public class LabyrinthApp extends Application {
                 generatedLabyrinth = "Imperfect Labyrinth";
             } else if (selectedGLMethod == "Step-by-step perfect maze"){
                 generatedLabyrinth = "Perfect Labyrinth";
-                System.out.println("Generating perfect labyrinth step by step");
+                printToTerminal("Generating perfect labyrinth step by step");
                 int[] end = {mazeWidth[0]-1, mazeHeight[0]-1};
                 int[] start = {0, 0};
                 PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], mazeSeed[0], start, end);
@@ -132,7 +165,7 @@ public class LabyrinthApp extends Application {
         generationMethods.setOnAction(e -> {
             selectedGLMethod = generationMethods.getValue();
             // mettre code pour résoudre le labyrinthe ici
-            System.out.println("Selected method: " + selectedGLMethod);
+            printToTerminal("Selected method: " + selectedGLMethod);
         });
 
         // ############################################### btn 4 ###############################################
@@ -141,13 +174,13 @@ public class LabyrinthApp extends Application {
         resolveButton.setOnAction(e -> {
 
             if (selectedMethod == null && generatedLabyrinth == null){
-                System.out.println("Please select a resolution method and generate a labyrinth first.");
+                printToTerminal("Please select a resolution method and generate a labyrinth first.");
             } else if (selectedMethod == null) {
-                System.out.println("Please select a resolution method first.");
+                printToTerminal("Please select a resolution method first.");
             } else if (generatedLabyrinth  == null) {
-                System.out.println("Please generate a labyrinth first.");
+                printToTerminal("Please generate a labyrinth first.");
             } else {
-                System.out.println("Labyrinth resolution using " + selectedMethod + " method...");
+                printToTerminal("Labyrinth resolution using " + selectedMethod + " method...");
                 if(selectedMethod.equals("DFS")) {
                     // Code to resolve labyrinth using DFS
                     SolverSbS solver = new SolverSbS(CurrentMaze, "dfs");
@@ -189,37 +222,37 @@ public class LabyrinthApp extends Application {
                 } else if (selectedMethod.equals("Dijkstra")) {
                     // Code to resolve labyrinth using Dijkstra
                     if(Solver.dijkstra(CurrentMaze)){
-                        System.out.println("Path found");
+                        printToTerminal("Path found");
                     }
                     else{
-                        System.out.println("No path found");
+                        printToTerminal("No path found");
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                 } else if (selectedMethod.equals("WallFollowerLeft")) {
                     // Code to resolve labyrinth using A*
                     if(Solver.aStar(CurrentMaze)){
-                        System.out.println("Path found");
+                        printToTerminal("Path found");
                     }
                     else{
-                        System.out.println("No path found");
+                        printToTerminal("No path found");
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                 } else if (selectedMethod.equals("WallFollowerRight")) {
                     // Code to resolve labyrinth using A*
                     if(Solver.aStar(CurrentMaze)){
-                        System.out.println("Path found");
+                        printToTerminal("Path found");
                     }
                     else{
-                        System.out.println("No path found");
+                        printToTerminal("No path found");
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                 } else if (selectedMethod.equals("A*")) {
                     // Code to resolve labyrinth using A*
                     if(Solver.aStar(CurrentMaze)){
-                        System.out.println("Path found");
+                        printToTerminal("Path found");
                     }
                     else{
-                        System.out.println("No path found");
+                        printToTerminal("No path found");
                     }
                     generateWay(labyrinthArea, CurrentMaze);
             }
@@ -233,14 +266,14 @@ public class LabyrinthApp extends Application {
         resolutionMethods.setOnAction(e -> {
             selectedMethod = resolutionMethods.getValue();
             // mettre code pour résoudre le labyrinthe ici
-            System.out.println("Selected method: " + selectedMethod);
+            printToTerminal("Selected method: " + selectedMethod);
         });
 
         // ############################################### btn sauvegarder ###############################################
 
         Button saveLaby = new Button("Save Labyrinth");
         saveLaby.setOnAction(e -> {
-            System.out.println("Labyrinth saved");
+            printToTerminal("Labyrinth saved");
             // Code to save the labyrinth
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Nom du labyrinthe");
@@ -255,7 +288,7 @@ public class LabyrinthApp extends Application {
 
         Button loadLaby = new Button("Load Labyrinth");
         loadLaby.setOnAction(e -> {
-            System.out.println("Labyrinth loaded");
+            printToTerminal("Labyrinth loaded");
             // Code to load the labyrinth
             String[] mazeList = Maze.get_backup_names();
             ChoiceDialog<String> dialog = new ChoiceDialog<>(mazeList[0], mazeList);
@@ -279,13 +312,13 @@ public class LabyrinthApp extends Application {
 
         
         previousButton.setOnAction(e -> {
-            System.out.println("Previous button clicked");
+            printToTerminal("Previous button clicked");
             buttonBox.getChildren().removeAll(previousButton, resolveButton, resolutionMethods, loadLaby, saveLaby);
             buttonBox.getChildren().addAll(seedField, widthField, heightField, validateButton, generateLabyrinth, generationMethods, nextButton);
         });
 
         nextButton.setOnAction(e -> {
-            System.out.println("Next button clicked");
+            printToTerminal("Next button clicked");
             buttonBox.getChildren().removeAll(seedField, widthField, heightField, validateButton, generateLabyrinth, generationMethods, nextButton);
             buttonBox.getChildren().addAll(previousButton, resolveButton, resolutionMethods, loadLaby, saveLaby);
         });
@@ -442,53 +475,53 @@ public class LabyrinthApp extends Application {
         if (node1 != null && node2 != null) {
             if (maze.in_edge_list(node1, node2) >= 0) {
                 maze.remove_edge(maze.get_edge(node1, node2));
-                System.out.println("Wall added");
+                printToTerminal("Wall added");
             }
             else {
                 Edge edge = new Edge(node1, node2);
                 maze.add_edge(edge);
-                System.out.println("Wall removed");
+                printToTerminal("Wall removed");
             }
         }
         else {
-            System.out.println("Invalid coordinates for wall addition.");
+            printToTerminal("Invalid coordinates for wall addition.");
         }
         generateMaze(pane, maze);
     }
 
     public Boolean StartNodeClicked(Maze maze, BooleanProperty ChangeEndNode,Circle c) {
         if (ChangeEndNode.getValue()) {
-            System.out.println("End node already selected.");
+            printToTerminal("End node already selected.");
             return false;
         }
         c.getStyleClass().remove("start");
         c.getStyleClass().add("inChange");
-        System.out.println("Start node ready to change.");
+        printToTerminal("Start node ready to change.");
         return true;
     }
     public Boolean EndNodeClicked(Maze maze, BooleanProperty ChangeStartNode,Circle c) {
         if (ChangeStartNode.getValue()) {
-            System.out.println("Start node already selected.");
+            printToTerminal("Start node already selected.");
             return false;
         }
         c.getStyleClass().remove("end");
         c.getStyleClass().add("inChange");
-        System.out.println("End node ready to change.");
+        printToTerminal("End node ready to change.");
         return true;
     }
     public void NodeClicked(Pane pane, Maze maze, BooleanProperty ChangeStartNode,BooleanProperty ChangeEndNode,Node node) {
         if (ChangeStartNode.getValue()) {
             maze.set_StartNode(node.get_coordinates()[0], node.get_coordinates()[1]);
-            System.out.println("Start node changed to: " + node.get_coordinates()[0] + ", " + node.get_coordinates()[1]);
+            printToTerminal("Start node changed to: " + node.get_coordinates()[0] + ", " + node.get_coordinates()[1]);
             generateMaze(pane, maze);
         }
         if (ChangeEndNode.getValue()) {
             maze.set_EndNode(node.get_coordinates()[0], node.get_coordinates()[1]);
-            System.out.println("End node changed to: " + node.get_coordinates()[0] + ", " + node.get_coordinates()[1]);
+            printToTerminal("End node changed to: " + node.get_coordinates()[0] + ", " + node.get_coordinates()[1]);
             generateMaze(pane, maze);
         }
         else {
-            System.out.println("To change the path, select the Start or the End before");
+            printToTerminal("To change the path, select the Start or the End before");
         }
     }
 
@@ -501,7 +534,7 @@ public class LabyrinthApp extends Application {
         WayGroup.layoutYProperty().bind(pane.heightProperty().subtract(maze.get_size()[1] * CELL_SIZE).divide(2));
         generateMaze(pane, maze);
         pane.getChildren().add(WayGroup);
-        System.out.println("Way generated");
+        //printToTerminal("Way generated");
     }
 
     public void drawWay(Pane pane, Maze maze,int CELL_SIZE, Group WayGroup) {

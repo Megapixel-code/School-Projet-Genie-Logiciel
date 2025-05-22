@@ -142,7 +142,18 @@
 
 /*##################################################################################################*/
 
-
+.terminal-area {
+    -fx-background-color: #000000;
+    -fx-control-inner-background: #000000;
+    -fx-text-fill: #e0e0e0;
+    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-font-size: 15px;
+    -fx-border-color: #3333ff;
+    -fx-border-width: 5px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px;
+}
 
 /*##################################################################################################*/
 
