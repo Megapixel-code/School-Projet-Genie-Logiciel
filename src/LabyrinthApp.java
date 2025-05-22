@@ -54,7 +54,7 @@ public class LabyrinthApp extends Application {
         heightField.setPromptText("Hauteur");
         heightField.setMaxWidth(70);
 
-        Button validateButton = new Button("Validate Size");
+        Button validateButton = new Button("Validate Size/Seed");
 
         final int[] mazeWidth = {15};
         final int[] mazeHeight = {15};
@@ -139,12 +139,16 @@ public class LabyrinthApp extends Application {
 
         Button resolveButton = new Button("Resolve Labyrinth");
         resolveButton.setOnAction(e -> {
-            if (selectedMethod != null && generatedLabyrinth != null) {
+
+            if (selectedMethod == null && generatedLabyrinth == null){
+                System.out.println("Please select a resolution method and generate a labyrinth first.");
+            } else if (selectedMethod == null) {
+                System.out.println("Please select a resolution method first.");
+            } else if (generatedLabyrinth  == null) {
+                System.out.println("Please generate a labyrinth first.");
+            } else {
                 System.out.println("Labyrinth resolution using " + selectedMethod + " method...");
-                // mettre résoudre le labyrinthe ici !! il faut
-                //que le labyrinthe soit généré avant + faire attention à la méthgode de resolution
                 if(selectedMethod.equals("DFS")) {
-                    System.out.println("Resolving using DFS");
                     // Code to resolve labyrinth using DFS
                     SolverSbS solver = new SolverSbS(CurrentMaze, "dfs");
                     GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, 0, () -> {
@@ -152,43 +156,37 @@ public class LabyrinthApp extends Application {
                     });
                     
                 } else if (selectedMethod.equals("BFS")) {
-                    System.out.println("Resolving using BFS");
                     // Code to resolve labyrinth using BFS
                     SolverSbS solver = new SolverSbS(CurrentMaze, "bfs");
                     GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, 0, () -> {
                         GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, 0);
                     });
                 } else if (selectedMethod.equals("A*")) {
-                    System.out.println("Resolving using A*");
                     // Code to resolve labyrinth using A*
                     SolverSbS solver = new SolverSbS(CurrentMaze, "astar");
                     GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea,0, () -> {
                         GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea,0);
                     });
-                } else if(selectedMethod.equals("DFS SbS")) {
-                    System.out.println("Resolving using DFS");
+                } else if(selectedMethod.equals("DFS Step-by-step")) {
                     // Code to resolve labyrinth using DFS
                     SolverSbS solver = new SolverSbS(CurrentMaze, "dfs");
                     GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, 0.025, () -> {
                         GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, 0.025);
                     });
                     
-                } else if (selectedMethod.equals("BFS SbS")) {
-                    System.out.println("Resolving using BFS");
+                } else if (selectedMethod.equals("BFS Step-by-step")) {
                     // Code to resolve labyrinth using BFS
                     SolverSbS solver = new SolverSbS(CurrentMaze, "bfs");
                     GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, 0.025, () -> {
                         GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, 0.025);
                     });
-                } else if (selectedMethod.equals("A* SbS")) {
-                    System.out.println("Resolving using A*");
+                } else if (selectedMethod.equals("A* Step-by-step")) {
                     // Code to resolve labyrinth using A*
                     SolverSbS solver = new SolverSbS(CurrentMaze, "astar");
                     GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea,0.025, () -> {
                         GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea,0.025);
                     });
                 } else if (selectedMethod.equals("Dijkstra")) {
-                    System.out.println("Resolving using Dijkstra");
                     // Code to resolve labyrinth using Dijkstra
                     if(Solver.dijkstra(CurrentMaze)){
                         System.out.println("Path found");
@@ -198,7 +196,6 @@ public class LabyrinthApp extends Application {
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                 } else if (selectedMethod.equals("WallFollowerLeft")) {
-                    System.out.println("Resolving using Wall Follower Left");
                     // Code to resolve labyrinth using A*
                     if(Solver.aStar(CurrentMaze)){
                         System.out.println("Path found");
@@ -208,7 +205,6 @@ public class LabyrinthApp extends Application {
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                 } else if (selectedMethod.equals("WallFollowerRight")) {
-                    System.out.println("Resolving using Wall Follower Right");
                     // Code to resolve labyrinth using A*
                     if(Solver.aStar(CurrentMaze)){
                         System.out.println("Path found");
@@ -218,7 +214,6 @@ public class LabyrinthApp extends Application {
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                 } else if (selectedMethod.equals("A*")) {
-                    System.out.println("Resolving using A*");
                     // Code to resolve labyrinth using A*
                     if(Solver.aStar(CurrentMaze)){
                         System.out.println("Path found");
@@ -227,19 +222,13 @@ public class LabyrinthApp extends Application {
                         System.out.println("No path found");
                     }
                     generateWay(labyrinthArea, CurrentMaze);
-            } else if (generatedLabyrinth != null) {
-                System.out.println("Please select a resolution method first.");
-            } else if (selectedMethod != null) {
-                System.out.println("Please generate a labyrinth first.");
-            } else {
-                System.out.println("Please select a resolution method and generate a labyrinth first.");
             }
         }});
 
         // ############################################### btn 3 ###############################################
 
         ComboBox<String> resolutionMethods = new ComboBox<>();
-        resolutionMethods.getItems().addAll("DFS", "BFS", "A*", "DFS SbS", "BFS SbS", "A* SbS", "Dijkstra", "WallFollowerLeft", "WallFollowerRight");
+        resolutionMethods.getItems().addAll("DFS", "DFS Step-by-step", "BFS", "BFS Step-by-step", "A*", "A* Step-by-step", "Dijkstra", "WallFollowerLeft", "WallFollowerRight");
         resolutionMethods.setPromptText("Select Resolution Method");
         resolutionMethods.setOnAction(e -> {
             selectedMethod = resolutionMethods.getValue();
@@ -276,6 +265,7 @@ public class LabyrinthApp extends Application {
             Optional<String> result = dialog.showAndWait();
             if(CurrentMaze == null){
                 CurrentMaze = new PerfectMaze();
+                generatedLabyrinth  = "Loaded Labyrinth";
             }
             CurrentMaze.restore_maze(result.get());
             generateMaze(labyrinthArea, CurrentMaze);
