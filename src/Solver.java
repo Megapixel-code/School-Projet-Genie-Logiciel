@@ -155,7 +155,7 @@ public class Solver {
                     if (!openSet.contains(neighbor)) {
                         openSet.add(neighbor);
                         neighbor.setMark("V");
-                        maze.displayTextMaze();
+                       // maze.displayTextMaze();
                     }
                 }
             }
@@ -197,11 +197,11 @@ public class Solver {
                 Node n = end;
                 while (!n.equals(start)) {
                     n.setPath(true);
-                    n.setMark("K"); // D pour Dijkstra
+                    n.setMark("K"); // K pour Dijkstra
                     n = parent.get(n);
                 }
                 start.setPath(true);
-                start.setMark("D");
+                start.setMark("K");
                 return true;
             }
 
@@ -228,7 +228,7 @@ public class Solver {
     }
 
     //WALL FOLLOWER :
-    //Right
+    //Left
     public static boolean wallFollowerLeft(Maze maze) {
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
@@ -242,14 +242,14 @@ public class Solver {
         };
 
         Node current = start;
-        int dir = 1; // // on commence en regardant vers la droite
+        int dir = 3; // // on commence en regardant vers la gauche
 
         Map<Node, Node> parent = new HashMap<>();
         Set<Node> visited = new HashSet<>();
         visited.add(current);
 
-        current.setPath(true);
-        current.setMark("L");
+        //current.setPath(true);
+        current.setMark("V");
 
         int maxSteps = maze.get_node_array().length * maze.get_node_array()[0].length * 10; // limite de sécurité pour éviter boucle infini
         int steps = 0;
@@ -276,8 +276,10 @@ public class Solver {
                         dir = tryDirection;
 
                         // marquage immédiat
-                        current.setPath(true);
-                        current.setMark("L");
+                        //current.setPath(true);
+                        //current.setMark("L");
+                        current.setMark("V");
+
                         //maze.displayTextMaze();
 
                         moved = true;
@@ -291,11 +293,23 @@ public class Solver {
             }
         }
 
+        if (current.equals(end)) {
+            Node n = end;
+            while (n != start) {
+                n.setPath(true);
+                n.setMark("L");
+                n = parent.get(n);
+            }
+            start.setPath(true);
+            start.setMark("L");
+            return true;
+        }
+
         return current.equals(end);
     }
 
 
-    //Left
+    //Right
     public static boolean wallFollowerRight(Maze maze) {
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
@@ -309,14 +323,14 @@ public class Solver {
         };
 
         Node current = start;
-        int dir = 3; // direction initiale : droite
+        int dir = 1; // direction initiale : droite
 
         Map<Node, Node> parent = new HashMap<>();
         Set<Node> visited = new HashSet<>();
         visited.add(current);
 
-        current.setPath(true);
-        current.setMark("R");
+        //current.setPath(true);
+        current.setMark("V");
 
         int maxSteps = maze.get_node_array().length * maze.get_node_array()[0].length * 10; // limite de sécurité pour éviter boucle infini
         int steps = 0;
@@ -342,8 +356,10 @@ public class Solver {
                         visited.add(current);
                         dir = tryDir;
 
-                        current.setPath(true);
-                        current.setMark("R");
+                       /*current.setPath(true);
+                        current.setMark("R");*/
+                        current.setMark("V");
+
                         //maze.displayTextMaze();
 
                         moved = true;
@@ -355,6 +371,18 @@ public class Solver {
             if (!moved) {
                 return false; // bloqué
             }
+        }
+
+        if (current.equals(end)) {
+            Node n = end;
+            while (n != start) {
+                n.setPath(true);
+                n.setMark("R");
+                n = parent.get(n);
+            }
+            start.setPath(true);
+            start.setMark("R");
+            return true;
         }
 
         return current.equals(end);
