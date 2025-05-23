@@ -88,7 +88,7 @@ public class SolverSbS {
             case 0 -> n.setMark("D");
             case 1 -> n.setMark("B");
             case 2 -> n.setMark("A");
-            case 3 -> n.setMark("J");
+            case 3 -> n.setMark("K");
             default -> throw new AssertionError();
         }
     }
