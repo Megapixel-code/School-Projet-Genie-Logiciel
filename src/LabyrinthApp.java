@@ -10,7 +10,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.Group;
@@ -42,13 +41,16 @@ public class LabyrinthApp extends Application {
 
     /**
      * Prints a message to the terminal area instead of the console
-     * @param message
+     * @param message The message to display in the terminal area.
      */
     private void printToTerminal(String message) {
         terminalArea.appendText(message + "\n");
     }
 
-
+    /**
+     * JavaFX entry point. Sets up the UI, event handlers, and main application logic.
+     * @param primaryStage The primary stage for this application.
+     */
     @Override
     public void start(Stage primaryStage) {
 
@@ -490,8 +492,8 @@ public class LabyrinthApp extends Application {
     /**
      * Generate the maze step by step
      * using the DFS algorithm
-     * @param labyrinthArea
-     * @param maze
+     * @param labyrinthArea The pane where the maze is displayed.
+     * @param maze The maze to generate.
      */
     public void GenerateStepByStep(Pane labyrinthArea, PerfectMaze maze) {
         PauseTransition pause = new PauseTransition(Duration.seconds(0.05));
@@ -508,14 +510,19 @@ public class LabyrinthApp extends Application {
     /**
      * Generate the maze completely
      * using the DFS algorithm
-     * @param labyrinthArea
-     * @param maze
+     * @param labyrinthArea The pane where the maze is displayed.
+     * @param maze The maze to generate.
      */
     public void GenerateComplete(Pane labyrinthArea, PerfectMaze maze) {
         while (!(maze.generate_dfs_next_step())) {}
         generateMaze(labyrinthArea, maze);
     }
 
+    /**
+     * Calculates the cell size for drawing the maze based on its dimensions.
+     * @param maze The maze for which to calculate the cell size.
+     * @return The cell size in pixels.
+     */
     public int set_cell_size(Maze maze){
         int X = 1100 / maze.get_size()[0];
         int Y = 500 / maze.get_size()[1];
@@ -529,11 +536,11 @@ public class LabyrinthApp extends Application {
     /**
      * Generate the way step by step
      * First step is to find the path and mark all the nodes visited
-     * @param maze
-     * @param solver
-     * @param labyrinthArea
-     * @param speed
-     * @param onFinish
+     * @param maze The maze being solved.
+     * @param solver The step-by-step solver.
+     * @param labyrinthArea The pane where the maze is displayed.
+     * @param speed The speed of the animation.
+     * @param onFinish Callback to run when this phase is complete.
      */
     public void GenerateStepByStepWayFirstStep(Maze maze, SolverSbS solver, Pane labyrinthArea, double speed, Runnable onFinish) {
         if (isPaused[0]) {
@@ -560,10 +567,10 @@ public class LabyrinthApp extends Application {
      * Generate the way step by step
      * Last step is after finding the path
      * to mark the path beetween the start and the end nodes
-     * @param maze
-     * @param solver
-     * @param labyrinthArea
-     * @param speed
+     * @param maze The maze being solved.
+     * @param solver The step-by-step solver.
+     * @param labyrinthArea The pane where the maze is displayed.
+     * @param speed The speed of the animation.
      */
     public void GenerateStepByStepWayLastStep(Maze maze, SolverSbS solver, Pane labyrinthArea, double speed) {
         PauseTransition pause = new PauseTransition(Duration.seconds(speed));
@@ -581,8 +588,8 @@ public class LabyrinthApp extends Application {
      * Generate a maze
      * This method is used to draw the maze in the pane
      * It draws the walls, the start and end nodes
-     * @param pane
-     * @param maze
+     * @param pane The pane where the maze is displayed.
+     * @param maze The maze to draw.
      */
     public void generateMaze(Pane pane, Maze maze) {
         // Code to generate Maze
@@ -664,10 +671,10 @@ public class LabyrinthApp extends Application {
      * It checks if the wall is already present or not
      * If the wall is present, it removes it
      * If the wall is not present, it adds it
-     * @param pane
-     * @param maze
-     * @param node1
-     * @param node2
+     * @param pane The pane where the maze is displayed.
+     * @param maze The maze being modified.
+     * @param node1 The first node of the wall.
+     * @param node2 The second node of the wall.
      */
     public void lineClicked(Pane pane, Maze maze, Node node1, Node node2) {
         if (node1 != null && node2 != null) {
@@ -693,10 +700,10 @@ public class LabyrinthApp extends Application {
      * It is called when the user clicks on the start node
      * It set the start node to the clicked node
      * It checks if the end node is already selected
-     * @param maze
-     * @param ChangeEndNode
-     * @param c
-     * @return
+     * @param maze The maze being modified.
+     * @param ChangeStartNode Boolean property indicating if the start node is being changed.
+     * @param c The circle representing the node.
+     * @return True if the end node is ready to change, false otherwise.
      */
     public Boolean StartNodeClicked(Maze maze, BooleanProperty ChangeEndNode,Circle c) {
         if (ChangeEndNode.getValue()) {
@@ -722,11 +729,11 @@ public class LabyrinthApp extends Application {
      * This method is used to change the start and end nodes
      * It is called when the user clicks on a node after selecting the start or end node
      * It set the start or end node to the clicked node
-     * @param pane
-     * @param maze
-     * @param ChangeStartNode
-     * @param ChangeEndNode
-     * @param node
+     * @param pane The pane where the maze is displayed.
+     * @param maze The maze being modified.
+     * @param ChangeStartNode Boolean property indicating if the start node is being changed.
+     * @param ChangeEndNode Boolean property indicating if the end node is being changed.
+     * @param node The node that was clicked.
      */
     public void NodeClicked(Pane pane, Maze maze, BooleanProperty ChangeStartNode,BooleanProperty ChangeEndNode,Node node) {
         if (ChangeStartNode.getValue()) {
@@ -748,8 +755,8 @@ public class LabyrinthApp extends Application {
      * This method is used to generate the way
      * It is called when the user clicks on the resolve button
      * It generates the way after the selected resolution method had edit the maze
-     * @param pane
-     * @param maze
+     * @param pane The pane where the maze is displayed.
+     * @param maze The maze to draw.
      */
     public void generateWay(Pane pane, Maze maze) {
         pane.getChildren().clear();
@@ -763,12 +770,11 @@ public class LabyrinthApp extends Application {
     }
 
     /**
-     * This method is used to draw the way
-     * It is called by generateWay
-     * @param pane
-     * @param maze
-     * @param CELL_SIZE
-     * @param WayGroup
+     * Draws the solution path and visited nodes in the maze (helper for generateWay).
+     * @param pane The pane where the maze is displayed.
+     * @param maze The maze to draw.
+     * @param CELL_SIZE The size of each cell in pixels.
+     * @param WayGroup The group to which path elements are added.
      */
     public void drawWay(Pane pane, Maze maze,int CELL_SIZE, Group WayGroup) {
         int CIRCLE_SIZE = 1;
@@ -829,7 +835,7 @@ public class LabyrinthApp extends Application {
     }
     /**
      * Main method to launch the application
-     * @param args
+     * @param args Command-line arguments.
      */
     public static void main(String[] args) {
         launch(args);
