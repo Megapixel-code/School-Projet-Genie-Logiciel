@@ -90,6 +90,16 @@ run lauch.bat
 
 ---
 
+## How to Run on Consol
+
+### windows 
+run lauchMainInteract.bat
+
+### Linux
+`./launchlinuxMainInteract.sh`
+
+---
+
 ## Project Structure
 
 /src  
