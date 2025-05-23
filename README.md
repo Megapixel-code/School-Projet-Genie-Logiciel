@@ -82,15 +82,11 @@ CYnapse is a Java application that allows users to generate and solve mazes. The
 
 ## How to Run
 
-### CLI Version
+### windows 
+run lauch.bat
 
-Requires Java 17:  
-(((((((((((((((((((((((((((((())))))))))))))))))))))))))))))
-
-### JavaFX GUI
-Requires Java 17 and a compatible JavaFX SDK:  
-(((((((((((((((((((((((((((((())))))))))))))))))))))))))))))
-
+### Linux
+`./launchlinux.sh`
 
 ---
 
