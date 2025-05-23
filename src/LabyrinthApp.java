@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.Group;
@@ -37,6 +38,7 @@ public class LabyrinthApp extends Application {
     private String selectedGLMethod = null;
     private String generatedLabyrinth = null;
     private Maze CurrentMaze = null;
+    private final boolean[] isPaused = {false};
 
     /**
      * Prints a message to the terminal area instead of the console
@@ -45,22 +47,6 @@ public class LabyrinthApp extends Application {
     private void printToTerminal(String message) {
         terminalArea.appendText(message + "\n");
     }
-
-
-    /**
-     * Disables or enables the buttons in the button box
-     * @param buttonBox
-     * @param disabled
-     */
-    private void setButtonsDisabled(HBox buttonBox, boolean disabled) {
-        for (javafx.scene.Node node : buttonBox.getChildren()) {
-            if (node instanceof Button || node instanceof ComboBox) {
-                node.setDisable(disabled);
-            }
-        }
-    }
-
-
 
 
     @Override
@@ -108,6 +94,16 @@ public class LabyrinthApp extends Application {
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.getStyleClass().add("hbox");
         root.setBottom(buttonBox);
+
+        /**
+         * Button to pause/resume the generation
+         */
+        Button pausePlayButton = new Button("Pause");
+        pausePlayButton.setOnAction(e -> {
+            isPaused[0] = !isPaused[0];
+            pausePlayButton.setText(isPaused[0] ? "Play" : "Pause");
+        });
+
 
 
 /**
@@ -227,153 +223,6 @@ public class LabyrinthApp extends Application {
         speedBox.setManaged(false);
 
 
-/**
- * Button to resolve the labyrinth
- * The labyrinth is resolved using the selected method
- */
-        Button resolveButton = new Button("Resolve Labyrinth");
-        resolveButton.setOnAction(e -> {
-            if (selectedMethod != null && selectedMethod.contains("Step-by-step")) {
-                speedBox.setVisible(true);
-                speedBox.setManaged(true);
-            } else {
-                speedBox.setVisible(false);
-                speedBox.setManaged(false);
-            }
-            final double speedy;
-            if (speedBox.isVisible()) {
-                switch (speedBox.getValue()) {
-                    case "Slow":
-                        speedy = 0.15;
-                        break;
-                    case "Normal":
-                        speedy = 0.05;
-                        break;
-                    case "Fast":
-                        speedy = 0.01;
-                        break;
-                    case "Very Fast":
-                        speedy = 0.005;
-                        break;
-                    default:
-                        speedy = 0.025;
-                }
-            } else {
-                speedy = 0.025;
-            }
-
-            if (selectedMethod == null && generatedLabyrinth == null){
-                printToTerminal("Please select a resolution method and generate a labyrinth first.");
-            } else if (selectedMethod == null) {
-                printToTerminal("Please select a resolution method first.");
-            } else if (generatedLabyrinth  == null) {
-                printToTerminal("Please generate a labyrinth first.");
-            } else {
-                printToTerminal("Labyrinth resolution using " + selectedMethod + " method...");
-                setButtonsDisabled(buttonBox, true);
-                if(selectedMethod.equals("DFS")) {
-                    // Code to resolve labyrinth using DFS
-                    Solver solver = new Solver();
-                    if(solver.dfs(CurrentMaze)){
-                        printToTerminal("Path found");
-                    }
-                    else{
-                        printToTerminal("No path found");
-                    }
-                    generateWay(labyrinthArea, CurrentMaze);
-                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
-                    setButtonsDisabled(buttonBox, false);
-                } else if (selectedMethod.equals("BFS")) {
-                    // Code to resolve labyrinth using BFS
-                    Solver solver = new Solver();
-                    if(solver.bfs(CurrentMaze)){
-                        printToTerminal("Path found");
-                    }
-                    else{
-                        printToTerminal("No path found");
-                    }
-                    generateWay(labyrinthArea, CurrentMaze);
-                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
-                    setButtonsDisabled(buttonBox, false);
-                } else if (selectedMethod.equals("A*")) {
-                    // Code to resolve labyrinth using A*
-                    Solver solver = new Solver();
-                    if(solver.aStar(CurrentMaze)){
-                        printToTerminal("Path found");
-                    }
-                    else{
-                        printToTerminal("No path found");
-                    }
-                    generateWay(labyrinthArea, CurrentMaze);
-                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
-                    setButtonsDisabled(buttonBox, false);
-                } else if(selectedMethod.equals("DFS Step-by-step")) {
-                    // Code to resolve labyrinth using DFS
-                    SolverSbS solver = new SolverSbS(CurrentMaze, "dfs");
-                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, speedy, () -> {
-                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, speedy);
-                        setButtonsDisabled(buttonBox, false);
-                    });
-
-                } else if (selectedMethod.equals("BFS Step-by-step")) {
-                    // Code to resolve labyrinth using BFS
-                    SolverSbS solver = new SolverSbS(CurrentMaze, "bfs");
-                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, speedy, () -> {
-                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, speedy);
-                        setButtonsDisabled(buttonBox, false);
-                    });
-                } else if (selectedMethod.equals("A* Step-by-step")) {
-                    // Code to resolve labyrinth using A*
-                    SolverSbS solver = new SolverSbS(CurrentMaze, "astar");
-                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, speedy, () -> {
-                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, speedy);
-                        setButtonsDisabled(buttonBox, false);
-                    });
-                } else if (selectedMethod.equals("Dijkstra")) {
-                    // Code to resolve labyrinth using Dijkstra
-                    Solver solver = new Solver();
-                    if(solver.dijkstra(CurrentMaze)){
-                        printToTerminal("Path found");
-                    }
-                    else{
-                        printToTerminal("No path found");
-                    }
-                    generateWay(labyrinthArea, CurrentMaze);
-                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
-                    setButtonsDisabled(buttonBox, false);
-                } else if (selectedMethod.equals("Dijkstra Step-by-step")) {
-                    // Code to resolve labyrinth using Dijkstra
-                    SolverSbS solver = new SolverSbS(CurrentMaze, "dijkstra");
-                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, speedy, () -> {
-                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, speedy);
-                        setButtonsDisabled(buttonBox, false);
-                    });
-                } else if (selectedMethod.equals("WallFollowerLeft")) {
-                    // Code to resolve labyrinth following the left wall
-                    Solver solver = new Solver();
-                    if(solver.aStar(CurrentMaze)){
-                        printToTerminal("Path found");
-                    }
-                    else{
-                        printToTerminal("No path found");
-                    }
-                    generateWay(labyrinthArea, CurrentMaze);
-                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
-                    setButtonsDisabled(buttonBox, false);
-                } else if (selectedMethod.equals("WallFollowerRight")) {
-                    // Code to resolve labyrinth following the right wall
-                    Solver solver = new Solver();
-                    if(solver.aStar(CurrentMaze)){
-                        printToTerminal("Path found");
-                    }
-                    else{
-                        printToTerminal("No path found");
-                    }
-                    generateWay(labyrinthArea, CurrentMaze);
-                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
-                    setButtonsDisabled(buttonBox, false);
-                }
-            }});
 
 /**
  * ComboBox for choosing the resolution method
@@ -439,26 +288,201 @@ public class LabyrinthApp extends Application {
 
         Button nextButton = new Button("Next ⟶");
 
-
-        previousButton.setOnAction(e -> {
-            printToTerminal("Previous button clicked");
-            buttonBox.getChildren().removeAll(previousButton, resolveButton, speedBox, resolutionMethods, loadLaby, saveLaby);
-            buttonBox.getChildren().addAll(seedField, widthField, heightField, validateButton, generateLabyrinth, generationMethods, nextButton);
-        });
-
-        nextButton.setOnAction(e -> {
-            printToTerminal("Next button clicked");
-            buttonBox.getChildren().removeAll(seedField, widthField, heightField, validateButton, generateLabyrinth, generationMethods, nextButton);
-            buttonBox.getChildren().addAll(previousButton, resolveButton, speedBox, resolutionMethods, loadLaby, saveLaby);
-        });
-
-        buttonBox.getChildren().addAll(seedField, widthField, heightField, validateButton, generateLabyrinth, generationMethods, nextButton);
-
-
         Scene scene = new Scene(root, 1300, 720);
         scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
+        
+/**
+ * Button to resolve the labyrinth
+ * The labyrinth is resolved using the selected method
+ */
+        Button resolveButton = new Button("Resolve Labyrinth");
+        resolveButton.setOnAction(e -> {
+            if (selectedMethod != null && selectedMethod.contains("Step-by-step")) {
+                speedBox.setVisible(true);
+                speedBox.setManaged(true);
+            } else {
+                speedBox.setVisible(false);
+                speedBox.setManaged(false);
+            }
+            final double speedy;
+            if (speedBox.isVisible()) {
+                switch (speedBox.getValue()) {
+                    case "Slow":
+                        speedy = 0.15;
+                        break;
+                    case "Normal":
+                        speedy = 0.05;
+                        break;
+                    case "Fast":
+                        speedy = 0.01;
+                        break;
+                    case "Very Fast":
+                        speedy = 0.005;
+                        break;
+                    default:
+                        speedy = 0.025;
+                }
+            } else {
+                speedy = 0.025;
+            }
+
+            if (selectedMethod == null && generatedLabyrinth == null){
+                printToTerminal("Please select a resolution method and generate a labyrinth first.");
+            } else if (selectedMethod == null) {
+                printToTerminal("Please select a resolution method first.");
+            } else if (generatedLabyrinth  == null) {
+                printToTerminal("Please generate a labyrinth first.");
+            } else {
+                printToTerminal("Labyrinth resolution using " + selectedMethod + " method...");
+                if(selectedMethod.equals("DFS")) {
+                    // Code to resolve labyrinth using DFS
+                    Solver solver = new Solver();
+                    if(solver.dfs(CurrentMaze)){
+                        printToTerminal("Path found");
+                    }
+                    else{
+                        printToTerminal("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                } else if (selectedMethod.equals("BFS")) {
+                    // Code to resolve labyrinth using BFS
+                    Solver solver = new Solver();
+                    if(solver.bfs(CurrentMaze)){
+                        printToTerminal("Path found");
+                    }
+                    else{
+                        printToTerminal("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                } else if (selectedMethod.equals("A*")) {
+                    // Code to resolve labyrinth using A*
+                    Solver solver = new Solver();
+                    if(solver.aStar(CurrentMaze)){
+                        printToTerminal("Path found");
+                    }
+                    else{
+                        printToTerminal("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                } else if(selectedMethod.equals("DFS Step-by-step")) {
+                    buttonBox.getChildren().setAll(pausePlayButton);
+                    isPaused[0] = false;
+                    pausePlayButton.setText("Pause");
+                    if (isPaused[0]) {
+                        PauseTransition wait = new PauseTransition(Duration.seconds(0.1));
+                        wait.setOnFinished(ev -> {  });
+                        wait.play();
+                        return;
+}
+                    // Code to resolve labyrinth using DFS
+                    SolverSbS solver = new SolverSbS(CurrentMaze, "dfs");
+                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, speedy, () -> {
+                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, speedy);
+                        buttonBox.getChildren().setAll(previousButton, resolveButton, speedBox, resolutionMethods, loadLaby, saveLaby);
+                    });
+
+                } else if (selectedMethod.equals("BFS Step-by-step")) {
+                    buttonBox.getChildren().setAll(pausePlayButton);
+                    isPaused[0] = false;
+                    pausePlayButton.setText("Pause");
+                    if (isPaused[0]) {
+                        PauseTransition wait = new PauseTransition(Duration.seconds(0.1));
+                        wait.setOnFinished(ev -> {  });
+                        wait.play();
+                        return;
+                    }
+                    // Code to resolve labyrinth using BFS
+                    SolverSbS solver = new SolverSbS(CurrentMaze, "bfs");
+                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, speedy, () -> {
+                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, speedy);
+                        buttonBox.getChildren().setAll(previousButton, resolveButton, speedBox, resolutionMethods, loadLaby, saveLaby);
+                    });
+                } else if (selectedMethod.equals("A* Step-by-step")) {
+                    buttonBox.getChildren().setAll(pausePlayButton);
+                    isPaused[0] = false;
+                    pausePlayButton.setText("Pause");
+                    if (isPaused[0]) {
+                        PauseTransition wait = new PauseTransition(Duration.seconds(0.1));
+                        wait.setOnFinished(ev -> {  });
+                        wait.play();
+                        return;
+                    }
+                    // Code to resolve labyrinth using A*
+                    SolverSbS solver = new SolverSbS(CurrentMaze, "astar");
+                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, speedy, () -> {
+                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, speedy);
+                        buttonBox.getChildren().setAll(previousButton, resolveButton, speedBox, resolutionMethods, loadLaby, saveLaby);
+                    });
+                } else if (selectedMethod.equals("Dijkstra")) {
+                    // Code to resolve labyrinth using Dijkstra
+                    Solver solver = new Solver();
+                    if(solver.dijkstra(CurrentMaze)){
+                        printToTerminal("Path found");
+                    }
+                    else{
+                        printToTerminal("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                } else if (selectedMethod.equals("Dijkstra Step-by-step")) {
+                    buttonBox.getChildren().setAll(pausePlayButton);
+                    isPaused[0] = false;
+                    pausePlayButton.setText("Pause");
+                    if (isPaused[0]) {
+                        PauseTransition wait = new PauseTransition(Duration.seconds(0.1));
+                        wait.setOnFinished(ev -> {  });
+                        wait.play();
+                        return;
+                    }
+                    // Code to resolve labyrinth using Dijkstra
+                    SolverSbS solver = new SolverSbS(CurrentMaze, "dijkstra");
+                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, speedy, () -> {
+                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, speedy);
+                        buttonBox.getChildren().setAll(previousButton, resolveButton, speedBox, resolutionMethods, loadLaby, saveLaby);
+                    });
+                } else if (selectedMethod.equals("WallFollowerLeft")) {
+                    // Code to resolve labyrinth following the left wall
+                    Solver solver = new Solver();
+                    if(solver.aStar(CurrentMaze)){
+                        printToTerminal("Path found");
+                    }
+                    else{
+                        printToTerminal("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                } else if (selectedMethod.equals("WallFollowerRight")) {
+                    // Code to resolve labyrinth following the right wall
+                    Solver solver = new Solver();
+                    if(solver.aStar(CurrentMaze)){
+                        printToTerminal("Path found");
+                    }
+                    else{
+                        printToTerminal("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                }
+            }});
+
+        previousButton.setOnAction(e -> {
+            printToTerminal("Previous button clicked");
+            buttonBox.getChildren().setAll(seedField, widthField, heightField, validateButton, generateLabyrinth, generationMethods, nextButton);
+        });
+
+        nextButton.setOnAction(e -> {
+            printToTerminal("Next button clicked");
+            buttonBox.getChildren().setAll(previousButton, resolveButton, speedBox, resolutionMethods, loadLaby, saveLaby);
+        });
+
+        buttonBox.getChildren().setAll(seedField, widthField, heightField, validateButton, generateLabyrinth, generationMethods, nextButton);
 
 
 
@@ -512,6 +536,12 @@ public class LabyrinthApp extends Application {
      * @param onFinish
      */
     public void GenerateStepByStepWayFirstStep(Maze maze, SolverSbS solver, Pane labyrinthArea, double speed, Runnable onFinish) {
+        if (isPaused[0]) {
+            PauseTransition wait = new PauseTransition(Duration.seconds(0.1));
+            wait.setOnFinished(ev -> GenerateStepByStepWayFirstStep(maze, solver, labyrinthArea, speed, onFinish));
+            wait.play();
+            return;
+        }
         PauseTransition pause = new PauseTransition(Duration.seconds(speed));
         pause.setOnFinished(event -> {
             boolean end = solver.next_step();
