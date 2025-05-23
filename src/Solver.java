@@ -5,6 +5,12 @@ public class Solver {
     private long stop_time;
     private long duration;
 
+    public Solver() {
+        this.start_time = 0;
+        this.stop_time = 0;
+        this.duration = 0;
+    }
+
     public boolean bfs(Maze maze) {
         // init timer
         this.start_time = System.nanoTime();

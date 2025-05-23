@@ -250,7 +250,8 @@ public class LabyrinthApp extends Application {
                     });
                 } else if (selectedMethod.equals("Dijkstra")) {
                     // Code to resolve labyrinth using Dijkstra
-                    if(Solver.dijkstra(CurrentMaze)){
+                    Solver solver = new Solver();
+                    if(solver.dijkstra(CurrentMaze)){
                         printToTerminal("Path found");
                     }
                     else{
@@ -258,8 +259,9 @@ public class LabyrinthApp extends Application {
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                 } else if (selectedMethod.equals("WallFollowerLeft")) {
-                    // Code to resolve labyrinth using A*
-                    if(Solver.aStar(CurrentMaze)){
+                    // Code to resolve labyrinth following the left wall
+                    Solver solver = new Solver();
+                    if(solver.aStar(CurrentMaze)){
                         printToTerminal("Path found");
                     }
                     else{
@@ -267,17 +269,9 @@ public class LabyrinthApp extends Application {
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                 } else if (selectedMethod.equals("WallFollowerRight")) {
-                    // Code to resolve labyrinth using A*
-                    if(Solver.aStar(CurrentMaze)){
-                        printToTerminal("Path found");
-                    }
-                    else{
-                        printToTerminal("No path found");
-                    }
-                    generateWay(labyrinthArea, CurrentMaze);
-                } else if (selectedMethod.equals("A*")) {
-                    // Code to resolve labyrinth using A*
-                    if(Solver.aStar(CurrentMaze)){
+                    // Code to resolve labyrinth following the right wall
+                    Solver solver = new Solver();
+                    if(solver.aStar(CurrentMaze)){
                         printToTerminal("Path found");
                     }
                     else{

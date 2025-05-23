@@ -159,30 +159,30 @@ public class MainInteract {
                 }
 
                 mazePerfect.displayTextMaze();
-
+                Solver solver = new Solver();
                 switch (solvingAlgo) {
                     case "b":
-                        Solver.bfs(mazePerfect);
+                        solver.bfs(mazePerfect);
                         System.out.print("\u001B[34mResolution Perfect BFS!\n\u001B[0m");
                         break;
                     case "d":
-                        Solver.dfs(mazePerfect);
+                        solver.dfs(mazePerfect);
                         System.out.print("\u001B[34mResolution Perfect DFS!\n\u001B[0m");
                         break;
                     case "k":
-                        Solver.dijkstra(mazePerfect);
+                        solver.dijkstra(mazePerfect);
                         System.out.print("\u001B[34mResolution Perfect Dijkstra!\n\u001B[0m");
                         break;
                     case "a":
-                        Solver.aStar(mazePerfect);
+                        solver.aStar(mazePerfect);
                         System.out.print("\u001B[34mResolution Perfect A*!\n\u001B[0m");
                         break;
                     case "r":
-                        Solver.wallFollowerRight(mazePerfect);
+                        solver.wallFollowerRight(mazePerfect);
                         System.out.print("\u001B[34mResolution Perfect Wall Follower Right!\n\u001B[0m");
                         break;
                     case "l":
-                        Solver.wallFollowerLeft(mazePerfect);
+                        solver.wallFollowerLeft(mazePerfect);
                         System.out.print("\u001B[34mResolution Perfect Wall Follower Left!\n\u001B[0m");
                         break;
                 }
@@ -203,29 +203,30 @@ public class MainInteract {
                 mazeImperfect.displayTextMaze();
 
                 boolean res = false;
+                Solver solver = new Solver();
                 switch (solvingAlgo) {
                     case "b":
-                        res = Solver.bfs(mazeImperfect);
+                        res = solver.bfs(mazeImperfect);
                         System.out.print("\u001B[34mResolution Imperfect BFS!\n\u001B[0m");
                         break;
                     case "d":
-                        res = Solver.dfs(mazeImperfect);
+                        res = solver.dfs(mazeImperfect);
                         System.out.print("\u001B[34mResolution Imperfect DFS!\n\u001B[0m");
                         break;
                     case "k":
-                        res = Solver.dijkstra(mazeImperfect);
+                        res = solver.dijkstra(mazeImperfect);
                         System.out.print("\u001B[34mResolution Imperfect Dijkstra!\n\u001B[0m");
                         break;
                     case "a":
-                        res = Solver.aStar(mazeImperfect);
+                        res = solver.aStar(mazeImperfect);
                         System.out.print("\u001B[34mResolution Imperfect A*!\n\u001B[0m");
                         break;
                     case "r":
-                        res = Solver.wallFollowerRight(mazeImperfect);
+                        res = solver.wallFollowerRight(mazeImperfect);
                         System.out.print("\u001B[34mResolution Imperfect Wall Follower Right!\n\u001B[0m");
                         break;
                     case "l":
-                        res = Solver.wallFollowerLeft(mazeImperfect);
+                        res = solver.wallFollowerLeft(mazeImperfect);
                         System.out.print("\u001B[34mResolution Imperfect Wall Follower Left!\n\u001B[0m");
                         break;
                 }
