@@ -12,6 +12,7 @@ public class Solver {
     }
 
     public boolean bfs(Maze maze) {
+        maze.clearMarks();
         // init timer
         this.start_time = System.nanoTime();
 
@@ -60,6 +61,7 @@ public class Solver {
     }
 
     public boolean dfs(Maze maze) {
+        maze.clearMarks();
         // init timer
         this.start_time = System.nanoTime();
 
@@ -123,6 +125,7 @@ public class Solver {
     // h : heuristique (distance de Manhattan vers la cible)
 
     public boolean aStar(Maze maze) {
+        maze.clearMarks();
         // init timer
         this.start_time = System.nanoTime();
 
@@ -196,6 +199,7 @@ public class Solver {
 
     // Résolution avec l’algorithme de Dijkstra
     public boolean dijkstra(Maze maze) {
+        maze.clearMarks();
         // init timer
         this.start_time = System.nanoTime();
 
@@ -267,6 +271,7 @@ public class Solver {
     //WALL FOLLOWER :
     //Left
     public boolean wallFollowerLeft(Maze maze) {
+        maze.clearMarks();
         // init timer
         this.start_time = System.nanoTime();
 
@@ -357,6 +362,7 @@ public class Solver {
 
     //Right
     public boolean wallFollowerRight(Maze maze) {
+        maze.clearMarks();
         // init timer
         this.start_time = System.nanoTime();
 
