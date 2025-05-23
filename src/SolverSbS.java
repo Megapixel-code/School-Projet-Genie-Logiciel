@@ -43,6 +43,10 @@ public class SolverSbS {
                 this.solver_type = 2;
                 this.fifo.add(this.start_node);
             }
+            case "dijkstra" -> {
+                this.solver_type = 3;
+                this.fifo.add(this.start_node);
+            }
             default -> throw new IllegalArgumentException("Invalid type for sbs solver : you entered type = \"" + type + "\"");
         }
 
@@ -50,11 +54,11 @@ public class SolverSbS {
         this.start_node.set_depth(0);
     }
 
-    public String[] get_types(){
+    public static String[] get_types(){
         /*
          * returns the types of solve available, is used for the display
          */
-        String[] types = {"dfs", "bfs", "astar"};
+        String[] types = {"dfs", "bfs", "astar", "dijkstra"};
         return types;
     }
 
@@ -72,6 +76,19 @@ public class SolverSbS {
             case 2 -> {
                 return a_star_next_step();
             }
+            case 3 -> {
+                return dijkstra_next_step();
+            }
+            default -> throw new AssertionError();
+        }
+    }
+
+    private void set_correct_node_mark(Node n){
+        switch (this.solver_type) {
+            case 0 -> n.setMark("D");
+            case 1 -> n.setMark("B");
+            case 2 -> n.setMark("A");
+            case 3 -> n.setMark("J");
             default -> throw new AssertionError();
         }
     }
@@ -122,14 +139,12 @@ public class SolverSbS {
         return n == this.start_node;
     }
 
-    private Node get_node_depth_minus_one(Node n){
+    private Node[] get_nodes_around(Node n, boolean visited){
         /*
-         * the program will return the node around the node n who has a depth of n.get_depth() - 1
-         * the node needs to be connected
+         * if visited, will return all of the visited nodes connected to n
+         * if !visited, will return all of the unvisited nodes connected to n
          */
-
         int[] current_pos = n.get_coordinates();
-        int current_depth = n.get_depth();
 
         // array of the four node around, will be null if node doesnt exist
         Node[] nodes_around = new Node[4];
@@ -148,16 +163,44 @@ public class SolverSbS {
         }
 
         // put available node in a array
-        // available nodes exists and are already visited
+        // available nodes exists and are already visited(or not depending on visited bool)
         int nb_available_nodes = 0;
         for (int k = 0; k < 4; k++){
-            if ((nodes_around[k] != null) && (nodes_around[k].is_visited())){
-                nodes_around[nb_available_nodes] = nodes_around[k];
-                nb_available_nodes++;
+            if (nodes_around[k] != null){
+                if ((visited) && (nodes_around[k].is_visited())){
+                    nodes_around[nb_available_nodes] = nodes_around[k];
+                    nb_available_nodes++;
+                }
+                if (!(visited) && !(nodes_around[k].is_visited())){
+                    nodes_around[nb_available_nodes] = nodes_around[k];
+                    nb_available_nodes++;
+                }
             }
         }
-        // nodes is a array of the nodes who are already visited and are connected to the node n
+        // nodes is a array of the nodes who are already visited(or not depending on visited bool)
+        // and are connected to the node n
         Node[] nodes = Arrays.copyOf(nodes_around, nb_available_nodes);
+        if (nb_available_nodes != 0){
+            return nodes;
+        }
+        else {
+            return null;
+        }
+    }
+
+    private Node get_node_depth_minus_one(Node n){
+        /*
+         * the program will return the node around the node n who has a depth of n.get_depth() - 1
+         * the node needs to be connected
+         */
+
+        int current_depth = n.get_depth();
+
+        // nodes is a array of the nodes who are already visited and are connected to the node n
+        Node[] nodes = get_nodes_around(n, true);
+        if (nodes == null){
+            return null;
+        }
 
         // returns the node that has a depth of current_depth - 1
         for (Node n_loop : nodes){
@@ -167,57 +210,6 @@ public class SolverSbS {
         }
         // or null if there isnt
         return null;
-    }
-
-    private void set_correct_node_mark(Node n){
-        switch (this.solver_type) {
-            case 0 -> n.setMark("D");
-            case 1 -> n.setMark("B");
-            case 2 -> n.setMark("A");
-            default -> throw new AssertionError();
-        }
-    }
-
-    private Node[] get_unvisited_nodes_arround(Node n){
-        /*
-         * will return unvisited nodes around
-         * if no node are unvisited, returns null
-         */
-        int[] current_pos = n.get_coordinates();
-
-        // array of the four node around, will be null if node doesnt exist
-        Node[] nodes_around = new Node[4];
-        nodes_around[0] = this.maze.get_node(current_pos[0]+1, current_pos[1]);
-        nodes_around[1] = this.maze.get_node(current_pos[0]-1, current_pos[1]);
-        nodes_around[2] = this.maze.get_node(current_pos[0], current_pos[1]+1);
-        nodes_around[3] = this.maze.get_node(current_pos[0], current_pos[1]-1);
-
-        // makes sure there is a path between the two nodes
-        for (int k = 0; k < 4; k++){
-            if (nodes_around[k] != null){
-                if (maze.in_edge_list(nodes_around[k], n) == -1){
-                    nodes_around[k] = null;
-                }
-            }
-        }
-
-        // put available node in a array
-        // available nodes exists and are not yet visited
-        int nb_available_nodes = 0;
-        for (int k = 0; k < 4; k++){
-            if ((nodes_around[k] != null) && !(nodes_around[k].is_visited())){
-                nodes_around[nb_available_nodes] = nodes_around[k];
-                nb_available_nodes++;
-            }
-        }
-        Node[] unvisited_nodes = Arrays.copyOf(nodes_around, nb_available_nodes);
-
-        if (nb_available_nodes != 0){
-            return unvisited_nodes;
-        }
-        else {
-            return null;
-        }
     }
 
     private int distance_between_nodes(Node n1, Node n2){
@@ -261,7 +253,7 @@ public class SolverSbS {
 
         // adds the nodes around to the stack with the correct depth
         int current_depth = last_node.get_depth();
-        Node[] nodes_around = this.get_unvisited_nodes_arround(this.last_node);
+        Node[] nodes_around = this.get_nodes_around(this.last_node, false);
         if (nodes_around != null){
             for (Node n : nodes_around){
                 n.set_depth(current_depth + 1);
@@ -301,7 +293,7 @@ public class SolverSbS {
 
         // adds the nodes around to the stack with the correct depth
         int current_depth = last_node.get_depth();
-        Node[] nodes_around = this.get_unvisited_nodes_arround(this.last_node);
+        Node[] nodes_around = this.get_nodes_around(this.last_node, false);
         if (nodes_around != null){
             for (Node n : nodes_around){
                 n.set_depth(current_depth + 1);
@@ -333,7 +325,7 @@ public class SolverSbS {
         // gets the best node
         Node best_node = fifo.get(0);
         int best_score = this.distance_between_nodes(best_node, end_node);
-        int score = best_score;
+        int score;
         int position_best = 0;
         for (int i = 0; i < fifo_size; i++){
             score = this.distance_between_nodes(fifo.get(i), end_node);
@@ -356,7 +348,7 @@ public class SolverSbS {
 
         // adds the nodes around to the stack with the correct depth
         int current_depth = last_node.get_depth();
-        Node[] nodes_around = this.get_unvisited_nodes_arround(this.last_node);
+        Node[] nodes_around = this.get_nodes_around(this.last_node, false);
         if (nodes_around != null){
             for (Node n : nodes_around){
                 n.set_depth(current_depth + 1);
@@ -367,6 +359,66 @@ public class SolverSbS {
     }
 
     private boolean dijkstra_next_step(){
+        /*
+         * dijkstra next step
+         */
         
+        // if the list is empty, program is finished
+        if (fifo.isEmpty()){
+            return true;
+        }
+
+        // gets the smallest depth unvisited node in fifo
+        Node best_node = fifo.getLast();
+        // best score is init to the worst score possible times two
+        int best_score = this.maze.get_size()[0] * this.maze.get_size()[1] * 2;
+        int score;
+        int fifo_size = fifo.size();
+        boolean unvisited = false;
+        for (int i = 0; i < fifo_size; i++){
+            if (!(fifo.get(i).is_visited())){
+                unvisited = true;
+                score = fifo.get(i).get_depth();
+                if (score < best_score){
+                    best_node = fifo.get(i);
+                    best_score = score;
+                }
+            }
+        }
+        this.last_node = best_node;
+
+        // sets the current node to visited
+        this.last_node.setMark("V");
+
+        // if last_node is end_node, the program is finished
+        // if no nodes are unvisited, the program is finished, no solutions found
+        if ((this.last_node == this.end_node) || (!unvisited)){
+            return true;
+        }
+
+        // updates the depth of the visited nodes around if necessary
+        int current_depth = last_node.get_depth();
+        Node[] visited_nodes_around = this.get_nodes_around(this.last_node, true);
+        if (visited_nodes_around != null){
+            for (Node n_v : visited_nodes_around){
+                for (int i = 0; i < fifo.size(); i++) {
+                    if (n_v == fifo.get(i)){
+                        if (n_v.get_depth() > current_depth + 1){
+                            n_v.set_depth(current_depth + 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        // adds the unvisited nodes around to the stack with the correct depth
+        Node[] unvisited_nodes_around = this.get_nodes_around(this.last_node, false);
+        if (unvisited_nodes_around != null){
+            for (Node n : unvisited_nodes_around){
+                n.set_depth(current_depth + 1);
+                fifo.add(n);
+            }
+        }
+        return false;
     }
 }
