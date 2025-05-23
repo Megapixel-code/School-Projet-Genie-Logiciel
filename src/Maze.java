@@ -23,7 +23,7 @@ abstract class Maze {
     private Map<Node, List<Node>> adjacencyList = new HashMap<>();
 
     public Maze(){
-        this(2, 2, 0); 
+        this(2, 2, 0);
     }
 
     public Maze(int x, int y, int seed){
@@ -69,6 +69,18 @@ abstract class Maze {
 
     public Map<Node, List<Node>> get_adjacency_list() {
         return this.adjacencyList;
+    }
+
+    public void add_adjacency(Node a, Node b) {
+        adjacencyList.putIfAbsent(a, new ArrayList<>());
+        adjacencyList.putIfAbsent(b, new ArrayList<>());
+        if (!adjacencyList.get(a).contains(b)) adjacencyList.get(a).add(b);
+        if (!adjacencyList.get(b).contains(a)) adjacencyList.get(b).add(a);
+    }
+
+    public void remove_adjacency(Node a, Node b) {
+        if (adjacencyList.containsKey(a)) adjacencyList.get(a).remove(b);
+        if (adjacencyList.containsKey(b)) adjacencyList.get(b).remove(a);
     }
 
     public Random get_rng(){
@@ -211,9 +223,9 @@ abstract class Maze {
                 } else if (sommet.isPath()) {
                     display[disp_y][disp_x] = "\u001B[35m " + sommet.getMark() + " \u001B[0m";
                 } else if ("V".equals(sommet.getMark())){
-                        display[disp_y][disp_x] = "\u001B[37m " + sommet.getMark() + " \u001B[0m";
+                    display[disp_y][disp_x] = "\u001B[37m " + sommet.getMark() + " \u001B[0m";
                 }else {
-                        display[disp_y][disp_x] = " . ";
+                    display[disp_y][disp_x] = " . ";
                 }
 
             }
@@ -334,7 +346,7 @@ abstract class Maze {
             }
         }
     }
-    
+
     public void save_maze(String save_name){
         /*
          * saves the maze in the following manner :
@@ -391,7 +403,7 @@ abstract class Maze {
             System.out.println("Error while creating the file");
             e.printStackTrace();
         }
-        
+
         //writing the content of the buffer inside the file
         try {
             FileWriter my_file = new FileWriter("backup/" + save_name);
@@ -490,7 +502,7 @@ abstract class Maze {
         File[] list_of_files = folder.listFiles();
         int iterator = 0;
         if (list_of_files != null){
-            String[] buffer = new String[list_of_files.length]; 
+            String[] buffer = new String[list_of_files.length];
             for (File f : list_of_files){
                 if (f.isFile()){
                     buffer[iterator] = f.getName();

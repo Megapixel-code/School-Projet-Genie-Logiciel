@@ -38,10 +38,10 @@ public class LabyrinthApp extends Application {
     private String generatedLabyrinth = null;
     private Maze CurrentMaze = null;
 
-/**
- * Prints a message to the terminal area instead of the console
- * @param message
- */
+    /**
+     * Prints a message to the terminal area instead of the console
+     * @param message
+     */
     private void printToTerminal(String message) {
         terminalArea.appendText(message + "\n");
     }
@@ -84,9 +84,9 @@ public class LabyrinthApp extends Application {
 
         root.setCenter(centerBox);
 
-    /**
-     * Space for the buttons
-     */
+        /**
+         * Space for the buttons
+         */
         HBox buttonBox = new HBox();
         buttonBox.setSpacing(10);
         buttonBox.setAlignment(Pos.CENTER);
@@ -114,7 +114,7 @@ public class LabyrinthApp extends Application {
         final int[] mazeHeight = {15};
         final int[] mazeSeed = {0};
 
-    
+
 /**
  * Button to validate the size and seed of the labyrinth
  * The size and seed are stored in mazeWidth, mazeHeight and mazeSeed
@@ -131,7 +131,7 @@ public class LabyrinthApp extends Application {
             }
             String seedText = seedField.getText();
             if (seedText == null || seedText.trim().isEmpty()) {
-                mazeSeed[0] = new Random().nextInt(); 
+                mazeSeed[0] = new Random().nextInt();
                 printToTerminal("Aucune seed fournie. Utilisation d'une seed aléatoire : " + mazeSeed[0]);
             } else {
                 try {
@@ -141,7 +141,7 @@ public class LabyrinthApp extends Application {
                     printToTerminal("Veuillez entrer une seed valide (nombre entier).");
                 }
             }
-            
+
         });
 
 /**
@@ -255,7 +255,7 @@ public class LabyrinthApp extends Application {
                     GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, 0.025, () -> {
                         GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, 0.025);
                     });
-                    
+
                 } else if (selectedMethod.equals("BFS Step-by-step")) {
                     // Code to resolve labyrinth using BFS
                     SolverSbS solver = new SolverSbS(CurrentMaze, "bfs");
@@ -307,8 +307,8 @@ public class LabyrinthApp extends Application {
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                     printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
-            }
-        }});
+                }
+            }});
 
 /**
  * ComboBox for choosing the resolution method
@@ -368,7 +368,7 @@ public class LabyrinthApp extends Application {
 
         Button nextButton = new Button("Next ⟶");
 
-        
+
         previousButton.setOnAction(e -> {
             printToTerminal("Previous button clicked");
             buttonBox.getChildren().removeAll(previousButton, resolveButton, resolutionMethods, loadLaby, saveLaby);
@@ -389,12 +389,12 @@ public class LabyrinthApp extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-/**
- * Generate the maze step by step 
- * using the DFS algorithm
- * @param labyrinthArea
- * @param maze
- */
+    /**
+     * Generate the maze step by step
+     * using the DFS algorithm
+     * @param labyrinthArea
+     * @param maze
+     */
     public void GenerateStepByStep(Pane labyrinthArea, PerfectMaze maze) {
         PauseTransition pause = new PauseTransition(Duration.seconds(0.05));
         pause.setOnFinished(event -> {
@@ -407,12 +407,12 @@ public class LabyrinthApp extends Application {
         });
         pause.play();
     }
-/**
- * Generate the maze completely
- * using the DFS algorithm
- * @param labyrinthArea
- * @param maze
- */
+    /**
+     * Generate the maze completely
+     * using the DFS algorithm
+     * @param labyrinthArea
+     * @param maze
+     */
     public void GenerateComplete(Pane labyrinthArea, PerfectMaze maze) {
         while (!(maze.generate_dfs_next_step())) {}
         generateMaze(labyrinthArea, maze);
@@ -428,15 +428,15 @@ public class LabyrinthApp extends Application {
             return Y;
         }
     }
-/**
- * Generate the way step by step
- * First step is to find the path and mark all the nodes visited
- * @param maze
- * @param solver
- * @param labyrinthArea
- * @param speed
- * @param onFinish
- */
+    /**
+     * Generate the way step by step
+     * First step is to find the path and mark all the nodes visited
+     * @param maze
+     * @param solver
+     * @param labyrinthArea
+     * @param speed
+     * @param onFinish
+     */
     public void GenerateStepByStepWayFirstStep(Maze maze, SolverSbS solver, Pane labyrinthArea, double speed, Runnable onFinish) {
         PauseTransition pause = new PauseTransition(Duration.seconds(speed));
         pause.setOnFinished(event -> {
@@ -452,15 +452,15 @@ public class LabyrinthApp extends Application {
         pause.play();
     }
 
-/**
- * Generate the way step by step
- * Last step is after finding the path
- * to mark the path beetween the start and the end nodes
- * @param maze
- * @param solver
- * @param labyrinthArea
- * @param speed
- */
+    /**
+     * Generate the way step by step
+     * Last step is after finding the path
+     * to mark the path beetween the start and the end nodes
+     * @param maze
+     * @param solver
+     * @param labyrinthArea
+     * @param speed
+     */
     public void GenerateStepByStepWayLastStep(Maze maze, SolverSbS solver, Pane labyrinthArea, double speed) {
         PauseTransition pause = new PauseTransition(Duration.seconds(speed));
         pause.setOnFinished(event -> {
@@ -473,13 +473,13 @@ public class LabyrinthApp extends Application {
         pause.play();
     }
 
-/**
- * Generate a maze
- * This method is used to draw the maze in the pane
- * It draws the walls, the start and end nodes
- * @param pane
- * @param maze
- */
+    /**
+     * Generate a maze
+     * This method is used to draw the maze in the pane
+     * It draws the walls, the start and end nodes
+     * @param pane
+     * @param maze
+     */
     public void generateMaze(Pane pane, Maze maze) {
         // Code to generate Maze
         Group MazeGroup = new Group();
@@ -554,26 +554,28 @@ public class LabyrinthApp extends Application {
         MazeGroup.layoutYProperty().bind(pane.heightProperty().subtract(mazeHeight).divide(2));
         pane.getChildren().add(MazeGroup);
     }
-/**
- * This method is used to add or remove walls in the maze
- * It is called when the user clicks on a wall
- * It checks if the wall is already present or not
- * If the wall is present, it removes it    
- * If the wall is not present, it adds it
- * @param pane
- * @param maze
- * @param node1
- * @param node2
- */
+    /**
+     * This method is used to add or remove walls in the maze
+     * It is called when the user clicks on a wall
+     * It checks if the wall is already present or not
+     * If the wall is present, it removes it
+     * If the wall is not present, it adds it
+     * @param pane
+     * @param maze
+     * @param node1
+     * @param node2
+     */
     public void lineClicked(Pane pane, Maze maze, Node node1, Node node2) {
         if (node1 != null && node2 != null) {
             if (maze.in_edge_list(node1, node2) >= 0) {
                 maze.remove_edge(maze.get_edge(node1, node2));
+                maze.remove_adjacency(node1, node2);
                 printToTerminal("Wall added");
             }
             else {
                 Edge edge = new Edge(node1, node2);
                 maze.add_edge(edge);
+                maze.add_adjacency(node1, node2);
                 printToTerminal("Wall removed");
             }
         }
@@ -582,16 +584,16 @@ public class LabyrinthApp extends Application {
         }
         generateMaze(pane, maze);
     }
-/**
- * This method is used to change the start and end nodes
- * It is called when the user clicks on the start node
- * It set the start node to the clicked node
- * It checks if the end node is already selected
- * @param maze
- * @param ChangeEndNode
- * @param c
- * @return
- */
+    /**
+     * This method is used to change the start and end nodes
+     * It is called when the user clicks on the start node
+     * It set the start node to the clicked node
+     * It checks if the end node is already selected
+     * @param maze
+     * @param ChangeEndNode
+     * @param c
+     * @return
+     */
     public Boolean StartNodeClicked(Maze maze, BooleanProperty ChangeEndNode,Circle c) {
         if (ChangeEndNode.getValue()) {
             printToTerminal("End node already selected.");
@@ -612,16 +614,16 @@ public class LabyrinthApp extends Application {
         printToTerminal("End node ready to change.");
         return true;
     }
-/**
- * This method is used to change the start and end nodes
- * It is called when the user clicks on a node after selecting the start or end node
- * It set the start or end node to the clicked node
- * @param pane
- * @param maze
- * @param ChangeStartNode
- * @param ChangeEndNode
- * @param node
- */
+    /**
+     * This method is used to change the start and end nodes
+     * It is called when the user clicks on a node after selecting the start or end node
+     * It set the start or end node to the clicked node
+     * @param pane
+     * @param maze
+     * @param ChangeStartNode
+     * @param ChangeEndNode
+     * @param node
+     */
     public void NodeClicked(Pane pane, Maze maze, BooleanProperty ChangeStartNode,BooleanProperty ChangeEndNode,Node node) {
         if (ChangeStartNode.getValue()) {
             maze.set_StartNode(node.get_coordinates()[0], node.get_coordinates()[1]);
@@ -638,13 +640,13 @@ public class LabyrinthApp extends Application {
         }
     }
 
-/**
- * This method is used to generate the way
- * It is called when the user clicks on the resolve button
- * It generates the way after the selected resolution method had edit the maze
- * @param pane
- * @param maze
- */
+    /**
+     * This method is used to generate the way
+     * It is called when the user clicks on the resolve button
+     * It generates the way after the selected resolution method had edit the maze
+     * @param pane
+     * @param maze
+     */
     public void generateWay(Pane pane, Maze maze) {
         pane.getChildren().clear();
         Group WayGroup = new Group();
@@ -656,14 +658,14 @@ public class LabyrinthApp extends Application {
         pane.getChildren().add(WayGroup);
     }
 
-/**
- * This method is used to draw the way
- * It is called by generateWay
- * @param pane
- * @param maze
- * @param CELL_SIZE
- * @param WayGroup
- */
+    /**
+     * This method is used to draw the way
+     * It is called by generateWay
+     * @param pane
+     * @param maze
+     * @param CELL_SIZE
+     * @param WayGroup
+     */
     public void drawWay(Pane pane, Maze maze,int CELL_SIZE, Group WayGroup) {
         int CIRCLE_SIZE = 1;
         if (CELL_SIZE/7 > 0){
@@ -675,8 +677,8 @@ public class LabyrinthApp extends Application {
                 int[] coordinates = maze.get_node(i,j).get_coordinates();
                 if (maze.get_node(coordinates[0],coordinates[1]).getMark() != null) {
                     Circle WayCircle = new Circle((coordinates[0] + 0.5) * CELL_SIZE,
-                                                  (coordinates[1] + 0.5) * CELL_SIZE,
-                                                   CIRCLE_SIZE);
+                            (coordinates[1] + 0.5) * CELL_SIZE,
+                            CIRCLE_SIZE);
                     WayGroup.getChildren().add(WayCircle);
                     if(maze.get_node(coordinates[0],coordinates[1]) == maze.getEndNode()){
                         WayGroup.getChildren().remove(WayCircle);
@@ -686,33 +688,33 @@ public class LabyrinthApp extends Application {
                     }
                     else if (maze.get_node(coordinates[0],coordinates[1]).isPath()) {
                         WayCircle.getStyleClass().add("way");
-                    } 
+                    }
                     else {
                         WayCircle.getStyleClass().add("visited");
                     }
                 }
                 int[][] directions = {
-                    {1, 0},  
-                    {0, 1},  
-                    {-1, 0}, 
-                    {0, -1}  
+                        {1, 0},
+                        {0, 1},
+                        {-1, 0},
+                        {0, -1}
                 };
                 for (int[] d : directions) {
                     int nx = coordinates[0] + d[0];
                     int ny = coordinates[1] + d[1];
-                
+
                     if (maze.get_node(nx, ny) != null &&
-                        maze.in_edge_list(maze.get_node(coordinates[0],coordinates[1]), maze.get_node(nx, ny))>=0 &&
-                        maze.get_node(nx, ny).getMark() != null &&
-                        maze.get_node(coordinates[0],coordinates[1]).getMark() != null) {
-                        
+                            maze.in_edge_list(maze.get_node(coordinates[0],coordinates[1]), maze.get_node(nx, ny))>=0 &&
+                            maze.get_node(nx, ny).getMark() != null &&
+                            maze.get_node(coordinates[0],coordinates[1]).getMark() != null) {
+
                         Circle MiddleWayCircle = new Circle((coordinates[0] + 0.5 + d[0] * 0.5) * CELL_SIZE,
-                                                            (coordinates[1] + 0.5 + d[1] * 0.5) * CELL_SIZE,
-                                                            CIRCLE_SIZE);
+                                (coordinates[1] + 0.5 + d[1] * 0.5) * CELL_SIZE,
+                                CIRCLE_SIZE);
                         WayGroup.getChildren().add(MiddleWayCircle);
                         if (maze.get_node(nx, ny).isPath() && maze.get_node(coordinates[0],coordinates[1]).isPath()) {
                             MiddleWayCircle.getStyleClass().add("way");
-                        } 
+                        }
                         else {
                             MiddleWayCircle.getStyleClass().add("visited");
                         }
@@ -721,10 +723,10 @@ public class LabyrinthApp extends Application {
             }
         }
     }
-/**
- * Main method to launch the application
- * @param args
- */
+    /**
+     * Main method to launch the application
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
