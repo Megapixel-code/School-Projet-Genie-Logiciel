@@ -363,7 +363,14 @@ public class MainInteract {
                         case "bfs":
                             if ("f".equals(solvingMode)) {
                                 System.out.println("\u001B[34mFull BFS resolution:\u001B[0m");
-                                res = solver.bfs(maze);
+                                if (answer.equals("l")) {
+                                    solversbs = new SolverSbS(maze, solvingAlgo);
+                                    while (!solversbs.next_step()) {}
+                                    while (!solversbs.find_path_step()) {}
+                                    res = true;
+                                } else {
+                                    res = solver.bfs(maze);
+                                }
                             } else {
                                 System.out.println("\u001B[34mStep-by-step BFS resolution:\u001B[0m");
                                 while (!solversbs.next_step()) {
@@ -389,7 +396,15 @@ public class MainInteract {
                         case "dfs":
                             if ("f".equals(solvingMode)) {
                                 System.out.println("\u001B[34mFull DFS resolution:\u001B[0m");
-                                res = solver.dfs(maze);
+                                if (answer.equals("l")) {
+                                    solversbs = new SolverSbS(maze, solvingAlgo);
+                                    while (!solversbs.next_step()) {}
+                                    while (!solversbs.find_path_step()) {}
+                                    res = true;
+                                } else {
+                                    System.out.println("\u001B[34mFull DFS resolution:\u001B[0m");
+                                    res = solver.dfs(maze);
+                                }
                             } else {
                                 System.out.println("\u001B[34mStep-by-step DFS resolution:\u001B[0m");
                                 while (!solversbs.next_step()) {
@@ -415,7 +430,15 @@ public class MainInteract {
                         case "dijkstra":
                             if ("f".equals(solvingMode)) {
                                 System.out.println("\u001B[34mFull Dijkstra resolution:\u001B[0m");
-                                res = solver.dijkstra(maze);
+                                if (answer.equals("l")) {
+                                    solversbs = new SolverSbS(maze, solvingAlgo);
+                                    while (!solversbs.next_step()) {}
+                                    while (!solversbs.find_path_step()) {}
+                                    res = true;
+                                } else {
+                                    System.out.println("\u001B[34mFull Dijkstra resolution:\u001B[0m");
+                                    res = solver.dijkstra(maze);
+                                }
                             } else {
                                 System.out.println("\u001B[34mStep-by-step Dijkstra resolution:\u001B[0m");
                                 while (!solversbs.next_step()) {
@@ -441,7 +464,15 @@ public class MainInteract {
                         case "astar":
                             if ("f".equals(solvingMode)) {
                                 System.out.println("\u001B[34mFull A* resolution:\u001B[0m");
-                                res = solver.aStar(maze);
+                                if (answer.equals("l")) {
+                                    solversbs = new SolverSbS(maze, solvingAlgo);
+                                    while (!solversbs.next_step()) {}
+                                    while (!solversbs.find_path_step()) {}
+                                    res = true;
+                                } else {
+                                    System.out.println("\u001B[34mFull A* resolution:\u001B[0m");
+                                    res = solver.aStar(maze);
+                                }
                             } else {
                                 System.out.println("\u001B[34mStep-by-step A* resolution:\u001B[0m");
                                 while (!solversbs.next_step()) {
