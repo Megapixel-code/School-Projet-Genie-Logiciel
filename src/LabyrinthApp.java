@@ -47,6 +47,22 @@ public class LabyrinthApp extends Application {
     }
 
 
+    /**
+     * Disables or enables the buttons in the button box
+     * @param buttonBox
+     * @param disabled
+     */
+    private void setButtonsDisabled(HBox buttonBox, boolean disabled) {
+        for (javafx.scene.Node node : buttonBox.getChildren()) {
+            if (node instanceof Button || node instanceof ComboBox) {
+                node.setDisable(disabled);
+            }
+        }
+    }
+
+
+
+
     @Override
     public void start(Stage primaryStage) {
 
@@ -254,6 +270,7 @@ public class LabyrinthApp extends Application {
                 printToTerminal("Please generate a labyrinth first.");
             } else {
                 printToTerminal("Labyrinth resolution using " + selectedMethod + " method...");
+                setButtonsDisabled(buttonBox, true);
                 if(selectedMethod.equals("DFS")) {
                     // Code to resolve labyrinth using DFS
                     Solver solver = new Solver();
@@ -265,6 +282,7 @@ public class LabyrinthApp extends Application {
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                     printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                    setButtonsDisabled(buttonBox, false);
                 } else if (selectedMethod.equals("BFS")) {
                     // Code to resolve labyrinth using BFS
                     Solver solver = new Solver();
@@ -276,6 +294,7 @@ public class LabyrinthApp extends Application {
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                     printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                    setButtonsDisabled(buttonBox, false);
                 } else if (selectedMethod.equals("A*")) {
                     // Code to resolve labyrinth using A*
                     Solver solver = new Solver();
@@ -287,11 +306,13 @@ public class LabyrinthApp extends Application {
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                     printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                    setButtonsDisabled(buttonBox, false);
                 } else if(selectedMethod.equals("DFS Step-by-step")) {
                     // Code to resolve labyrinth using DFS
                     SolverSbS solver = new SolverSbS(CurrentMaze, "dfs");
                     GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, speedy, () -> {
                         GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, speedy);
+                        setButtonsDisabled(buttonBox, false);
                     });
 
                 } else if (selectedMethod.equals("BFS Step-by-step")) {
@@ -299,12 +320,14 @@ public class LabyrinthApp extends Application {
                     SolverSbS solver = new SolverSbS(CurrentMaze, "bfs");
                     GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, speedy, () -> {
                         GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, speedy);
+                        setButtonsDisabled(buttonBox, false);
                     });
                 } else if (selectedMethod.equals("A* Step-by-step")) {
                     // Code to resolve labyrinth using A*
                     SolverSbS solver = new SolverSbS(CurrentMaze, "astar");
                     GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, speedy, () -> {
                         GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, speedy);
+                        setButtonsDisabled(buttonBox, false);
                     });
                 } else if (selectedMethod.equals("Dijkstra")) {
                     // Code to resolve labyrinth using Dijkstra
@@ -317,11 +340,13 @@ public class LabyrinthApp extends Application {
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                     printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                    setButtonsDisabled(buttonBox, false);
                 } else if (selectedMethod.equals("Dijkstra Step-by-step")) {
                     // Code to resolve labyrinth using Dijkstra
                     SolverSbS solver = new SolverSbS(CurrentMaze, "dijkstra");
                     GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, speedy, () -> {
                         GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, speedy);
+                        setButtonsDisabled(buttonBox, false);
                     });
                 } else if (selectedMethod.equals("WallFollowerLeft")) {
                     // Code to resolve labyrinth following the left wall
@@ -334,6 +359,7 @@ public class LabyrinthApp extends Application {
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                     printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                    setButtonsDisabled(buttonBox, false);
                 } else if (selectedMethod.equals("WallFollowerRight")) {
                     // Code to resolve labyrinth following the right wall
                     Solver solver = new Solver();
@@ -345,6 +371,7 @@ public class LabyrinthApp extends Application {
                     }
                     generateWay(labyrinthArea, CurrentMaze);
                     printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                    setButtonsDisabled(buttonBox, false);
                 }
             }});
 
