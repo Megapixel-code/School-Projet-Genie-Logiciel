@@ -22,6 +22,9 @@ abstract class Maze {
 
     private Map<Node, List<Node>> adjacencyList = new HashMap<>();
 
+    public Maze(){
+        this(2, 2, 0); 
+    }
 
     public Maze(int x, int y, int seed){
         /*
@@ -478,7 +481,7 @@ abstract class Maze {
         }
     }
 
-    public String[] get_backup_names(){
+    static public String[] get_backup_names(){
         /*
          * will return a array of all the files name in the backup folder
          * is used to chose the save we want to restore

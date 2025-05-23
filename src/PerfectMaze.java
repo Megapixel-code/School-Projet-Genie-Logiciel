@@ -3,6 +3,11 @@ import java.util.*;
 class PerfectMaze extends Maze {
     private Node last_node;
 
+    public PerfectMaze() {
+        super();
+        this.last_node = null;
+    }
+
     public PerfectMaze(int x, int y, int seed, int[] start, int[] end) {
         super(x, y, seed, start, end);
         this.last_node = super.get_node(start[0], start[1]);
@@ -14,7 +19,7 @@ class PerfectMaze extends Maze {
         return this.last_node;
     }
 
-    public boolean bfs_next_step(){
+    public boolean generate_dfs_next_step(){
         /*
          * returns true if finished,
          * finished if depth equals zero and no unvisited node around
@@ -68,7 +73,7 @@ class PerfectMaze extends Maze {
     }
     //mode complet pour bfs
     public void generateBFS() {
-        while (!this.bfs_next_step()) { // seulement quand c'est true tu affiches
+        while (!this.generate_dfs_next_step()) { // seulement quand c'est true tu affiches
         }
     }
 
