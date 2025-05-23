@@ -71,6 +71,18 @@ abstract class Maze {
         return this.adjacencyList;
     }
 
+    public void add_adjacency(Node a, Node b) {
+        adjacencyList.putIfAbsent(a, new ArrayList<>());
+        adjacencyList.putIfAbsent(b, new ArrayList<>());
+        if (!adjacencyList.get(a).contains(b)) adjacencyList.get(a).add(b);
+        if (!adjacencyList.get(b).contains(a)) adjacencyList.get(b).add(a);
+    }
+
+    public void remove_adjacency(Node a, Node b) {
+        if (adjacencyList.containsKey(a)) adjacencyList.get(a).remove(b);
+        if (adjacencyList.containsKey(b)) adjacencyList.get(b).remove(a);
+    }
+
     public Random get_rng(){
         return this.rng;
     }

@@ -76,33 +76,15 @@ public class MainInteract {
                 endY = scanner.nextInt();
             } while (endY < 0 || endY >= sizeY);
 
-            while (startX == endX && startY == endY) {
-                System.out.println("Start and End cannot be the same! Please enter different end coordinates.");
-
-                System.out.print("End X? ");
-                while (!scanner.hasNextInt()) {
-                    System.out.print("Invalid input. End X? ");
-                    scanner.next();
-                }
-                endX = scanner.nextInt();
-
-                System.out.print("End Y? ");
-                while (!scanner.hasNextInt()) {
-                    System.out.print("Invalid input. End Y? ");
-                    scanner.next();
-                }
-                endY = scanner.nextInt();
-            }
-
             scanner.nextLine(); // securité car apres on fais un nextline
 
-            // kruskal ou bfs
+            /*// kruskal ou bfs
             String generationAlgo;
             do {
                 System.out.print("\nGeneration algorithm : Kruskal or BFS ? K : B ");
                 generationAlgo = scanner.nextLine().toLowerCase();
             } while (!"k".equals(generationAlgo) && !"b".equals(generationAlgo));
-
+*/
             // maze type
             String mazeType;
             do {
@@ -128,6 +110,40 @@ public class MainInteract {
                 System.out.print("Generation mode : Full or Step-by-Step ? F : S ");
                 generationMode = scanner.nextLine().toLowerCase();
             } while (!"f".equals(generationMode) && !"s".equals(generationMode));
+
+
+            //maze
+            int[] start = {startX, startY};
+            int[] end = {endX, endY};
+
+            PerfectMaze maze = new PerfectMaze();
+
+            if ("p".equals(mazeType)) {
+                System.out.println("\u001B[32mGenerating Perfect Maze...\u001B[0m");
+
+                 maze = new PerfectMaze(sizeX, sizeY, seed, start, end);
+                if ("f".equals(generationMode)) {
+                    maze.generateKruskal();
+                } else {
+                    if ("s".equals(generationMode)) {
+                        maze.generate_dfs_next_step();
+                    }
+                }
+
+            } else if ("i".equals(mazeType)) {
+                System.out.println("\u001B[33mGenerating Imperfect Maze...\u001B[0m");
+
+                if ("f".equals(generationMode)) {
+                    maze = new ImperfectMazeKruskal(sizeX, sizeY, seed, start, end);
+                } else {
+                    maze = new ImperfectMaze(sizeX, sizeY, seed, start, end);
+                }
+            }
+
+            maze.displayTextMaze();
+
+            /*ajouter modifier*/
+
 
             // resolution full or sbs
             String solvingMode;
@@ -158,105 +174,66 @@ public class MainInteract {
             );
 
 
-            int[] start = {startX, startY};
-            int[] end = {endX, endY};
+            // Resolution
+            System.out.println("\n");
 
-            // Création du labyrinthe
-            if ("p".equals(mazeType)) {
-                System.out.println("\u001B[32mGenerating Perfect Maze...\u001B[0m");
 
-                PerfectMaze mazePerfect = new PerfectMaze(sizeX, sizeY, seed, start, end);
-                if ("k".equals(generationAlgo)) {
-                    mazePerfect.generateKruskal();
-                } else {
-                    if ("s".equals(generationMode)) {
-                        mazePerfect.bfs_next_step();
-                    } else {
-                        mazePerfect.generateBFS();
+            boolean res = false;
+            Solver solver = new Solver();
+            SolverSbS solversbs = new SolverSbS(maze);
+
+            switch (solvingAlgo) {
+                case "b":
+                    if ("f".equals(solvingMode)) {
+                        res = solver.bfs(maze);
                     }
-                }
+                    System.out.print("\u001B[34mResolution BFS!\n\u001B[0m");
+                    break;
 
-                mazePerfect.displayTextMaze();
+                case "d":
+                    if ("f".equals(solvingMode)) {
+                        res = solver.dfs(maze);
+                    }
+                    System.out.print("\u001B[34mResolution DFS!\n\u001B[0m");
+                    break;
 
-                switch (solvingAlgo) {
-                    case "b":
-                        Solver.bfs(mazePerfect);
-                        System.out.print("\u001B[34mResolution Perfect BFS!\n\u001B[0m");
-                        break;
-                    case "d":
-                        Solver.dfs(mazePerfect);
-                        System.out.print("\u001B[34mResolution Perfect DFS!\n\u001B[0m");
-                        break;
-                    case "k":
-                        Solver.dijkstra(mazePerfect);
-                        System.out.print("\u001B[34mResolution Perfect Dijkstra!\n\u001B[0m");
-                        break;
-                    case "a":
-                        Solver.aStar(mazePerfect);
-                        System.out.print("\u001B[34mResolution Perfect A*!\n\u001B[0m");
-                        break;
-                    case "r":
-                        Solver.wallFollowerRight(mazePerfect);
-                        System.out.print("\u001B[34mResolution Perfect Wall Follower Right!\n\u001B[0m");
-                        break;
-                    case "l":
-                        Solver.wallFollowerLeft(mazePerfect);
-                        System.out.print("\u001B[34mResolution Perfect Wall Follower Left!\n\u001B[0m");
-                        break;
-                }
+                case "k":
+                    if ("f".equals(solvingMode)) {
+                        res = solver.dijkstra(maze);
+                    }
+                    System.out.print("\u001B[34mResolution Dijkstra!\n\u001B[0m");
+                    break;
 
-                mazePerfect.displayTextMaze();
-                System.out.println("\n");
+                case "a":
+                    if ("f".equals(solvingMode)) {
+                        res = solver.aStar(maze);
+                    }
+                    System.out.print("\u001B[34mResolution A*!\n\u001B[0m");
+                    break;
 
-            } else if ("i".equals(mazeType)) {
-                System.out.println("\u001B[33mGenerating Imperfect Maze...\u001B[0m");
+                case "r":
+                    if ("f".equals(solvingMode)) {
+                        res = solver.wallFollowerRight(maze);
+                    }
+                    System.out.print("\u001B[34mResolution Wall Follower Right!\n\u001B[0m");
+                    break;
 
-                Maze mazeImperfect;
-                if ("k".equals(generationAlgo)) {
-                    mazeImperfect = new ImperfectMazeKruskal(sizeX, sizeY, seed, start, end);
-                } else {
-                    mazeImperfect = new ImperfectMaze(sizeX, sizeY, seed, start, end);
-                }
-
-                mazeImperfect.displayTextMaze();
-
-                boolean res = false;
-                switch (solvingAlgo) {
-                    case "b":
-                        res = Solver.bfs(mazeImperfect);
-                        System.out.print("\u001B[34mResolution Imperfect BFS!\n\u001B[0m");
-                        break;
-                    case "d":
-                        res = Solver.dfs(mazeImperfect);
-                        System.out.print("\u001B[34mResolution Imperfect DFS!\n\u001B[0m");
-                        break;
-                    case "k":
-                        res = Solver.dijkstra(mazeImperfect);
-                        System.out.print("\u001B[34mResolution Imperfect Dijkstra!\n\u001B[0m");
-                        break;
-                    case "a":
-                        res = Solver.aStar(mazeImperfect);
-                        System.out.print("\u001B[34mResolution Imperfect A*!\n\u001B[0m");
-                        break;
-                    case "r":
-                        res = Solver.wallFollowerRight(mazeImperfect);
-                        System.out.print("\u001B[34mResolution Imperfect Wall Follower Right!\n\u001B[0m");
-                        break;
-                    case "l":
-                        res = Solver.wallFollowerLeft(mazeImperfect);
-                        System.out.print("\u001B[34mResolution Imperfect Wall Follower Left!\n\u001B[0m");
-                        break;
-                }
-
-                if (res) {
-                    mazeImperfect.displayTextMaze();
-                    System.out.println("\n");
-                } else {
-                    System.out.println("\u001B[31mAucun chemin trouvé !\u001B[0m");
-                }
+                case "l":
+                    if ("f".equals(solvingMode)) {
+                        res = solver.wallFollowerLeft(maze);
+                    }
+                    System.out.print("\u001B[34mResolution Wall Follower Left!\n\u001B[0m");
+                    break;
             }
 
-
+            if (res) {
+                maze.displayTextMaze();
+                System.out.println("\n");
+            } else {
+                System.out.println("\u001B[31mAucun chemin trouvé !\u001B[0m");
+            }
         }
+
+
     }
 }

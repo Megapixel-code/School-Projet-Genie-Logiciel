@@ -2,54 +2,55 @@ class Main {
     public static void main(String[] args) {
 
        //Initialisation parfait
+        Solver solver = new Solver();
         int[] start = {0, 0};
         int[] end = {14, 14};
-        PerfectMaze mazePerfect = new PerfectMaze(15, 15, -930569183, start, end);
+        PerfectMaze mazePerfect = new PerfectMaze(25, 25, 5, start, end);
         mazePerfect.generateBFS();
         System.out.print("\u001B[33mGeneration Perfect !\n\u001B[0m");
         mazePerfect.displayTextMaze();
         System.out.println("\n");
 
-     /*   //Resolution BFS
-       Solver.bfs(mazePerfect);
+        //Resolution BFS
+       solver.bfs(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect BFS!\n\u001B[0m");
         mazePerfect.displayTextMaze();
         System.out.println("\n");
 
 
        //Resolution DFS
-      Solver.dfs(mazePerfect);
+      solver.dfs(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect DFS!\n\u001B[0m");
         mazePerfect.displayTextMaze();
         System.out.println("\n");
 
 
          //Resolution A*
-        Solver.aStar(mazePerfect);
+        solver.aStar(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect aStar!\n\u001B[0m");
         mazePerfect.displayTextMaze();
         System.out.println("\n");
 
 
       //Resolution DIJKSTRA
-        Solver.dijkstra(mazePerfect);
+        solver.dijkstra(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect Dijkstra!\n\u001B[0m");
         mazePerfect.displayTextMaze();System.out.println("\n");
 
-*/
+
         //Resolution WALL FOLLOWER RIGHT
-        Solver.wallFollowerRight(mazePerfect);
+        solver.wallFollowerRight(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect Wall Follower Right !\n\u001B[0m");
         mazePerfect.displayTextMaze();
         System.out.println("\n");
 
 
        //Resolution WALL FOLLOWER Left
-        Solver.wallFollowerLeft(mazePerfect);
+        solver.wallFollowerLeft(mazePerfect);
         System.out.print("\u001B[34mResolution Perfect Wall Follower Left !\n\u001B[0m");
         mazePerfect.displayTextMaze();System.out.println("\n");
 
-   /*  // Ajout manuel de mur
+    /* // Ajout manuel de mur
         Node a = mazePerfect.get_node(1, 1);
         Node b = mazePerfect.get_node(2, 1);
 
@@ -71,14 +72,14 @@ class Main {
          */
 
         // Initialisation Imparfait
-       /* System.out.print("\u001B[33mGeneration Imperfect !\n\u001B[0m");
+     /*   System.out.print("\u001B[33mGeneration Imperfect !\n\u001B[0m");
         ImperfectMaze mazeImperfect = new ImperfectMaze(20, 8, 600, start, end);
         mazeImperfect.displayTextMaze();
         System.out.println("\n");
 
 
         //Resolution BFS
-        boolean res = Solver.bfs(mazeImperfect);
+        boolean res = solver.bfs(mazeImperfect);
         if (res){
 
             System.out.print("\u001B[34mResolution Imperfect BFS!\n \u001B[0m");
@@ -90,7 +91,7 @@ class Main {
 
 
         //Resolution DFS
-        res = Solver.dfs(mazeImperfect);
+        res = solver.dfs(mazeImperfect);
         if (res){
 
             System.out.print("\u001B[34mResolution Imperfect DFS!\n \u001B[0m");
@@ -103,7 +104,7 @@ class Main {
 
 
         //Resolution A*
-        res = Solver.aStar(mazeImperfect);
+        res = solver.aStar(mazeImperfect);
         if (res){
 
             System.out.print("\u001B[34mResolution Imperfect aStar!\n \u001B[0m");
@@ -115,7 +116,7 @@ class Main {
 
 
         //Resolution DIJKSTRA
-        res = Solver.dijkstra(mazeImperfect);
+        res = solver.dijkstra(mazeImperfect);
         if (res){
 
             System.out.print("\u001B[34mResolution Imperfect Dijkstra!\n \u001B[0m");
@@ -127,7 +128,7 @@ class Main {
 
 
         // Resolution Wallf Follower Right
-        res = Solver.wallFollowerRight(mazeImperfect);
+        res = solver.wallFollowerRight(mazeImperfect);
         if (res) {
 
             System.out.print("\u001B[34mResolution Perfect Wall Follower Right !\n\u001B[0m");
@@ -139,7 +140,7 @@ class Main {
 
 
         // Resolution Wallf Follower Left
-        res = Solver.wallFollowerLeft(mazeImperfect);
+        res = solver.wallFollowerLeft(mazeImperfect);
         if (res) {
 
             System.out.print("\u001B[34mResolution Perfect Wall Follower Left !\n\u001B[0m");

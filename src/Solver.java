@@ -1,8 +1,21 @@
 import java.util.*;
 
 public class Solver {
+    private long start_time;
+    private long stop_time;
+    private long duration;
 
-    public static boolean bfs(Maze maze) {
+    public Solver() {
+        this.start_time = 0;
+        this.stop_time = 0;
+        this.duration = 0;
+    }
+
+    public boolean bfs(Maze maze) {
+        maze.clearMarks();
+        // init timer
+        this.start_time = System.nanoTime();
+
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
 
@@ -16,6 +29,7 @@ public class Solver {
 
         while (!queue.isEmpty()) {
             Node current = queue.poll();
+            current.setMark("V");
 
             if (current == end) {
                 // Chemin trouvé
@@ -27,6 +41,8 @@ public class Solver {
                 }
                 start.setPath(true);
                 start.setMark("B");
+                // stop timer
+                this.stop_time = System.nanoTime();
                 return true;
             }
 
@@ -35,15 +51,19 @@ public class Solver {
                     visited.add(neighbor);
                     parent.put(neighbor, current);
                     queue.add(neighbor);
-                    neighbor.setMark("V");
-                    //maze.displayTextMaze();
                 }
             }
         }
+        // stop timer
+        this.stop_time = System.nanoTime();
         return false; // Aucun chemin trouvé
     }
 
-    public static boolean dfs(Maze maze) {
+    public boolean dfs(Maze maze) {
+        maze.clearMarks();
+        // init timer
+        this.start_time = System.nanoTime();
+
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
 
@@ -57,6 +77,7 @@ public class Solver {
 
         while (!stack.isEmpty()) {
             Node current = stack.pop();
+            current.setMark("V");
 
             if (current == end) {
                 // Chemin trouvé
@@ -68,6 +89,8 @@ public class Solver {
                 }
                 start.setPath(true);
                 start.setMark("D");
+                // stop timer
+                this.stop_time = System.nanoTime();
                 return true;
             }
 
@@ -76,12 +99,12 @@ public class Solver {
                     visited.add(neighbor);
                     parent.put(neighbor, current);
                     stack.push(neighbor);
-                    neighbor.setMark("V");
-                    //maze.displayTextMaze();
                 }
             }
         }
 
+        // stop timer
+        this.stop_time = System.nanoTime();
         return false; // Aucun chemin trouvé
     }
 
@@ -99,7 +122,11 @@ public class Solver {
     // g : distance réelle depuis le départ
     // h : heuristique (distance de Manhattan vers la cible)
 
-    public static boolean aStar(Maze maze) {
+    public boolean aStar(Maze maze) {
+        maze.clearMarks();
+        // init timer
+        this.start_time = System.nanoTime();
+
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
 
@@ -125,6 +152,7 @@ public class Solver {
 
         while (!openSet.isEmpty()) {
             Node current = openSet.poll();
+            current.setMark("V");
 
             if (current == end) {
                 // Chemin trouvé, reconstruire et marquer
@@ -136,6 +164,8 @@ public class Solver {
                 }
                 start.setPath(true);
                 start.setMark("A");
+                // stop timer
+                this.stop_time = System.nanoTime();
                 return true;
             }
 
@@ -154,18 +184,22 @@ public class Solver {
                     // Si le voisin n'est pas dans openSet, on l'ajoute
                     if (!openSet.contains(neighbor)) {
                         openSet.add(neighbor);
-                        neighbor.setMark("V");
-                       // maze.displayTextMaze();
                     }
                 }
             }
         }
+        // stop timer
+        this.stop_time = System.nanoTime();
         return false; // Aucun chemin trouvé
     }
 
 
     // Résolution avec l’algorithme de Dijkstra
-    public static boolean dijkstra(Maze maze) {
+    public boolean dijkstra(Maze maze) {
+        maze.clearMarks();
+        // init timer
+        this.start_time = System.nanoTime();
+
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
 
@@ -202,6 +236,8 @@ public class Solver {
                 }
                 start.setPath(true);
                 start.setMark("K");
+                // stop timer
+                this.stop_time = System.nanoTime();
                 return true;
             }
 
@@ -223,13 +259,19 @@ public class Solver {
             }
         }
 
+        // stop timer
+        this.stop_time = System.nanoTime();
         // Aucun chemin trouvé
         return false;
     }
 
     //WALL FOLLOWER :
     //Left
-    public static boolean wallFollowerLeft(Maze maze) {
+    public boolean wallFollowerLeft(Maze maze) {
+        maze.clearMarks();
+        // init timer
+        this.start_time = System.nanoTime();
+
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
 
@@ -289,6 +331,8 @@ public class Solver {
             }
 
             if (!moved) {
+                // stop timer
+                this.stop_time = System.nanoTime();
                 return false; // bloqué
             }
         }
@@ -302,15 +346,23 @@ public class Solver {
             }
             start.setPath(true);
             start.setMark("L");
+            // stop timer
+            this.stop_time = System.nanoTime();
             return true;
         }
 
+        // stop timer
+        this.stop_time = System.nanoTime();
         return current.equals(end);
     }
 
 
     //Right
-    public static boolean wallFollowerRight(Maze maze) {
+    public boolean wallFollowerRight(Maze maze) {
+        maze.clearMarks();
+        // init timer
+        this.start_time = System.nanoTime();
+
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
 
@@ -369,6 +421,8 @@ public class Solver {
             }
 
             if (!moved) {
+                // stop timer
+                this.stop_time = System.nanoTime();
                 return false; // bloqué
             }
         }
@@ -382,9 +436,18 @@ public class Solver {
             }
             start.setPath(true);
             start.setMark("R");
+            // stop timer
+            this.stop_time = System.nanoTime();
             return true;
         }
 
+        // stop timer
+        this.stop_time = System.nanoTime();
         return current.equals(end);
+    }
+
+    public long get_time_ms(){
+        this.duration = (this.stop_time - this.start_time) / 1000000;
+        return this.duration;
     }
 }

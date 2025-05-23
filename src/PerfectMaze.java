@@ -19,7 +19,7 @@ class PerfectMaze extends Maze {
         return this.last_node;
     }
 
-    public boolean bfs_next_step(){
+    public boolean generate_dfs_next_step(){
         /*
          * returns true if finished,
          * finished if depth equals zero and no unvisited node around
@@ -73,7 +73,7 @@ class PerfectMaze extends Maze {
     }
     //mode complet pour bfs
     public void generateBFS() {
-        while (!this.bfs_next_step()) { // seulement quand c'est true tu affiches
+        while (!this.generate_dfs_next_step()) { // seulement quand c'est true tu affiches
         }
     }
 
