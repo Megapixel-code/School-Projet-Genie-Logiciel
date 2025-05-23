@@ -23,7 +23,14 @@ import java.util.Random;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 
-
+/**
+ * LabyrinthApp is the class to display the labyrinth using JavaFX and interact with the user.
+ * It allows the user to generate and resolve labyrinths using different methods.
+ * The labyrinth is displayed in a graphical interface and the user can interact with it using buttons and text fields.
+ * The user can choose the size and seed of the labyrinth.
+ * The Labyrinth can be modified by clicking on the walls and nodes.
+ * The user can also save and load labyrinths from files.
+ */
 public class LabyrinthApp extends Application {
     private TextArea terminalArea;
     private String selectedMethod = null;
@@ -31,8 +38,10 @@ public class LabyrinthApp extends Application {
     private String generatedLabyrinth = null;
     private Maze CurrentMaze = null;
 
-    // ############################################### terminal in javaFX ###############################################
-
+/**
+ * Prints a message to the terminal area instead of the console
+ * @param message
+ */
     private void printToTerminal(String message) {
         terminalArea.appendText(message + "\n");
     }
@@ -46,22 +55,28 @@ public class LabyrinthApp extends Application {
         BorderPane root = new BorderPane();
 
 
-        // Pane pour le labyrinthe
+/**
+ * Space for the labyrinth
+ */
         Pane labyrinthArea = new Pane();
         labyrinthArea.getStyleClass().add("labyrinth-area");
 
-        // Terminal JavaFX
+/**
+ * Space for the terminal
+ */
         terminalArea = new TextArea();
         terminalArea.setEditable(false);
         terminalArea.setWrapText(true);
         terminalArea.setPrefWidth(300); // largeur fixe pour le terminal
         terminalArea.getStyleClass().add("terminal-area");
 
-        // HBox pour split l'affichage
+/**
+ * Center box to hold the labyrinth and terminal
+ * The labyrinth takes 75% of the width and the terminal takes 25%
+ */
         HBox centerBox = new HBox();
         centerBox.getChildren().addAll(labyrinthArea, terminalArea);
 
-        // Proportions : 3/4 pour le laby, 1/4 pour le terminal
         labyrinthArea.prefWidthProperty().bind(centerBox.widthProperty().multiply(0.75));
         labyrinthArea.prefHeightProperty().bind(centerBox.heightProperty());
         terminalArea.prefWidthProperty().bind(centerBox.widthProperty().multiply(0.25));
@@ -69,6 +84,9 @@ public class LabyrinthApp extends Application {
 
         root.setCenter(centerBox);
 
+    /**
+     * Space for the buttons
+     */
         HBox buttonBox = new HBox();
         buttonBox.setSpacing(10);
         buttonBox.setAlignment(Pos.CENTER);
@@ -76,9 +94,10 @@ public class LabyrinthApp extends Application {
         root.setBottom(buttonBox);
 
 
-
-        // ############################################### btn taille laby ###############################################
-
+/**
+ * TextFields for the size and seed of the labyrinth
+ * The size and seed are stored in mazeWidth, mazeHeight and mazeSeed
+ */
         TextField widthField = new TextField("15");
         widthField.setPromptText("Largeur");
         widthField.setMaxWidth(70);
@@ -87,15 +106,20 @@ public class LabyrinthApp extends Application {
         heightField.setPromptText("Hauteur");
         heightField.setMaxWidth(70);
 
-        Button validateButton = new Button("Validate Size/Seed");
+        TextField seedField = new TextField();
+        seedField.setPromptText("Seed");
+        seedField.setMaxWidth(150);
 
         final int[] mazeWidth = {15};
         final int[] mazeHeight = {15};
         final int[] mazeSeed = {0};
 
-        TextField seedField = new TextField();
-        seedField.setPromptText("Seed");
-        seedField.setMaxWidth(150);
+    
+/**
+ * Button to validate the size and seed of the labyrinth
+ * The size and seed are stored in mazeWidth, mazeHeight and mazeSeed
+ */
+        Button validateButton = new Button("Validate Size/Seed");
 
         validateButton.setOnAction(e -> {
             try {
@@ -120,8 +144,10 @@ public class LabyrinthApp extends Application {
             
         });
 
-        // ############################################### btn generate Labyrinth ###############################################
-
+/**
+ * Button to generate the labyrinth
+ * The labyrinth is generated using the selected method
+ */
         Button generateLabyrinth = new Button("Generate Labyrinth");
         generateLabyrinth.setOnAction(e -> {
             if (selectedGLMethod == null) {
@@ -157,8 +183,9 @@ public class LabyrinthApp extends Application {
             }
         });
 
-        // ############################################### btn 2 ###############################################
-
+/**
+ * ComboBox for choosing the generation method
+ */
         ComboBox<String> generationMethods = new ComboBox<>();
         generationMethods.getItems().addAll("perfect maze", "Step-by-step perfect maze", "Imperfect maze", "Step-by-step imperfect maze");
         generationMethods.setPromptText("Select Generation Method");
@@ -168,8 +195,10 @@ public class LabyrinthApp extends Application {
             printToTerminal("Selected method: " + selectedGLMethod);
         });
 
-        // ############################################### btn 4 ###############################################
-
+/**
+ * Button to resolve the labyrinth
+ * The labyrinth is resolved using the selected method
+ */
         Button resolveButton = new Button("Resolve Labyrinth");
         resolveButton.setOnAction(e -> {
 
@@ -258,8 +287,9 @@ public class LabyrinthApp extends Application {
             }
         }});
 
-        // ############################################### btn 3 ###############################################
-
+/**
+ * ComboBox for choosing the resolution method
+ */
         ComboBox<String> resolutionMethods = new ComboBox<>();
         resolutionMethods.getItems().addAll("DFS", "DFS Step-by-step", "BFS", "BFS Step-by-step", "A*", "A* Step-by-step", "Dijkstra", "WallFollowerLeft", "WallFollowerRight");
         resolutionMethods.setPromptText("Select Resolution Method");
@@ -269,8 +299,10 @@ public class LabyrinthApp extends Application {
             printToTerminal("Selected method: " + selectedMethod);
         });
 
-        // ############################################### btn sauvegarder ###############################################
-
+/**
+ * Button to save a labyrinth
+ * The labyrinth is saved to a text file named by the user
+ */
         Button saveLaby = new Button("Save Labyrinth");
         saveLaby.setOnAction(e -> {
             printToTerminal("Labyrinth saved");
@@ -284,8 +316,10 @@ public class LabyrinthApp extends Application {
             CurrentMaze.save_maze(result.get());
         });
 
-        // ############################################### btn charger #################################################
-
+/**
+ * Button to load a labyrinth
+ * The labyrinth is loaded from a text file choosen by the user
+ */
         Button loadLaby = new Button("Load Labyrinth");
         loadLaby.setOnAction(e -> {
             printToTerminal("Labyrinth loaded");
@@ -304,8 +338,9 @@ public class LabyrinthApp extends Application {
             generateMaze(labyrinthArea, CurrentMaze);
         });
 
-        // ############################################### btn suivant / précédent ###############################################
-
+/**
+ * Buttons for navigation between generation and resolution
+ */
         Button previousButton = new Button("⟵ Previous");
 
         Button nextButton = new Button("Next ⟶");
@@ -331,17 +366,16 @@ public class LabyrinthApp extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-//####################################################################################################################################
-//####################################################################################################################################
-//####################################################################################################################################
-
-
-    // Code Thomas ---------------------
-
+/**
+ * Generate the maze step by step 
+ * using the DFS algorithm
+ * @param labyrinthArea
+ * @param maze
+ */
     public void GenerateStepByStep(Pane labyrinthArea, PerfectMaze maze) {
         PauseTransition pause = new PauseTransition(Duration.seconds(0.05));
         pause.setOnFinished(event -> {
-            boolean end = maze.bfs_next_step();
+            boolean end = maze.generate_dfs_next_step();
             generateMaze(labyrinthArea, maze);
 
             if (!end) {
@@ -350,9 +384,14 @@ public class LabyrinthApp extends Application {
         });
         pause.play();
     }
-
+/**
+ * Generate the maze completely
+ * using the DFS algorithm
+ * @param labyrinthArea
+ * @param maze
+ */
     public void GenerateComplete(Pane labyrinthArea, PerfectMaze maze) {
-        while (!(maze.bfs_next_step())) {}
+        while (!(maze.generate_dfs_next_step())) {}
         generateMaze(labyrinthArea, maze);
     }
 
@@ -366,7 +405,15 @@ public class LabyrinthApp extends Application {
             return Y;
         }
     }
-
+/**
+ * Generate the way step by step
+ * First step is to find the path and mark all the nodes visited
+ * @param maze
+ * @param solver
+ * @param labyrinthArea
+ * @param speed
+ * @param onFinish
+ */
     public void GenerateStepByStepWayFirstStep(Maze maze, SolverSbS solver, Pane labyrinthArea, double speed, Runnable onFinish) {
         PauseTransition pause = new PauseTransition(Duration.seconds(speed));
         pause.setOnFinished(event -> {
@@ -382,6 +429,15 @@ public class LabyrinthApp extends Application {
         pause.play();
     }
 
+/**
+ * Generate the way step by step
+ * Last step is after finding the path
+ * to mark the path beetween the start and the end nodes
+ * @param maze
+ * @param solver
+ * @param labyrinthArea
+ * @param speed
+ */
     public void GenerateStepByStepWayLastStep(Maze maze, SolverSbS solver, Pane labyrinthArea, double speed) {
         PauseTransition pause = new PauseTransition(Duration.seconds(speed));
         pause.setOnFinished(event -> {
@@ -394,8 +450,13 @@ public class LabyrinthApp extends Application {
         pause.play();
     }
 
-    // ca il faut que je puisse l'appeler mais faut pas le mettre ici
-
+/**
+ * Generate a maze
+ * This method is used to draw the maze in the pane
+ * It draws the walls, the start and end nodes
+ * @param pane
+ * @param maze
+ */
     public void generateMaze(Pane pane, Maze maze) {
         // Code to generate Maze
         Group MazeGroup = new Group();
@@ -470,7 +531,17 @@ public class LabyrinthApp extends Application {
         MazeGroup.layoutYProperty().bind(pane.heightProperty().subtract(mazeHeight).divide(2));
         pane.getChildren().add(MazeGroup);
     }
-
+/**
+ * This method is used to add or remove walls in the maze
+ * It is called when the user clicks on a wall
+ * It checks if the wall is already present or not
+ * If the wall is present, it removes it    
+ * If the wall is not present, it adds it
+ * @param pane
+ * @param maze
+ * @param node1
+ * @param node2
+ */
     public void lineClicked(Pane pane, Maze maze, Node node1, Node node2) {
         if (node1 != null && node2 != null) {
             if (maze.in_edge_list(node1, node2) >= 0) {
@@ -488,7 +559,16 @@ public class LabyrinthApp extends Application {
         }
         generateMaze(pane, maze);
     }
-
+/**
+ * This method is used to change the start and end nodes
+ * It is called when the user clicks on the start node
+ * It set the start node to the clicked node
+ * It checks if the end node is already selected
+ * @param maze
+ * @param ChangeEndNode
+ * @param c
+ * @return
+ */
     public Boolean StartNodeClicked(Maze maze, BooleanProperty ChangeEndNode,Circle c) {
         if (ChangeEndNode.getValue()) {
             printToTerminal("End node already selected.");
@@ -509,6 +589,16 @@ public class LabyrinthApp extends Application {
         printToTerminal("End node ready to change.");
         return true;
     }
+/**
+ * This method is used to change the start and end nodes
+ * It is called when the user clicks on a node after selecting the start or end node
+ * It set the start or end node to the clicked node
+ * @param pane
+ * @param maze
+ * @param ChangeStartNode
+ * @param ChangeEndNode
+ * @param node
+ */
     public void NodeClicked(Pane pane, Maze maze, BooleanProperty ChangeStartNode,BooleanProperty ChangeEndNode,Node node) {
         if (ChangeStartNode.getValue()) {
             maze.set_StartNode(node.get_coordinates()[0], node.get_coordinates()[1]);
@@ -525,6 +615,13 @@ public class LabyrinthApp extends Application {
         }
     }
 
+/**
+ * This method is used to generate the way
+ * It is called when the user clicks on the resolve button
+ * It generates the way after the selected resolution method had edit the maze
+ * @param pane
+ * @param maze
+ */
     public void generateWay(Pane pane, Maze maze) {
         pane.getChildren().clear();
         Group WayGroup = new Group();
@@ -534,9 +631,16 @@ public class LabyrinthApp extends Application {
         WayGroup.layoutYProperty().bind(pane.heightProperty().subtract(maze.get_size()[1] * CELL_SIZE).divide(2));
         generateMaze(pane, maze);
         pane.getChildren().add(WayGroup);
-        //printToTerminal("Way generated");
     }
 
+/**
+ * This method is used to draw the way
+ * It is called by generateWay
+ * @param pane
+ * @param maze
+ * @param CELL_SIZE
+ * @param WayGroup
+ */
     public void drawWay(Pane pane, Maze maze,int CELL_SIZE, Group WayGroup) {
         int CIRCLE_SIZE = 1;
         if (CELL_SIZE/7 > 0){
@@ -594,9 +698,10 @@ public class LabyrinthApp extends Application {
             }
         }
     }
-
-    // Code Thomas ---------------------
-
+/**
+ * Main method to launch the application
+ * @param args
+ */
     public static void main(String[] args) {
         launch(args);
     }

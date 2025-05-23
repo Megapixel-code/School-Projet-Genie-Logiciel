@@ -152,7 +152,7 @@ public class MainInteract {
                     mazePerfect.generateKruskal();
                 } else {
                     if ("s".equals(generationMode)) {
-                        mazePerfect.bfs_next_step();
+                        mazePerfect.generate_dfs_next_step();
                     } else {
                         mazePerfect.generateBFS();
                     }
