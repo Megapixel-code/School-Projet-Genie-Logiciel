@@ -29,6 +29,7 @@ public class Solver {
 
         while (!queue.isEmpty()) {
             Node current = queue.poll();
+            current.setMark("V");
 
             if (current == end) {
                 // Chemin trouvé
@@ -50,8 +51,6 @@ public class Solver {
                     visited.add(neighbor);
                     parent.put(neighbor, current);
                     queue.add(neighbor);
-                    neighbor.setMark("V");
-                    //maze.displayTextMaze();
                 }
             }
         }
@@ -78,6 +77,7 @@ public class Solver {
 
         while (!stack.isEmpty()) {
             Node current = stack.pop();
+            current.setMark("V");
 
             if (current == end) {
                 // Chemin trouvé
@@ -99,8 +99,6 @@ public class Solver {
                     visited.add(neighbor);
                     parent.put(neighbor, current);
                     stack.push(neighbor);
-                    neighbor.setMark("V");
-                    //maze.displayTextMaze();
                 }
             }
         }
@@ -154,6 +152,7 @@ public class Solver {
 
         while (!openSet.isEmpty()) {
             Node current = openSet.poll();
+            current.setMark("V");
 
             if (current == end) {
                 // Chemin trouvé, reconstruire et marquer
@@ -185,8 +184,6 @@ public class Solver {
                     // Si le voisin n'est pas dans openSet, on l'ajoute
                     if (!openSet.contains(neighbor)) {
                         openSet.add(neighbor);
-                        neighbor.setMark("V");
-                       // maze.displayTextMaze();
                     }
                 }
             }
