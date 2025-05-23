@@ -1,34 +1,54 @@
 import java.util.*;
-
+/**
+ * SolverSbS class provides step-by-step maze solving with different algorithms.
+ * It supports DFS, BFS, A*, and Dijkstra algorithms.
+ *
+ * The solver progresses one step at a time using next_step method,
+ * allowing visualization or slow solving.
+ */
 
 public class SolverSbS {
     /*
-     * solver_type :
-     * 0 = dfs 
-     */ 
+     * solver_type:
+     * 0 = DFS
+     * 1 = BFS
+     * 2 = A*
+     * 3 = Dijkstra
+     */
     private int solver_type;
-    
+
     private Maze maze;
 
     private Node last_node;
     private Node start_node;
     private Node end_node;
-    
+
     private Stack<Node> stack = new Stack<>();
     private LinkedList<Node> fifo = new LinkedList<>();
 
 
+    /**
+     * Constructor to create solver with default type DFS.
+     *
+     * @param m maze to solve
+     */
     public SolverSbS(Maze m){
-        // if type is not given, will solve with dfs
         this(m, "dfs");
     }
 
+    /**
+     * Constructor to create solver with specified type.
+     *
+     * @param m maze to solve
+     * @param type solver type: "dfs", "bfs", "astar", or "dijkstra"
+     * @throws IllegalArgumentException if invalid type is given
+     */
     public SolverSbS(Maze m, String type){
         this.maze = m;
         this.last_node = m.getStartNode();
         this.start_node = m.getStartNode();
         this.end_node = m.getEndNode();
-        
+
         switch (type) {
             // TODO : /!\ mettre a jour get_types, next_step, set_correct_node_mark /!\
             case "dfs" -> {
@@ -53,19 +73,22 @@ public class SolverSbS {
         this.reset_nodes();
         this.start_node.set_depth(0);
     }
-
+    /**
+     * Returns all available solver types as array of strings.
+     *
+     * @return array of solver type names
+     */
     public static String[] get_types(){
-        /*
-         * returns the types of solve available, is used for the display
-         */
         String[] types = {"dfs", "bfs", "astar", "dijkstra"};
         return types;
     }
 
+    /**
+     * Perform the next step of solving according to the current solver type.
+     *
+     * @return true if solving finished, false otherwise
+     */
     public boolean next_step(){
-        /*
-         * will call the correct next step solve depending on the solver type
-         */
         switch (this.solver_type) {
             case 0 -> {
                 return dfs_next_step();
@@ -83,6 +106,12 @@ public class SolverSbS {
         }
     }
 
+    /**
+     * Marks a node with correct solver mark according to solver type.
+     * D = DFS, B = BFS, A = A*, K = Dijkstra.
+     *
+     * @param n node to mark
+     */
     private void set_correct_node_mark(Node n){
         switch (this.solver_type) {
             case 0 -> n.setMark("D");
@@ -93,13 +122,10 @@ public class SolverSbS {
         }
     }
 
+    /**
+     * Reset all nodes in maze: set depth to -1, path false, mark null.
+     */
     private void reset_nodes(){
-        /*
-         * sets all nodes :
-         * depths to -1
-         * path to false
-         * mark_Solver to null
-         */
         int[] size = this.maze.get_size();
         Node current_node;
         for (int i = 0; i < size[0]; i++){
@@ -112,48 +138,44 @@ public class SolverSbS {
         }
     }
 
+    /**
+     * Reveal the solution path one node at a time after solution found.
+     *
+     * @return true if finished revealing path, false if more nodes left
+     */
     public boolean find_path_step(){
-        /*
-         * this function should be only called if the solution has been found
-         * it will reveal the path one node at a time
-         * returns true if the program is finished, false if not
-         */
-
-        // we find the next node not marked as path
         Node n = this.end_node;
-        while (n.isPath()) { 
+        while (n.isPath()) {
             n = get_node_depth_minus_one(n);
             if (n == null){
-                // if n == null, 
-                // either the maze has no solutions, 
-                // or we called this function after having already found the path
                 System.out.println("The maze has no solutions or you called this function too many times");
                 return true;
             }
         }
-        
-        // we mark it as path
+
         n.setPath(true);
         this.set_correct_node_mark(n);
-        // if it is the start node, the program is finished we return true, else it is'nt we return false
         return n == this.start_node;
     }
 
+    /**
+     * Get nodes around node n that are either visited or unvisited,
+     * depending on the boolean parameter.
+     * Only nodes connected by edges are returned.
+     *
+     * @param n the node to check around
+     * @param visited true to get visited neighbors, false for unvisited
+     * @return array of nodes or null if none found
+     */
     private Node[] get_nodes_around(Node n, boolean visited){
-        /*
-         * if visited, will return all of the visited nodes connected to n
-         * if !visited, will return all of the unvisited nodes connected to n
-         */
         int[] current_pos = n.get_coordinates();
 
-        // array of the four node around, will be null if node doesnt exist
         Node[] nodes_around = new Node[4];
         nodes_around[0] = this.maze.get_node(current_pos[0]+1, current_pos[1]);
         nodes_around[1] = this.maze.get_node(current_pos[0]-1, current_pos[1]);
         nodes_around[2] = this.maze.get_node(current_pos[0], current_pos[1]+1);
         nodes_around[3] = this.maze.get_node(current_pos[0], current_pos[1]-1);
 
-        // makes sure there is a path between the two nodes
         for (int k = 0; k < 4; k++){
             if (nodes_around[k] != null){
                 if (maze.in_edge_list(nodes_around[k], n) == -1){
@@ -162,8 +184,6 @@ public class SolverSbS {
             }
         }
 
-        // put available node in a array
-        // available nodes exists and are already visited(or not depending on visited bool)
         int nb_available_nodes = 0;
         for (int k = 0; k < 4; k++){
             if (nodes_around[k] != null){
@@ -177,8 +197,6 @@ public class SolverSbS {
                 }
             }
         }
-        // nodes is a array of the nodes who are already visited(or not depending on visited bool)
-        // and are connected to the node n
         Node[] nodes = Arrays.copyOf(nodes_around, nb_available_nodes);
         if (nb_available_nodes != 0){
             return nodes;
@@ -188,47 +206,50 @@ public class SolverSbS {
         }
     }
 
+    /**
+     * Find node around n with depth one less than n.
+     * Used to backtrack the path.
+     *
+     * @param n current node
+     * @return node with depth one less or null if none found
+     */
     private Node get_node_depth_minus_one(Node n){
-        /*
-         * the program will return the node around the node n who has a depth of n.get_depth() - 1
-         * the node needs to be connected
-         */
 
         int current_depth = n.get_depth();
 
-        // nodes is a array of the nodes who are already visited and are connected to the node n
         Node[] nodes = get_nodes_around(n, true);
         if (nodes == null){
             return null;
         }
 
-        // returns the node that has a depth of current_depth - 1
         for (Node n_loop : nodes){
             if (n_loop.get_depth() == current_depth - 1){
                 return n_loop;
             }
         }
-        // or null if there isnt
         return null;
     }
 
+    /**
+     * Manhattan distance between two nodes.
+     *
+     * @param n1 first node
+     * @param n2 second node
+     * @return Manhattan distance
+     */
     private int distance_between_nodes(Node n1, Node n2){
-        /*
-         * used for a* step by step
-         * returns the manatan distance between two nodes
-         */
         int[] coords1 = n1.get_coordinates();
         int[] coords2 = n2.get_coordinates();
         return Math.abs(coords1[0] - coords2[0]) +
-               Math.abs(coords1[1] - coords2[1]);
+                Math.abs(coords1[1] - coords2[1]);
     }
 
+    /**
+     * One step of DFS solving.
+     *
+     * @return true if finished, false otherwise
+     */
     private boolean dfs_next_step(){
-        /*
-         * dfs next step
-         */
-
-        // if the stack is empty, the program is finished 
         if (stack.isEmpty()){
             return true;
         }
@@ -263,11 +284,11 @@ public class SolverSbS {
         return false;
     }
 
+    /**
+     * Performs one step of BFS solving.
+     * @return true if finished, false otherwise
+     */
     private boolean bfs_next_step(){
-        /*
-         * bfs next step
-         */
-        
         // if the list is empty, program is finished
         if (fifo.isEmpty()){
             return true;
@@ -303,11 +324,11 @@ public class SolverSbS {
         return false;
     }
 
+    /**
+     * Performs one step of A* solving.
+     * @return true if finished, false otherwise
+     */
     private boolean a_star_next_step(){
-        /*
-         * a star next step
-         */
-
         // removes all visited nodes in list
         int fifo_size = fifo.size();
         for (int i = 1; i <= fifo_size; i++){
@@ -358,11 +379,11 @@ public class SolverSbS {
         return false;
     }
 
+    /**
+     * Performs one step of Dijkstra solving.
+     * @return true if finished, false otherwise
+     */
     private boolean dijkstra_next_step(){
-        /*
-         * dijkstra next step
-         */
-        
         // if the list is empty, program is finished
         if (fifo.isEmpty()){
             return true;
