@@ -374,6 +374,14 @@ public class MainInteract {
                                         Thread.currentThread().interrupt();
                                     }
                                 }
+                                while (!solversbs.find_path_step()) {
+                                    maze.displayTextMaze();
+                                    try {
+                                        Thread.sleep(300);
+                                    } catch (InterruptedException e) {
+                                        Thread.currentThread().interrupt();
+                                    }
+                                }
                                 res = true;
                             }
                             break;
@@ -385,6 +393,14 @@ public class MainInteract {
                             } else {
                                 System.out.println("\u001B[34mStep-by-step DFS resolution:\u001B[0m");
                                 while (!solversbs.next_step()) {
+                                    maze.displayTextMaze();
+                                    try {
+                                        Thread.sleep(300);
+                                    } catch (InterruptedException e) {
+                                        Thread.currentThread().interrupt();
+                                    }
+                                }
+                                while (!solversbs.find_path_step()) {
                                     maze.displayTextMaze();
                                     try {
                                         Thread.sleep(300);
@@ -410,6 +426,14 @@ public class MainInteract {
                                         Thread.currentThread().interrupt();
                                     }
                                 }
+                                while (!solversbs.find_path_step()) {
+                                    maze.displayTextMaze();
+                                    try {
+                                        Thread.sleep(300);
+                                    } catch (InterruptedException e) {
+                                        Thread.currentThread().interrupt();
+                                    }
+                                }
                                 res = true;
                             }
                             break;
@@ -421,6 +445,14 @@ public class MainInteract {
                             } else {
                                 System.out.println("\u001B[34mStep-by-step A* resolution:\u001B[0m");
                                 while (!solversbs.next_step()) {
+                                    maze.displayTextMaze();
+                                    try {
+                                        Thread.sleep(300);
+                                    } catch (InterruptedException e) {
+                                        Thread.currentThread().interrupt();
+                                    }
+                                }
+                                while (!solversbs.find_path_step()) {
                                     maze.displayTextMaze();
                                     try {
                                         Thread.sleep(300);
