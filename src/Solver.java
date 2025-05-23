@@ -1,19 +1,38 @@
 import java.util.*;
+/**
+ * Solver class provides different algorithms to solve a maze:
+ * - BFS (Breadth-First Search)
+ * - DFS (Depth-First Search)
+ * - A* algorithm
+ * - Dijkstra algorithm
+ * - Wall follower (left and right)
+ *
+ * It also tracks the time taken for each solving attempt.
+ */
 
 public class Solver {
     private long start_time;
     private long stop_time;
     private long duration;
 
+    /**
+     * Default constructor initializes timer variables.
+     */
     public Solver() {
         this.start_time = 0;
         this.stop_time = 0;
         this.duration = 0;
     }
 
+    /**
+     * Solve the maze using Breadth-First Search (BFS).
+     * Marks visited nodes and the final path with "V" and "B" respectively.
+     *
+     * @param maze maze to solve
+     * @return true if path found, false otherwise
+     */
     public boolean bfs(Maze maze) {
         maze.clearMarks();
-        // init timer
         this.start_time = System.nanoTime();
 
         Node start = maze.getStartNode();
@@ -32,16 +51,14 @@ public class Solver {
             current.setMark("V");
 
             if (current == end) {
-                // Chemin trouvé
                 Node n = end;
                 while (n != start) {
-                    n.setPath(true); // marque les noeuds du chemin
-                    n.setMark("B"); //pour affichage BFS
+                    n.setPath(true);
+                    n.setMark("B");
                     n = parent.get(n);
                 }
                 start.setPath(true);
                 start.setMark("B");
-                // stop timer
                 this.stop_time = System.nanoTime();
                 return true;
             }
@@ -54,14 +71,19 @@ public class Solver {
                 }
             }
         }
-        // stop timer
         this.stop_time = System.nanoTime();
-        return false; // Aucun chemin trouvé
+        return false;
     }
 
+    /**
+     * Solve the maze using Depth-First Search (DFS).
+     * Marks visited nodes and the final path with "V" and "D" respectively.
+     *
+     * @param maze maze to solve
+     * @return true if path found, false otherwise
+     */
     public boolean dfs(Maze maze) {
         maze.clearMarks();
-        // init timer
         this.start_time = System.nanoTime();
 
         Node start = maze.getStartNode();
@@ -80,16 +102,14 @@ public class Solver {
             current.setMark("V");
 
             if (current == end) {
-                // Chemin trouvé
                 Node n = end;
                 while (n != start) {
                     n.setPath(true);
-                    n.setMark("D"); // pour affichage DFS
+                    n.setMark("D");
                     n = parent.get(n);
                 }
                 start.setPath(true);
                 start.setMark("D");
-                // stop timer
                 this.stop_time = System.nanoTime();
                 return true;
             }
@@ -103,41 +123,31 @@ public class Solver {
             }
         }
 
-        // stop timer
         this.stop_time = System.nanoTime();
-        return false; // Aucun chemin trouvé
+        return false;
     }
 
 
-    /*
-     * A* algo de recherche qui combine une recherche en largeur (bfs) avec une heuristique qui guide la recherche vers la cible
-     * fonctionnement :
-     * on a une liste avec les noeuds a explorer et une liste avec les noeuds deja explorés
-     * chaque noeud a une distance g (distance depuis le depart) et une distance estimée h (distance a l'arrivée) (ca correspond a la distance de Manhattan)
-     * jsp pk on utilise cette distance mais c'est comme ca alors je le fais aussi
-     * on pose f = g + h et f permettera d'orienter la recherche
-     * enfin on remonte le chemin en partant de l'arrivée avec les parents
+    /**
+     * Solve the maze using A* algorithm.
+     * Combines BFS with heuristic (Manhattan distance).
+     * Marks visited nodes and final path with "V" and "A" respectively.
+     *
+     * @param maze maze to solve
+     * @return true if path found, false otherwise
      */
-    // Utilise une PriorityQueue avec priorité basée sur f = g + h
-    // g : distance réelle depuis le départ
-    // h : heuristique (distance de Manhattan vers la cible)
 
     public boolean aStar(Maze maze) {
         maze.clearMarks();
-        // init timer
         this.start_time = System.nanoTime();
 
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
 
-        // Map pour stocker g_score : coût réel minimum depuis start à chaque noeud
         Map<Node, Integer> gScore = new HashMap<>();
-        // Map pour stocker les parents afin de reconstruire le chemin
         Map<Node, Node> parent = new HashMap<>();
-        // Set pour garder les noeuds déjà évalués
         Set<Node> closedSet = new HashSet<>();
 
-        // Comparator pour la PriorityQueue basé sur f = g + h
         Comparator<Node> comparator = (n1, n2) -> {
             int f1 = gScore.getOrDefault(n1, Integer.MAX_VALUE) + Node.manhattanDistance(n1, end);
             int f2 = gScore.getOrDefault(n2, Integer.MAX_VALUE) + Node.manhattanDistance(n2, end);
@@ -155,11 +165,10 @@ public class Solver {
             current.setMark("V");
 
             if (current == end) {
-                // Chemin trouvé, reconstruire et marquer
                 Node n = end;
                 while (n != start) {
                     n.setPath(true);
-                    n.setMark("A"); // A* marqué par "A"
+                    n.setMark("A");
                     n = parent.get(n);
                 }
                 start.setPath(true);
@@ -173,48 +182,47 @@ public class Solver {
 
             for (Node neighbor : maze.get_adjacency_list().getOrDefault(current, new ArrayList<>())) {
                 if (closedSet.contains(neighbor)) {
-                    continue; // Déjà traité
+                    continue;
                 }
 
-                int tentative_gScore = gScore.getOrDefault(current, Integer.MAX_VALUE) + 1; // coût = 1 pour chaque déplacement
+                int tentative_gScore = gScore.getOrDefault(current, Integer.MAX_VALUE) + 1;
 
                 if (!gScore.containsKey(neighbor) || tentative_gScore < gScore.get(neighbor)) {
                     parent.put(neighbor, current);
                     gScore.put(neighbor, tentative_gScore);
-                    // Si le voisin n'est pas dans openSet, on l'ajoute
                     if (!openSet.contains(neighbor)) {
                         openSet.add(neighbor);
                     }
                 }
             }
         }
-        // stop timer
+
         this.stop_time = System.nanoTime();
-        return false; // Aucun chemin trouvé
+        return false;
     }
 
-
-    // Résolution avec l’algorithme de Dijkstra
+    /**
+     * Solve the maze using Dijkstra’s algorithm.
+     * Marks visited nodes and final path with "V" and "K" respectively.
+     *
+     * @param maze maze to solve
+     * @return true if path found, false otherwise
+     */
     public boolean dijkstra(Maze maze) {
         maze.clearMarks();
-        // init timer
+
         this.start_time = System.nanoTime();
 
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
 
-        // Map pour stocker la distance minimale depuis le départ à chaque noeud
         Map<Node, Integer> dist = new HashMap<>();
-        // Map pour stocker le parent de chaque noeud dans le chemin le plus court
         Map<Node, Node> parent = new HashMap<>();
 
-        // Comparateur pour la PriorityQueue selon la distance
         Comparator<Node> comparator = Comparator.comparingInt(node -> dist.get(node));
-
 
         PriorityQueue<Node> queue = new PriorityQueue<>(comparator);
 
-        // Initialisation : distance infinie sauf pour start
         for (Node node : maze.get_adjacency_list().keySet()) {
             dist.put(node, Integer.MAX_VALUE);
         }
@@ -226,71 +234,66 @@ public class Solver {
         while (!queue.isEmpty()) {
             Node current = queue.poll();
 
-            // Si on atteint la fin, on peut reconstruire le chemin
             if (current.equals(end)) {
                 Node n = end;
                 while (!n.equals(start)) {
                     n.setPath(true);
-                    n.setMark("K"); // K pour Dijkstra
+                    n.setMark("K");
                     n = parent.get(n);
                 }
                 start.setPath(true);
                 start.setMark("K");
-                // stop timer
                 this.stop_time = System.nanoTime();
                 return true;
             }
 
-            // Pour chaque voisin du noeud courant
             for (Node neighbor : maze.get_adjacency_list().getOrDefault(current, Collections.emptyList())) {
-                int alt = dist.get(current) + 1; // poids uniforme = 1 par arête
+                int alt = dist.get(current) + 1;
                 if (alt < dist.getOrDefault(neighbor, Integer.MAX_VALUE)) {
                     dist.put(neighbor, alt);
                     parent.put(neighbor, current);
-                    // Si la queue contient déjà neighbor, on doit le retirer et le réajouter pour mettre à jour sa priorité
                     if (queue.contains(neighbor)) {
                         queue.remove(neighbor);
                     }
                     queue.add(neighbor);
 
                     neighbor.setMark("V");
-                    //maze.displayTextMaze();
                 }
             }
         }
 
-        // stop timer
         this.stop_time = System.nanoTime();
-        // Aucun chemin trouvé
         return false;
     }
 
-    //WALL FOLLOWER :
-    //Left
+    /**
+     * Solve the maze with wall follower algorithm (left-hand rule).
+     * Marks path with "L" and visited nodes with "V".
+     *
+     * @param maze maze to solve
+     * @return true if path found, false otherwise
+     */
     public boolean wallFollowerLeft(Maze maze) {
         maze.clearMarks();
-        // init timer
         this.start_time = System.nanoTime();
 
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
 
-        // Directions : Haut(0), Droite(1), Bas(2), Gauche(3)
         int[][] direction = {
-                {-1, 0},
-                {0, 1},
-                {1, 0},
-                {0, -1}
+                {-1, 0}, //Up
+                {0, 1}, //Right
+                {1, 0}, //Down
+                {0, -1} // Left
         };
 
         Node current = start;
-        int dir = 3; // // on commence en regardant vers la gauche
+        int dir = 3; // start looking left
 
         Map<Node, Node> parent = new HashMap<>();
         Set<Node> visited = new HashSet<>();
         visited.add(current);
 
-        //current.setPath(true);
         current.setMark("V");
 
         int maxSteps = maze.get_node_array().length * maze.get_node_array()[0].length * 10; // limite de sécurité pour éviter boucle infini
@@ -301,9 +304,8 @@ public class Solver {
 
             boolean moved = false;
 
-            // On teste en priorité : droite, avant, gauche, arrière
             for (int i = 0; i < 4; i++) {
-                int tryDirection = (dir + 1 + 4 - i) % 4; // +1 car 1 = droite
+                int tryDirection = (dir + 1 + 4 - i) % 4; // try right, forward, left, back
                 int nx = current.get_coordinates()[0] + direction[tryDirection][0];
                 int ny = current.get_coordinates()[1] + direction[tryDirection][1];
 
@@ -317,12 +319,7 @@ public class Solver {
                         visited.add(current);
                         dir = tryDirection;
 
-                        // marquage immédiat
-                        //current.setPath(true);
-                        //current.setMark("L");
                         current.setMark("V");
-
-                        //maze.displayTextMaze();
 
                         moved = true;
                         break;
@@ -331,9 +328,8 @@ public class Solver {
             }
 
             if (!moved) {
-                // stop timer
                 this.stop_time = System.nanoTime();
-                return false; // bloqué
+                return false;
             }
         }
 
@@ -346,42 +342,45 @@ public class Solver {
             }
             start.setPath(true);
             start.setMark("L");
-            // stop timer
             this.stop_time = System.nanoTime();
             return true;
         }
 
-        // stop timer
         this.stop_time = System.nanoTime();
         return current.equals(end);
     }
 
 
-    //Right
+    /**
+     * Solve the maze with wall follower algorithm (right-hand rule).
+     * Marks path with "R" and visited nodes with "V".
+     *
+     * @param maze maze to solve
+     * @return true if path found, false otherwise
+     */
     public boolean wallFollowerRight(Maze maze) {
         maze.clearMarks();
-        // init timer
+
         this.start_time = System.nanoTime();
 
         Node start = maze.getStartNode();
         Node end = maze.getEndNode();
 
-        // Directions : Haut(0), Droite(1), Bas(2), Gauche(3)
+
         int[][] direction = {
-                {-1, 0},
-                {0, 1},
-                {1, 0},
-                {0, -1}
+                {-1, 0}, //Up
+                {0, 1}, //Right
+                {1, 0}, //Down
+                {0, -1} //Left
         };
 
         Node current = start;
-        int dir = 1; // direction initiale : droite
+        int dir = 1; // start looking right
 
         Map<Node, Node> parent = new HashMap<>();
         Set<Node> visited = new HashSet<>();
         visited.add(current);
 
-        //current.setPath(true);
         current.setMark("V");
 
         int maxSteps = maze.get_node_array().length * maze.get_node_array()[0].length * 10; // limite de sécurité pour éviter boucle infini
@@ -392,9 +391,8 @@ public class Solver {
 
             boolean moved = false;
 
-            // Stratégie mur à gauche : gauche, avant, droite, arrière
             for (int i = 0; i < 4; i++) {
-                int tryDir = (dir + 3 + i) % 4; // + 3 car 3 = gauche
+                int tryDir = (dir + 3 + i) % 4; // try left, forward, right, back
                 int nx = current.get_coordinates()[0] + direction[tryDir][0];
                 int ny = current.get_coordinates()[1] + direction[tryDir][1];
 
@@ -408,11 +406,7 @@ public class Solver {
                         visited.add(current);
                         dir = tryDir;
 
-                       /*current.setPath(true);
-                        current.setMark("R");*/
                         current.setMark("V");
-
-                        //maze.displayTextMaze();
 
                         moved = true;
                         break;
@@ -421,9 +415,8 @@ public class Solver {
             }
 
             if (!moved) {
-                // stop timer
                 this.stop_time = System.nanoTime();
-                return false; // bloqué
+                return false;
             }
         }
 
@@ -436,16 +429,19 @@ public class Solver {
             }
             start.setPath(true);
             start.setMark("R");
-            // stop timer
             this.stop_time = System.nanoTime();
             return true;
         }
 
-        // stop timer
         this.stop_time = System.nanoTime();
         return current.equals(end);
     }
 
+    /**
+     * Returns the duration of last solve in milliseconds.
+     *
+     * @return duration in ms
+     */
     public long get_time_ms(){
         this.duration = (this.stop_time - this.start_time) / 1000000;
         return this.duration;
