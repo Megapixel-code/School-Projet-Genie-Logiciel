@@ -178,8 +178,14 @@ public class LabyrinthApp extends Application {
                 CurrentMaze = maze;
             } else {
                 // Code to generate imperfect maze step by step
-                generatedLabyrinth = "Imperfect Labyrinth";
-
+                generatedLabyrinth = "Perfect Labyrinth";
+                printToTerminal("Generating perfect labyrinth with Kruskal");
+                int[] end = {mazeWidth[0]-1, mazeHeight[0]-1};
+                int[] start = {0, 0};
+                PerfectMaze maze = new PerfectMaze(mazeWidth[0], mazeHeight[0], mazeSeed[0], start, end);
+                maze.generateKruskal();
+                generateMaze(labyrinthArea, maze);
+                CurrentMaze = maze;
             }
         });
 
@@ -187,7 +193,7 @@ public class LabyrinthApp extends Application {
  * ComboBox for choosing the generation method
  */
         ComboBox<String> generationMethods = new ComboBox<>();
-        generationMethods.getItems().addAll("perfect maze", "Step-by-step perfect maze", "Imperfect maze", "Step-by-step imperfect maze");
+        generationMethods.getItems().addAll("perfect maze", "Step-by-step perfect maze", "Imperfect maze", "Kruskal Perfect maze");
         generationMethods.setPromptText("Select Generation Method");
         generationMethods.setOnAction(e -> {
             selectedGLMethod = generationMethods.getValue();
@@ -212,23 +218,37 @@ public class LabyrinthApp extends Application {
                 printToTerminal("Labyrinth resolution using " + selectedMethod + " method...");
                 if(selectedMethod.equals("DFS")) {
                     // Code to resolve labyrinth using DFS
-                    SolverSbS solver = new SolverSbS(CurrentMaze, "dfs");
-                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, 0, () -> {
-                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, 0);
-                    });
-                    
+                    Solver solver = new Solver();
+                    if(solver.dfs(CurrentMaze)){
+                        printToTerminal("Path found");
+                    }
+                    else{
+                        printToTerminal("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
                 } else if (selectedMethod.equals("BFS")) {
                     // Code to resolve labyrinth using BFS
-                    SolverSbS solver = new SolverSbS(CurrentMaze, "bfs");
-                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea, 0, () -> {
-                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea, 0);
-                    });
+                    Solver solver = new Solver();
+                    if(solver.bfs(CurrentMaze)){
+                        printToTerminal("Path found");
+                    }
+                    else{
+                        printToTerminal("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
                 } else if (selectedMethod.equals("A*")) {
                     // Code to resolve labyrinth using A*
-                    SolverSbS solver = new SolverSbS(CurrentMaze, "astar");
-                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea,0, () -> {
-                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea,0);
-                    });
+                    Solver solver = new Solver();
+                    if(solver.aStar(CurrentMaze)){
+                        printToTerminal("Path found");
+                    }
+                    else{
+                        printToTerminal("No path found");
+                    }
+                    generateWay(labyrinthArea, CurrentMaze);
+                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
                 } else if(selectedMethod.equals("DFS Step-by-step")) {
                     // Code to resolve labyrinth using DFS
                     SolverSbS solver = new SolverSbS(CurrentMaze, "dfs");
@@ -258,6 +278,13 @@ public class LabyrinthApp extends Application {
                         printToTerminal("No path found");
                     }
                     generateWay(labyrinthArea, CurrentMaze);
+                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
+                } else if (selectedMethod.equals("Dijkstra Step-by-step")) {
+                    // Code to resolve labyrinth using Dijkstra
+                    SolverSbS solver = new SolverSbS(CurrentMaze, "dijkstra");
+                    GenerateStepByStepWayFirstStep(CurrentMaze, solver, labyrinthArea,0.025, () -> {
+                        GenerateStepByStepWayLastStep(CurrentMaze, solver, labyrinthArea,0.025);
+                    });
                 } else if (selectedMethod.equals("WallFollowerLeft")) {
                     // Code to resolve labyrinth following the left wall
                     Solver solver = new Solver();
@@ -268,6 +295,7 @@ public class LabyrinthApp extends Application {
                         printToTerminal("No path found");
                     }
                     generateWay(labyrinthArea, CurrentMaze);
+                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
                 } else if (selectedMethod.equals("WallFollowerRight")) {
                     // Code to resolve labyrinth following the right wall
                     Solver solver = new Solver();
@@ -278,6 +306,7 @@ public class LabyrinthApp extends Application {
                         printToTerminal("No path found");
                     }
                     generateWay(labyrinthArea, CurrentMaze);
+                    printToTerminal("Time taken: " + solver.get_time_ms() + " milliseconds");
             }
         }});
 
@@ -285,7 +314,7 @@ public class LabyrinthApp extends Application {
  * ComboBox for choosing the resolution method
  */
         ComboBox<String> resolutionMethods = new ComboBox<>();
-        resolutionMethods.getItems().addAll("DFS", "DFS Step-by-step", "BFS", "BFS Step-by-step", "A*", "A* Step-by-step", "Dijkstra", "WallFollowerLeft", "WallFollowerRight");
+        resolutionMethods.getItems().addAll("DFS", "DFS Step-by-step", "BFS", "BFS Step-by-step", "A*", "A* Step-by-step", "Dijkstra", "Dijkstra Step-by-step", "WallFollowerLeft", "WallFollowerRight");
         resolutionMethods.setPromptText("Select Resolution Method");
         resolutionMethods.setOnAction(e -> {
             selectedMethod = resolutionMethods.getValue();
