@@ -701,7 +701,7 @@ public class LabyrinthApp extends Application {
      * It set the start node to the clicked node
      * It checks if the end node is already selected
      * @param maze The maze being modified.
-     * @param ChangeStartNode Boolean property indicating if the start node is being changed.
+     * @param ChangeEndNode Boolean property indicating if the start node is being changed.
      * @param c The circle representing the node.
      * @return True if the end node is ready to change, false otherwise.
      */
